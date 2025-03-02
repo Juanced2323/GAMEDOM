@@ -4,13 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Registro - Mi Proyecto Web</title>
-  <!-- Ajusta la ruta al CSS según tu estructura -->
   <link rel="stylesheet" href="../css/registro.css" />
 </head>
 <body>
   <div class="register-container">
     <h2>Registro</h2>
-    <form id="registerForm" action="#" method="POST">
+    
+    <!-- Contenedor de errores (por defecto oculto con la clase "hidden") -->
+    <div id="errorMessage" class="error-message hidden"></div>
+    
+    <form id="registerForm" action="../php/register_process.php" method="POST">
       <!-- Correo -->
       <div class="form-group">
         <label for="email">Correo</label>
@@ -111,7 +114,7 @@
     </form>
   </div>
 
-  <!-- Ajusta la ruta al JS según tu estructura -->
+  <!-- Enlazamos el archivo JS de registro -->
   <script src="../js/registro.js"></script>
 </body>
 </html>

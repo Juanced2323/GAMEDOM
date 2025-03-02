@@ -4,13 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login - Mi Proyecto Web</title>
-  <!-- Ajusta la ruta al CSS según tu estructura de carpetas -->
   <link rel="stylesheet" href="../css/login.css" />
 </head>
 <body>
   <div class="login-container">
     <h2>Iniciar Sesión</h2>
-    <form id="loginForm" action="#" method="POST">
+    <form id="loginForm" action="php/login_process.php" method="POST">
       <div class="form-group">
         <label for="username">Usuario o Email</label>
         <input
@@ -34,7 +33,11 @@
       <button type="submit">Entrar</button>
     </form>
 
-    <!-- Botón para ir a la página de registro -->
+    <!-- Si quisieras usar un contenedor de error visible en la propia página -->
+    <div id="errorMessage" class="error-message hidden">
+      <p>Usuario o contraseña incorrectos.</p>
+    </div>
+
     <button
       type="button"
       class="register-button"
@@ -44,7 +47,7 @@
     </button>
   </div>
 
-  <!-- Ajusta la ruta al JS según tu estructura de carpetas -->
+  <!-- Enlazas el archivo JS justo antes del cierre del body -->
   <script src="../js/login.js"></script>
 </body>
 </html>

@@ -54,3 +54,26 @@ body {
     background: #0056b3;
   }
   
+  /* Ejemplo de animación "shake" */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+/* Estilos para el mensaje de error */
+.error-message {
+  background-color: #f8d7da; /* Rojo claro de alerta */
+  color: #721c24;            /* Texto rojo oscuro */
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  text-align: center;
+  animation: shake 0.5s;     /* Aplica la animación */
+}
+
+/* Oculto por defecto */
+.hidden {
+  display: none;
+}
