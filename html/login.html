@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Mi Proyecto Web</title>
+  <!-- Ajusta la ruta al CSS según tu estructura de carpetas -->
+  <link rel="stylesheet" href="../css/login.css" />
+</head>
+<body>
+  <div class="login-container">
+    <h2>Iniciar Sesión</h2>
+    <form id="loginForm" action="#" method="POST">
+      <div class="form-group">
+        <label for="username">Usuario o Email</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Ingrese su usuario o email"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Ingrese su contraseña"
+          required
+        />
+      </div>
+      <button type="submit">Entrar</button>
+    </form>
+
+    <!-- Botón para ir a la página de registro -->
+    <button
+      type="button"
+      class="register-button"
+      onclick="window.location.href='registro.html'"
+    >
+      ¿No tienes cuenta? Regístrate aquí
+    </button>
+  </div>
+
+  <!-- Ajusta la ruta al JS según tu estructura de carpetas -->
+  <script src="../js/login.js"></script>
+</body>
+</html>
