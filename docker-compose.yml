@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: gamedom_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: gamedom_users
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: usuariopassword
+    ports:
+      - "3307:3306"  # Cambia a 3306:3306 si no tienes conflicto
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./migrations:/docker-entrypoint-initdb.d
+
+  web:
+    build: .
+    container_name: gamedom_web
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    volumes:
+      # Mapea TODO lo de la carpeta local "html" a "/var/www/html" en el contenedor
+      - ./html:/var/www/html
+
+volumes:
+  db_data:
