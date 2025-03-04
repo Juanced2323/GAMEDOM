@@ -10,7 +10,6 @@
 <body>
   <div class="login-container">
     <h2>Iniciar Sesión</h2>
-    <!-- El script PHP está en la subcarpeta "php" -->
     <form id="loginForm" action="php/login_process.php" method="POST">
       <div class="form-group">
         <label for="username">Usuario o Email</label>
@@ -35,21 +34,18 @@
       <button type="submit">Entrar</button>
     </form>
 
-    <!-- Contenedor de error (inicialmente oculto) -->
+    <!-- Contenedor de error (oculto por defecto) -->
     <div id="errorMessage" class="error-message hidden">
       <p>Usuario o contraseña incorrectos.</p>
     </div>
 
-    <button
-      type="button"
-      class="register-button"
-      onclick="window.location.href='registro.html'"
-    >
-      ¿No tienes cuenta? Regístrate aquí
-    </button>
+    <!-- Hipervínculo para registrarse -->
+    <p class="register-link">
+      ¿No tienes cuenta? <a href="registro.html">Regístrate aquí</a>
+    </p>
   </div>
 
-  <!-- El archivo JS está en la subcarpeta "js" -->
+  <!-- Enlazamos el archivo JS de login -->
   <script src="js/login.js"></script>
 </body>
 </html>

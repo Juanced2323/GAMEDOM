@@ -2,6 +2,7 @@
 // php/register_process.php
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    session_start(); // Iniciamos la sesión
     require_once "db_connect.php";
 
     $email     = trim($_POST['email'] ?? '');
@@ -46,13 +47,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->bind_param("sssisss", $email, $username, $nombre, $apellidos, $edad, $telefono, $hashed_password);
 
     if ($stmt->execute()) {
-        // Registro exitoso: redirige a index.html
-        header("Location: ../index.html");
+        // Registro exitoso
+
+        // Iniciamos sesión automáticamente tras el registro
+        $_SESSION['usuario'] = $username; // o $email, según prefieras identificar al usuario
+
+        // Redirigimos a index.php (que pedirá sesión para mostrar contenido)
+        header("Location: ../index.php");
         exit();
     } else {
         // Error al insertar, redirige con un error genérico
-        header("Location: ../registro.html?error=password");
-
+        header("Location: ../registro.html?error=insert");
         exit();
     }
 
@@ -63,4 +68,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     header("Location: ../registro.html");
     exit();
 }
-

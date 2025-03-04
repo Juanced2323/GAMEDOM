@@ -1,68 +1,77 @@
 /* css/registro.css */
 
+/* Ajusta la ruta a la imagen si tu archivo se llama distinto (jpg, png, etc.) */
 body {
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .register-container {
-    width: 350px;
-    margin: 80px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-  
-  .register-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  button[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    background: #28a745; /* Verde */
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  button[type="submit"]:hover {
-    background: #218838;
-  }
-  
-  .error-message {
-    margin-bottom: 15px;
-    padding: 10px;
-    border-radius: 4px;
-    background: #f8d7da; /* Fondo rojo claro */
-    color: #721c24;     /* Texto rojo oscuro */
-  }
-  
-  .hidden {
-    display: none;
-  }
-  
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  /* Supongamos que la imagen está en /html/images/videogame-background.webp */
+  background: url('../images/register-background.webp') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Contenedor con fondo blanco semitransparente */
+.register-container {
+  width: 320px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 1); /* Fondo blanco con transparencia */
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  margin: 10% auto;
+}
+
+.register-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Botón de envío */
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background: #28a745; /* Verde */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button[type="submit"]:hover {
+  background: #218838;
+}
+
+/* Mensaje de error */
+.error-message {
+  background-color: #f8d7da; /* Rojo claro */
+  color: #721c24;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* Oculto por defecto */
+.hidden {
+  display: none;
+}

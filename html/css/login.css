@@ -1,79 +1,101 @@
 /* css/login.css */
 
+/* Fondo de la página con imagen de videojuegos */
 body {
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .login-container {
-    width: 300px;
-    margin: 80px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-  
-  .login-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .form-group input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  button[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    background: #007BFF;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  button[type="submit"]:hover {
-    background: #0056b3;
-  }
-  
-  /* Ejemplo de animación "shake" */
-@keyframes shake {
-  0% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
-  100% { transform: translateX(0); }
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: url('../images/videogame-background.webp') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Contenedor de login destacado */
+.login-container {
+  width: 320px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 1); /* Fondo blanco con transparencia */
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  margin: 10% auto;
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Botón de enviar */
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button[type="submit"]:hover {
+  background: #0056b3;
+}
+
+/* Hipervínculo para ir a registrarse */
+.register-link {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.register-link a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
 }
 
 /* Estilos para el mensaje de error */
 .error-message {
-  background-color: #f8d7da; /* Rojo claro de alerta */
-  color: #721c24;            /* Texto rojo oscuro */
+  background-color: #f8d7da;
+  color: #721c24;
   padding: 10px;
   margin-top: 10px;
   border-radius: 5px;
   text-align: center;
-  animation: shake 0.5s;     /* Aplica la animación */
+  animation: shake 0.5s;
 }
 
 /* Oculto por defecto */
 .hidden {
   display: none;
+}
+
+/* Animación "shake" */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
 }
