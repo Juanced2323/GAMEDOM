@@ -11,23 +11,21 @@ services:
       MYSQL_USER: usuario
       MYSQL_PASSWORD: usuariopassword
     ports:
-      - "3307:3306"  # o 3306:3306 si no tienes conflicto
+      - "3307:3306"  # Cambia a 3306:3306 si no tienes conflicto
     volumes:
       - db_data:/var/lib/mysql
       - ./migrations:/docker-entrypoint-initdb.d
 
   web:
-    build: .                 # En lugar de image: php:8.0-apache
+    build: .
     container_name: gamedom_web
     depends_on:
       - db
     ports:
       - "8080:80"
     volumes:
+      # Mapea TODO lo de la carpeta local "html" a "/var/www/html" en el contenedor
       - ./html:/var/www/html
-      - ./php:/var/www/html/php
-      - ./css:/var/www/html/css
-      - ./js:/var/www/html/js
 
 volumes:
   db_data:

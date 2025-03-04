@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // 1. Verificar contraseñas
     if ($password !== $confirm) {
-        header("Location: ../html/registro.html?error=password");
+        header("Location: ../registro.html?error=password");
         exit();
     }
 
@@ -29,7 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $result = $stmt->get_result();
     if ($result && $result->num_rows > 0) {
         // El correo o el usuario ya existe
-        header("Location: ../html/registro.html?error=exists");
+        header("Location: ../registro.html?error=exists");
         exit();
     }
     $stmt->close();
@@ -47,11 +47,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($stmt->execute()) {
         // Registro exitoso: redirige a index.html
-        header("Location: ../html/index.html");
+        header("Location: ../index.html");
         exit();
     } else {
         // Error al insertar, redirige con un error genérico
-        header("Location: ../html/registro.html?error=insert");
+        header("Location: ../registro.html?error=password");
+
         exit();
     }
 
@@ -59,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $conn->close();
 } else {
     // Si no se accede por POST, redirigimos a registro
-    header("Location: ../html/registro.html");
+    header("Location: ../registro.html");
     exit();
 }
 
