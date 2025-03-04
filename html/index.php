@@ -78,10 +78,13 @@ if (!isset($_SESSION['usuario'])) {
     <section class="game-catalog">
       <h2>Catálogo de Juegos</h2>
       <div class="game-list">
-        <div class="game-card">
-          <img src="images/juego-1.jpeg" alt="Juego 1">
-          <h4>Hundir la flota</h4>
+      <div class="game-card">
+        <a href="games/HundirLaFlota/index.html" target="_blank">
+             <img src="images/juego-1.jpeg" alt="Hundir la flota">
+             <h4>Hundir la flota</h4>
+            </a>
         </div>
+
         <div class="game-card">
           <img src="images/juego-1.jpeg" alt="Juego 2">
           <h4>Juego 2</h4>
