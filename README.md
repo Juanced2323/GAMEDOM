@@ -13,10 +13,11 @@
    cd GAMEDOM
 
 2. **Construir y levantar los contenedores**
-
+   
+  ```bash
 docker compose build
-
 docker compose up
+```
 
 3. **Accede a la aplicación**
 
