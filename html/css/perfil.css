@@ -1,0 +1,152 @@
+/* perfil.css */
+
+/* Contenedor general del perfil */
+.profile-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Sección de imagen de perfil */
+.profile-image-section {
+  flex: 1 1 200px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Contenedor para la imagen con el botón de editar */
+.image-box {
+  position: relative;
+  display: inline-block;
+}
+
+/* Imagen de perfil: estilo circular */
+.image-box img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fbc531;
+}
+
+/* Botón de editar imagen (lápiz) */
+.image-box .edit-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #fbc531;
+  border: none;
+  border-radius: 50%;
+  padding: 5px 7px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+/* Los botones de lápiz estarán ocultos inicialmente */
+.pencil-btn {
+  display: none;
+}
+
+/* Sección de información del perfil */
+.profile-info-section {
+  flex: 2 1 400px;
+  padding: 20px;
+}
+
+/* Grupo de información (cada campo) */
+.info-group {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+/* Etiqueta de cada campo */
+.info-group label {
+  flex: 0 0 150px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Estilo de los inputs */
+.info-group input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Inputs no editables */
+.info-group input[readonly] {
+  background-color: #e9e9e9;
+  color: #666;
+}
+
+/* Botón de editar (lápiz) junto a cada campo */
+.info-group .edit-btn {
+  margin-left: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* Botón para guardar cambios y el global de editar */
+.save-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #fbc531;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+.save-btn:hover {
+  background-color: #e1a200;
+}
+
+/* --- Modal --- */
+
+/* Fondo semitransparente para el modal */
+.modal {
+  display: none; /* Oculto por defecto */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+/* Contenido del modal */
+.modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+}
+
+/* Botón para cerrar el modal */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}

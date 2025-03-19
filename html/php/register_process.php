@@ -5,22 +5,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     session_start(); // Iniciamos la sesión
     require_once "db_connect.php";
 
-    $email     = trim($_POST['email'] ?? '');
-    $username  = trim($_POST['username'] ?? '');
-    $nombre    = trim($_POST['nombre'] ?? '');
-    $apellidos = trim($_POST['apellidos'] ?? '');
-    $edad      = intval($_POST['edad'] ?? 0);
-    $telefono  = trim($_POST['telefono'] ?? '');
-    $password  = trim($_POST['password'] ?? '');
-    $confirm   = trim($_POST['confirmPassword'] ?? '');
+    // Recoger y limpiar los datos del formulario
+    $email    = trim($_POST['email'] ?? '');
+    $username = trim($_POST['username'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+    $confirm  = trim($_POST['confirmPassword'] ?? '');
 
-    // 1. Verificar contraseñas
+    // 1. Verificar que ambas contraseñas sean iguales
     if ($password !== $confirm) {
         header("Location: ../registro.html?error=password");
         exit();
     }
 
-    // 2. Verificar que no exista ya el correo o el usuario
+    // 2. Verificar que el correo o el usuario no existan ya en la base de datos
     $stmt = $conn->prepare("SELECT * FROM usuarios WHERE correo = ? OR usuario = ?");
     if (!$stmt) {
         die("Error en prepare(): " . $conn->error);
@@ -29,34 +26,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result && $result->num_rows > 0) {
-        // El correo o el usuario ya existe
+        // El correo o el usuario ya existen
         header("Location: ../registro.html?error=exists");
         exit();
     }
     $stmt->close();
 
-    // (Opcional) Hashear la contraseña
+    // 3. Hashear la contraseña
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // 3. Insertar en la tabla usuarios
-    $stmt = $conn->prepare("INSERT INTO usuarios (correo, usuario, nombre, apellidos, edad, telefono, password) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    // Como los demás datos se completarán en la sección de perfil,
+    // insertamos valores vacíos para nombre y apellidos.
+    $nombre    = "";
+    $apellidos = "";
+
+    // 4. Insertar el nuevo usuario en la base de datos
+    $stmt = $conn->prepare("INSERT INTO usuarios (correo, usuario, nombre, apellidos, password) VALUES (?, ?, ?, ?, ?)");
     if (!$stmt) {
         die("Error en prepare(): " . $conn->error);
     }
-    // "sssisss" → s=correo, s=usuario, s=nombre, i=edad, s=telefono, s=password
-    $stmt->bind_param("sssisss", $email, $username, $nombre, $apellidos, $edad, $telefono, $hashed_password);
+    $stmt->bind_param("sssss", $email, $username, $nombre, $apellidos, $hashed_password);
 
     if ($stmt->execute()) {
-        // Registro exitoso
-
-        // Iniciamos sesión automáticamente tras el registro
-        $_SESSION['usuario'] = $username; // o $email, según prefieras identificar al usuario
-
-        // Redirigimos a index.php (que pedirá sesión para mostrar contenido)
+        // Registro exitoso, iniciamos sesión automáticamente
+        $_SESSION['usuario'] = $username; // Puedes usar el correo o el usuario como identificador
         header("Location: ../index.php");
         exit();
     } else {
-        // Error al insertar, redirige con un error genérico
+        // Error al insertar el usuario
         header("Location: ../registro.html?error=insert");
         exit();
     }
@@ -64,7 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->close();
     $conn->close();
 } else {
-    // Si no se accede por POST, redirigimos a registro
+    // Si se accede al script sin POST, redirigimos al formulario de registro
     header("Location: ../registro.html");
     exit();
 }
+?>

@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Registro - Mi Proyecto Web</title>
-  <!-- El CSS está al mismo nivel que registro.html -->
   <link rel="stylesheet" href="css/registro.css" />
 </head>
 <body>
@@ -14,7 +13,7 @@
     <!-- Contenedor de errores -->
     <div id="errorMessage" class="error-message hidden"></div>
     
-    <!-- El script PHP está en "php/register_process.php" -->
+    <!-- Formulario que se enviará a php/register_process.php -->
     <form id="registerForm" action="php/register_process.php" method="POST">
       <!-- Correo -->
       <div class="form-group">
@@ -36,54 +35,6 @@
           id="username"
           name="username"
           placeholder="Ingrese su usuario"
-          required
-        />
-      </div>
-
-      <!-- Nombre -->
-      <div class="form-group">
-        <label for="nombre">Nombre</label>
-        <input
-          type="text"
-          id="nombre"
-          name="nombre"
-          placeholder="Ingrese su nombre"
-          required
-        />
-      </div>
-
-      <!-- Apellidos -->
-      <div class="form-group">
-        <label for="apellidos">Apellidos</label>
-        <input
-          type="text"
-          id="apellidos"
-          name="apellidos"
-          placeholder="Ingrese sus apellidos"
-          required
-        />
-      </div>
-
-      <!-- Edad -->
-      <div class="form-group">
-        <label for="edad">Edad</label>
-        <input
-          type="number"
-          id="edad"
-          name="edad"
-          placeholder="Ingrese su edad"
-          required
-        />
-      </div>
-
-      <!-- Teléfono -->
-      <div class="form-group">
-        <label for="telefono">Teléfono</label>
-        <input
-          type="tel"
-          id="telefono"
-          name="telefono"
-          placeholder="Ingrese su teléfono"
           required
         />
       </div>
@@ -116,7 +67,7 @@
     </form>
   </div>
 
-  <!-- Archivo JS de registro -->
+  <!-- Archivo JS de registro (opcional para validaciones) -->
   <script src="js/registro.js"></script>
 </body>
 </html>

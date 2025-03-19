@@ -42,3 +42,5 @@ CREATE TABLE `usuarios` (
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`correo`);
 COMMIT;
+
+ALTER TABLE usuarios ADD COLUMN imagen LONGBLOB DEFAULT NULL;
