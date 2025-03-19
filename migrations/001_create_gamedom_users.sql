@@ -44,3 +44,6 @@ ALTER TABLE `usuarios`
 COMMIT;
 
 ALTER TABLE usuarios ADD COLUMN imagen LONGBLOB DEFAULT NULL;
+
+ALTER TABLE `usuarios`
+  ADD UNIQUE KEY (`usuario`);

@@ -1,0 +1,95 @@
+/* pantalla_juego.css */
+
+/* Estilos generales */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background: #222;
+    color: #fff;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    background: #333;
+    padding: 10px 20px;
+  }
+  
+  .nav-item {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+  }
+  
+  .nav-item:hover {
+    text-decoration: underline;
+  }
+  
+  .game-info-container {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+  }
+  
+  .game-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .game-icon {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .game-name {
+    font-size: 2em;
+    font-weight: bold;
+  }
+  
+  .game-description {
+    margin-top: 20px;
+    font-size: 1.2em;
+  }
+  
+  .screenshots {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+  }
+  
+  .screenshots img {
+    width: 300px;
+    height: auto;
+    border-radius: 10px;
+  }
+  
+  .ranking, .tournaments {
+    margin-top: 20px;
+    font-size: 1.1em;
+  }
+  
+  .play-button {
+    display: block;
+    margin: 30px auto;
+    padding: 15px 30px;
+    font-size: 1.5em;
+    font-weight: bold;
+    background: #fbc531;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .play-button:hover {
+    background: #e1a200;
+  }
+  
