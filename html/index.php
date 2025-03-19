@@ -1,4 +1,12 @@
-<?php session_start(); ?>
+<?php
+session_start();
+require_once "php/db_connect.php";
+
+// Consulta para obtener los juegos ordenados (puedes ajustar el orden o condiciones según necesites)
+$query = "SELECT * FROM juegos ORDER BY nombre ASC";
+$result = $conn->query($query);
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -65,23 +73,27 @@
   <section class="game-catalog">
     <h2>Catálogo de Juegos</h2>
     <div class="game-list">
-      <div class="game-card">
-        <!-- En lugar de ir directamente a games/HundirLaFlota/index.html,
-             llevamos al usuario a pantalla_juego.php -->
-        <a href="pantalla_juego.php?game=hundir_flota">
-          <img src="images/juego-1.jpeg" alt="Hundir la flota">
-          <h4>Hundir la flota</h4>
-        </a>
-      </div>
-      
-      <!-- Resto de juegos... -->
-      <div class="game-card">
-        <img src="images/juego-1.jpeg" alt="Juego 2">
-        <h4>Juego 2</h4>
-      </div>
-      <!-- ... -->
+      <?php while($game = $result->fetch_assoc()): ?>
+        <div class="game-card">
+          <!-- El enlace redirige a pantalla_juego.php pasando el id del juego como parámetro -->
+          <a href="pantalla_juego.php?id=<?php echo $game['id_juego']; ?>">
+            <?php
+            // Si el juego tiene un icono (almacenado como BLOB), lo convertimos a base64
+            if (!empty($game['icono'])) {
+              $iconoBase64 = "data:image/jpeg;base64," . base64_encode($game['icono']);
+              echo '<img src="' . $iconoBase64 . '" alt="' . htmlspecialchars($game['nombre']) . '">';
+            } else {
+              // En caso contrario, mostramos una imagen por defecto (ajusta la ruta según tu proyecto)
+              echo '<img src="images/default-game.png" alt="Juego sin icono">';
+            }
+            ?>
+            <h4><?php echo htmlspecialchars($game['nombre']); ?></h4>
+          </a>
+        </div>
+      <?php endwhile; ?>
     </div>
   </section>
 </main>
 </body>
 </html>
+<?php $conn->close(); ?>

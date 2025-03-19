@@ -27,5 +27,17 @@ services:
       # Mapea TODO lo de la carpeta local "html" a "/var/www/html" en el contenedor
       - ./html:/var/www/html
 
+  phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      container_name: gamedom_phpmyadmin
+      restart: always
+      environment:
+        PMA_HOST: gamedom_mysql
+        PMA_PORT: 3306
+      ports:
+        - "8081:80"
+      depends_on:
+        - db
+
 volumes:
   db_data:
