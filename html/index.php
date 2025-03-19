@@ -1,15 +1,4 @@
-<?php
-session_start();  // Inicia la sesión
-
-// Verifica si el usuario está autenticado (por ejemplo, si existe una variable de sesión "usuario")
-if (!isset($_SESSION['usuario'])) {
-    // Si no hay usuario autenticado, redirige a login
-    header("Location: login.html");
-    exit();
-}
-
-// Si llega hasta aquí, el usuario está autenticado
-?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -19,19 +8,37 @@ if (!isset($_SESSION['usuario'])) {
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-  <header>
+<header>
     <nav class="navbar">
       <div class="nav-left">
-        <a href="#" class="nav-item">Biblioteca</a>
-        <a href="#" class="nav-item">Comunidad</a>
-        <a href="#" class="nav-item">Premios</a>
+        <!-- Ajusta estos enlaces a tus páginas reales -->
+        <a href="biblioteca.php" 
+           class="nav-item <?php echo ($activePage === 'biblioteca') ? 'active' : ''; ?>">
+           Biblioteca
+        </a>
+        <a href="comunidad.php" 
+           class="nav-item <?php echo ($activePage === 'comunidad') ? 'active' : ''; ?>">
+           Comunidad
+        </a>
+        <a href="premios.php" 
+           class="nav-item <?php echo ($activePage === 'premios') ? 'active' : ''; ?>">
+           Premios
+        </a>
       </div>
       <div class="nav-right">
-        <a href="#" class="nav-item">Perfil</a>
+        <?php if (isset($_SESSION['usuario'])): ?>
+          <!-- Cuando el usuario está logueado -->
+          <a href="perfil.php" 
+             class="nav-item <?php echo ($activePage === 'perfil') ? 'active' : ''; ?>">
+             Perfil
+          </a>
+        <?php else: ?>
+          <!-- Cuando NO está logueado -->
+          <a href="login.html" class="nav-item">Iniciar Sesión</a>
+        <?php endif; ?>
       </div>
     </nav>
   </header>
-  
   <main>
     <aside class="filter-sidebar">
       <h3>Filtrar Juegos</h3>
