@@ -33,7 +33,7 @@ if (!empty($game['icono'])) {
     $iconoBase64 = 'images/default-game.png';
 }
 
-// Preparar la captura (si existe en la columna `capturas`)
+// Preparar la captura (si existe en la columna capturas)
 $capturesBase64 = null;
 if (!empty($game['capturas'])) {
     $capturesBase64 = "data:image/jpeg;base64," . base64_encode($game['capturas']);
@@ -89,6 +89,22 @@ while($row = $resultTorneos->fetch_assoc()){
 }
 $stmt->close();
 
+// Verificar si el juego está en la lista de favoritos del usuario
+$isFavorite = false;
+if(isset($_SESSION['usuario'])){
+    $usuario = $_SESSION['usuario'];
+    $stmtFav = $conn->prepare("SELECT * FROM favoritos WHERE usuario = ? AND id_juego = ?");
+    if($stmtFav){
+        $stmtFav->bind_param("si", $usuario, $id_juego);
+        $stmtFav->execute();
+        $resFav = $stmtFav->get_result();
+        if($resFav->num_rows > 0){
+            $isFavorite = true;
+        }
+        $stmtFav->close();
+    }
+}
+
 $conn->close();
 ?>
 <!DOCTYPE html>
@@ -98,6 +114,20 @@ $conn->close();
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?php echo htmlspecialchars($game['nombre']); ?> - Información del Juego</title>
   <link rel="stylesheet" href="css/pantalla_juego.css">
+  <style>
+    /* Agrega estilos básicos para el contenedor de favoritos */
+    .favorite-container {
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .favorite-container img {
+      width: 30px;
+      height: 30px;
+      margin-right: 10px;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -124,6 +154,14 @@ $conn->close();
         <img src="<?php echo $iconoBase64; ?>" alt="<?php echo htmlspecialchars($game['nombre']); ?>" class="game-icon">
         <div class="game-name"><?php echo htmlspecialchars($game['nombre']); ?></div>
       </div>
+      
+      <!-- Sección de Favoritos -->
+      <?php if(isset($_SESSION['usuario'])): ?>
+      <div class="favorite-container" onclick="toggleFavorite(<?php echo $game['id_juego']; ?>)">
+        <img id="favoriteIcon" src="<?php echo $isFavorite ? 'images/star-filled.png' : 'images/star-outline.png'; ?>" alt="Favorito">
+        <span id="favoriteText"><?php echo $isFavorite ? 'Quitar de Biblioteca' : 'Añadir a Biblioteca'; ?></span>
+      </div>
+      <?php endif; ?>
       
       <!-- Descripción -->
       <div class="game-description">
@@ -188,7 +226,7 @@ $conn->close();
   </main>
   
   <script>
-  // Función que envía el id del juego al script de actualización del ranking
+  // Función para actualizar el ranking al pulsar "Jugar Ahora"
   function playGame(id_juego, ruta_index) {
     const formData = new FormData();
     formData.append('id_juego', id_juego);
@@ -200,16 +238,42 @@ $conn->close();
     .then(response => response.json())
     .then(data => {
       if(data.status === 'success'){
-        // Redirigir a la ruta almacenada en la base de datos
         window.location.href = ruta_index;
       } else {
         alert("Error al actualizar ranking: " + data.message);
-        window.location.href = ruta_index; // Redirige de todas formas
+        window.location.href = ruta_index;
       }
     })
     .catch(error => {
       console.error('Error:', error);
-      window.location.href = ruta_index; // Redirige aun en caso de error
+      window.location.href = ruta_index;
+    });
+  }
+
+  // Función para alternar el estado de favorito (añadir/quitar de biblioteca)
+  function toggleFavorite(id_juego) {
+    const formData = new FormData();
+    formData.append('id_juego', id_juego);
+
+    fetch('php/toggle_favorite.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.status === 'added'){
+         document.getElementById('favoriteIcon').src = 'images/star-filled.png';
+         document.getElementById('favoriteText').innerText = 'Quitar de Biblioteca';
+      } else if(data.status === 'removed'){
+         document.getElementById('favoriteIcon').src = 'images/star-outline.png';
+         document.getElementById('favoriteText').innerText = 'Añadir a Biblioteca';
+      } else {
+         alert("Error al actualizar favoritos: " + data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert("Error al actualizar favoritos.");
     });
   }
   </script>
