@@ -1,11 +1,106 @@
 <?php
 session_start();
 require_once "php/db_connect.php";
+require_once "php/recommendations.php";
 
-// Consulta para obtener los juegos ordenados (puedes ajustar el orden o condiciones según necesites)
-$query = "SELECT * FROM juegos ORDER BY nombre ASC";
-$result = $conn->query($query);
+// 1) Recoger filtros desde GET
+$searchTerm = trim($_GET['search'] ?? '');
+$selectedCategories = $_GET['category'] ?? [];  // array de strings
 
+// 2) Verificar si hay filtros aplicados
+$filtersApplied = ($searchTerm !== '' || !empty($selectedCategories));
+
+// 3) Obtener la lista de categorías desde la tabla `categorias`
+$catQuery = "SELECT nombre FROM categorias ORDER BY nombre ASC";
+$catResult = $conn->query($catQuery);
+$allCategories = [];
+while ($catRow = $catResult->fetch_assoc()) {
+    $allCategories[] = $catRow['nombre'];
+}
+$catResult->close();
+
+$orderedGames = []; // Arreglo final de juegos que se mostrarán
+
+// 4) Si NO hay filtros y el usuario está logueado, usar lógica de recomendación
+if (!$filtersApplied && isset($_SESSION['usuario'])) {
+    $usuario = $_SESSION['usuario'];
+    // Obtener juegos recomendados
+    $recommended = getContentBasedRecommendations($usuario, $conn, 10);
+
+    // Obtener todos los juegos
+    $sqlAll = "SELECT * FROM juegos";
+    $resAll = $conn->query($sqlAll);
+    $allGames = [];
+    while ($row = $resAll->fetch_assoc()) {
+        $allGames[] = $row;
+    }
+    $resAll->close();
+
+    // Reordenar: primero los recomendados y luego el resto
+    $recommendedIDs = array_column($recommended, 'id_juego');
+    $orderedGames = $recommended;
+    foreach ($allGames as $g) {
+        if (!in_array($g['id_juego'], $recommendedIDs)) {
+            $orderedGames[] = $g;
+        }
+    }
+
+} else {
+    // 5) Si HAY filtros, construimos una consulta dinámica
+    $sql = "SELECT DISTINCT j.* FROM juegos j";
+    $wheres = [];
+    $params = [];
+    $types = '';
+
+    // Si se han elegido categorías, unimos con pivot y tabla categorias
+    if (!empty($selectedCategories)) {
+        $sql .= " JOIN juegos_categorias jc ON j.id_juego = jc.id_juego
+                  JOIN categorias c ON c.id_categoria = jc.id_categoria";
+        
+        // c.nombre IN (...)
+        $placeholders = implode(',', array_fill(0, count($selectedCategories), '?'));
+        $wheres[] = "c.nombre IN ($placeholders)";
+        
+        // bind_param (todas strings)
+        $types .= str_repeat('s', count($selectedCategories));
+        foreach($selectedCategories as $cat) {
+            $params[] = $cat;
+        }
+    }
+
+    // Si hay término de búsqueda
+    if ($searchTerm !== '') {
+        $wheres[] = "j.nombre LIKE ?";
+        $types .= 's';
+        $params[] = "%$searchTerm%";
+    }
+
+    if (!empty($wheres)) {
+        $sql .= " WHERE " . implode(" AND ", $wheres);
+    }
+
+    // Ordenamos por nombre
+    $sql .= " ORDER BY j.nombre ASC";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        die("Error en prepare (filtros): " . $conn->error);
+    }
+
+    if (!empty($params)) {
+        $stmt->bind_param($types, ...$params);
+    }
+
+    $stmt->execute();
+    $res = $stmt->get_result();
+    
+    while ($row = $res->fetch_assoc()) {
+        $orderedGames[] = $row;
+    }
+    $stmt->close();
+}
+
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -16,7 +111,7 @@ $result = $conn->query($query);
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-<header>
+  <header>
     <nav class="navbar">
       <div class="nav-left">
         <a href="biblioteca.php" class="nav-item">Biblioteca</a>
@@ -31,69 +126,62 @@ $result = $conn->query($query);
         <?php endif; ?>
       </div>
     </nav>
-</header>
-<main>
-  <aside class="filter-sidebar">
-    <h3>Filtrar Juegos</h3>
-    <div class="filter-group">
-      <label for="search">Buscar:</label>
-      <input type="text" id="search" placeholder="Buscar juegos...">
-    </div>
-    <div class="filter-group">
-      <h4>Categoría</h4>
-      <label><input type="checkbox"> Acción</label>
-      <label><input type="checkbox"> Aventura</label>
-      <label><input type="checkbox"> Estrategia</label>
-      <label><input type="checkbox"> Deportes</label>
-    </div>
-    <div class="filter-group">
-      <h4>Género</h4>
-      <label><input type="checkbox"> RPG</label>
-      <label><input type="checkbox"> Shooter</label>
-      <label><input type="checkbox"> Puzzle</label>
-      <label><input type="checkbox"> Simulación</label>
-    </div>
-    <div class="filter-group">
-      <h4>Modo de Juego</h4>
-      <label><input type="checkbox"> Un jugador</label>
-      <label><input type="checkbox"> Multijugador</label>
-      <label><input type="checkbox"> Ambos</label>
-    </div>
-    <div class="filter-group">
-      <h4>Precio</h4>
-      <select>
-        <option value="all">Todos</option>
-        <option value="free">Gratis</option>
-        <option value="paid">De pago</option>
-        <option value="discount">En oferta</option>
-      </select>
-    </div>
-  </aside>
-  
-  <section class="game-catalog">
-    <h2>Catálogo de Juegos</h2>
-    <div class="game-list">
-      <?php while($game = $result->fetch_assoc()): ?>
-        <div class="game-card">
-          <!-- El enlace redirige a pantalla_juego.php pasando el id del juego como parámetro -->
-          <a href="pantalla_juego.php?id=<?php echo $game['id_juego']; ?>">
-            <?php
-            // Si el juego tiene un icono (almacenado como BLOB), lo convertimos a base64
-            if (!empty($game['icono'])) {
-              $iconoBase64 = "data:image/jpeg;base64," . base64_encode($game['icono']);
-              echo '<img src="' . $iconoBase64 . '" alt="' . htmlspecialchars($game['nombre']) . '">';
-            } else {
-              // En caso contrario, mostramos una imagen por defecto (ajusta la ruta según tu proyecto)
-              echo '<img src="images/default-game.png" alt="Juego sin icono">';
-            }
-            ?>
-            <h4><?php echo htmlspecialchars($game['nombre']); ?></h4>
-          </a>
+  </header>
+  <main>
+    <aside class="filter-sidebar">
+      <h3>Filtrar Juegos</h3>
+      <!-- Formulario GET para filtrar -->
+      <form method="GET" action="index.php">
+        <div class="filter-group">
+          <label for="search">Buscar:</label>
+          <input type="text" id="search" name="search"
+                 placeholder="Buscar juegos..."
+                 value="<?php echo htmlspecialchars($searchTerm); ?>">
         </div>
-      <?php endwhile; ?>
-    </div>
-  </section>
-</main>
+        
+        <div class="filter-group">
+          <h4>Categoría</h4>
+          <?php
+          // Mostrar todas las categorías existentes (desde la tabla `categorias`)
+          foreach ($allCategories as $catName) {
+              // Comprobamos si la categoría está seleccionada
+              $checked = in_array($catName, $selectedCategories) ? 'checked' : '';
+              echo "<label>
+                      <input type='checkbox' name='category[]' value='".htmlspecialchars($catName)."' $checked>
+                      ".htmlspecialchars($catName)."
+                    </label>";
+          }
+          ?>
+        </div>
+        
+        <button type="submit">Filtrar</button>
+      </form>
+    </aside>
+    
+    <section class="game-catalog">
+      <h2>Catálogo de Juegos</h2>
+      <div class="game-list">
+        <?php if (!empty($orderedGames)): ?>
+          <?php foreach ($orderedGames as $game): ?>
+            <div class="game-card">
+              <a href="pantalla_juego.php?id=<?php echo $game['id_juego']; ?>">
+                <?php
+                  if (!empty($game['icono'])) {
+                      $iconoBase64 = "data:image/jpeg;base64," . base64_encode($game['icono']);
+                      echo '<img src="' . $iconoBase64 . '" alt="' . htmlspecialchars($game['nombre']) . '">';
+                  } else {
+                      echo '<img src="images/default-game.png" alt="Juego sin icono">';
+                  }
+                ?>
+                <h4><?php echo htmlspecialchars($game['nombre']); ?></h4>
+              </a>
+            </div>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <p>No hay juegos que coincidan con tu búsqueda.</p>
+        <?php endif; ?>
+      </div>
+    </section>
+  </main>
 </body>
 </html>
-<?php $conn->close(); ?>

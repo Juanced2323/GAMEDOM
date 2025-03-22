@@ -9,6 +9,9 @@ require_once "php/db_connect.php";
 
 $username = $_SESSION['usuario'];
 $stmt = $conn->prepare("SELECT * FROM usuarios WHERE usuario = ?");
+if(!$stmt) {
+    die("Error en prepare: " . $conn->error);
+}
 $stmt->bind_param("s", $username);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -19,7 +22,7 @@ $conn->close();
 // Formatear la fecha de registro para mostrar solo la fecha
 $fechaRegistro = date("Y-m-d", strtotime($userData['fecha_registro']));
 
-// Convertir la imagen almacenada en BLOB a base64 (suponemos JPG)
+// Convertir la imagen de perfil (BLOB) a base64 (suponemos JPG)
 if (isset($userData['imagen']) && !empty($userData['imagen'])) {
     $img_src = "data:image/jpeg;base64," . base64_encode($userData['imagen']);
 } else {
@@ -44,6 +47,7 @@ if (isset($userData['imagen']) && !empty($userData['imagen'])) {
         <a href="premios.php" class="nav-item">Premios</a>
       </div>
       <div class="nav-right">
+        <!-- Se pueden añadir otros enlaces aquí si es necesario -->
       </div>
     </nav>
   </header>
@@ -57,7 +61,7 @@ if (isset($userData['imagen']) && !empty($userData['imagen'])) {
             alt="Foto de Perfil" 
             id="profilePic"
           >
-          <!-- Botón lápiz para abrir modal (para editar la imagen) - inicialmente oculto -->
+          <!-- Botón lápiz para editar la imagen (modal) - inicialmente oculto -->
           <button 
             class="edit-btn pencil-btn" 
             onclick="openEditModal('imagen', document.getElementById('profilePic').src)"
@@ -76,128 +80,52 @@ if (isset($userData['imagen']) && !empty($userData['imagen'])) {
       <div class="profile-info-section">
         <div class="info-group">
           <label for="correo">Correo</label>
-          <input 
-            type="email" 
-            id="correo" 
-            name="correo" 
-            value="<?php echo $userData['correo']; ?>" 
-            readonly
-          >
+          <input type="email" id="correo" name="correo" value="<?php echo htmlspecialchars($userData['correo']); ?>" readonly>
         </div>
         <div class="info-group">
           <label for="usuario">Usuario</label>
-          <input 
-            type="text" 
-            id="usuario" 
-            name="usuario" 
-            value="<?php echo $userData['usuario']; ?>" 
-            readonly
-          >
+          <input type="text" id="usuario" name="usuario" value="<?php echo htmlspecialchars($userData['usuario']); ?>" readonly>
         </div>
         <div class="info-group">
           <label for="nombre">Nombre</label>
-          <input 
-            type="text" 
-            id="nombre" 
-            name="nombre" 
-            value="<?php echo $userData['nombre']; ?>" 
-            readonly
-          >
-          <button 
-            class="edit-btn pencil-btn" 
-            onclick="openEditModal('nombre', document.getElementById('nombre').value)"
-          >
-            ✏️
-          </button>
+          <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($userData['nombre']); ?>" readonly>
+          <button class="edit-btn pencil-btn" onclick="openEditModal('nombre', document.getElementById('nombre').value)">✏️</button>
         </div>
         <div class="info-group">
           <label for="apellidos">Apellidos</label>
-          <input 
-            type="text" 
-            id="apellidos" 
-            name="apellidos" 
-            value="<?php echo $userData['apellidos']; ?>" 
-            readonly
-          >
-          <button 
-            class="edit-btn pencil-btn" 
-            onclick="openEditModal('apellidos', document.getElementById('apellidos').value)"
-          >
-            ✏️
-          </button>
+          <input type="text" id="apellidos" name="apellidos" value="<?php echo htmlspecialchars($userData['apellidos']); ?>" readonly>
+          <button class="edit-btn pencil-btn" onclick="openEditModal('apellidos', document.getElementById('apellidos').value)">✏️</button>
         </div>
         <div class="info-group">
           <label for="edad">Edad</label>
-          <input 
-            type="number" 
-            id="edad" 
-            name="edad" 
-            value="<?php echo $userData['edad']; ?>" 
-            readonly
-          >
-          <button 
-            class="edit-btn pencil-btn" 
-            onclick="openEditModal('edad', document.getElementById('edad').value)"
-          >
-            ✏️
-          </button>
+          <input type="number" id="edad" name="edad" value="<?php echo $userData['edad']; ?>" readonly>
+          <button class="edit-btn pencil-btn" onclick="openEditModal('edad', document.getElementById('edad').value)">✏️</button>
         </div>
         <div class="info-group">
           <label for="telefono">Teléfono</label>
-          <input 
-            type="tel" 
-            id="telefono" 
-            name="telefono" 
-            value="<?php echo $userData['telefono']; ?>" 
-            readonly
-          >
-          <button 
-            class="edit-btn pencil-btn" 
-            onclick="openEditModal('telefono', document.getElementById('telefono').value)"
-          >
-            ✏️
-          </button>
+          <input type="tel" id="telefono" name="telefono" value="<?php echo htmlspecialchars($userData['telefono']); ?>" readonly>
+          <button class="edit-btn pencil-btn" onclick="openEditModal('telefono', document.getElementById('telefono').value)">✏️</button>
+        </div>
+        <!-- NUEVO: Mostrar Nacionalidad -->
+        <div class="info-group">
+          <label for="nacionalidad">Nacionalidad</label>
+          <input type="text" id="nacionalidad" name="nacionalidad" value="<?php echo htmlspecialchars($userData['nacionalidad']); ?>" readonly>
         </div>
         <div class="info-group">
           <label for="fecha_registro">Fecha de Registro</label>
-          <input 
-            type="text" 
-            id="fecha_registro" 
-            name="fecha_registro" 
-            value="<?php echo $fechaRegistro; ?>" 
-            readonly
-          >
+          <input type="text" id="fecha_registro" name="fecha_registro" value="<?php echo $fechaRegistro; ?>" readonly>
         </div>
         <!-- Botón global para activar la edición -->
-        <button 
-          id="globalEditBtn" 
-          class="save-btn" 
-          onclick="togglePencilIcons()"
-        >
-          Editar
-        </button>
+        <button id="globalEditBtn" class="save-btn" onclick="togglePencilIcons()">Editar</button>
         <!-- Botón para guardar cambios, inicialmente oculto -->
-        <button 
-          id="saveChangesBtn" 
-          class="save-btn" 
-          style="display: none;" 
-          onclick="saveProfileChanges()"
-        >
-          Guardar Cambios
-        </button>
-        <!-- NUEVO: Botón para cerrar sesión -->
-        <button 
-          id="logoutBtn" 
-          class="save-btn" 
-          onclick="logoutUser()"
-        >
-          Cerrar Sesión
-        </button>
+        <button id="saveChangesBtn" class="save-btn" style="display: none;" onclick="saveProfileChanges()">Guardar Cambios</button>
+        <!-- Botón para cerrar sesión -->
+        <button id="logoutBtn" class="save-btn" onclick="logoutUser()">Cerrar Sesión</button>
       </div>
     </div>
   </main>
 
-  <!-- Modal para editar campos (para edición individual) -->
+  <!-- Modal para editar campos -->
   <div id="editModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>

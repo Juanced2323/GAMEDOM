@@ -24,11 +24,13 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `usuario`        VARCHAR(50)  NOT NULL,
   `nombre`         VARCHAR(100) NOT NULL,
   `apellidos`      VARCHAR(100) NOT NULL,
-  `edad`           INT(11)      DEFAULT NULL,
+  `edad`           INT(11) DEFAULT NULL,
+  `nacionalidad`   VARCHAR(50) DEFAULT NULL,
   `telefono`       VARCHAR(20)  DEFAULT NULL,
   `password`       VARCHAR(255) NOT NULL,
   `fecha_registro` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   `imagen`         LONGBLOB     DEFAULT NULL,
+
   PRIMARY KEY (`correo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 

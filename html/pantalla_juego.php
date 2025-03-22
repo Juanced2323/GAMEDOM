@@ -12,6 +12,9 @@ $id_juego = intval($_GET['id']);
 
 // Obtener datos del juego
 $stmt = $conn->prepare("SELECT * FROM juegos WHERE id_juego = ?");
+if (!$stmt) {
+    die("Error en prepare (juegos): " . $conn->error);
+}
 $stmt->bind_param("i", $id_juego);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -30,9 +33,37 @@ if (!empty($game['icono'])) {
     $iconoBase64 = 'images/default-game.png';
 }
 
+// Preparar la captura (si existe en la columna `capturas`)
+$capturesBase64 = null;
+if (!empty($game['capturas'])) {
+    $capturesBase64 = "data:image/jpeg;base64," . base64_encode($game['capturas']);
+}
+
+// Obtener las categorías asociadas al juego
+$categories = [];
+$stmt = $conn->prepare("
+    SELECT c.nombre
+    FROM juegos_categorias jc
+    JOIN categorias c ON c.id_categoria = jc.id_categoria
+    WHERE jc.id_juego = ?
+");
+if (!$stmt) {
+    die("Error en prepare (categorías): " . $conn->error);
+}
+$stmt->bind_param("i", $id_juego);
+$stmt->execute();
+$resCats = $stmt->get_result();
+while ($row = $resCats->fetch_assoc()) {
+    $categories[] = $row['nombre'];
+}
+$stmt->close();
+
 // Obtener ranking (top 3) para este juego
 $ranking = [];
 $stmt = $conn->prepare("SELECT usuario, elo FROM ranking WHERE id_juego = ? ORDER BY elo DESC LIMIT 3");
+if (!$stmt) {
+    die("Error en prepare (ranking): " . $conn->error);
+}
 $stmt->bind_param("i", $id_juego);
 $stmt->execute();
 $resultRanking = $stmt->get_result();
@@ -41,9 +72,15 @@ while($row = $resultRanking->fetch_assoc()){
 }
 $stmt->close();
 
-// Obtener torneos asociados a este juego (opcional)
+// Obtener torneos asociados a este juego
 $torneos = [];
-$stmt = $conn->prepare("SELECT nombre_torneo, fecha_inicio, fecha_fin, estado FROM torneos WHERE id_juego = ? ORDER BY fecha_inicio DESC");
+$stmt = $conn->prepare("SELECT nombre_torneo, fecha_inicio, fecha_fin, estado
+                       FROM torneos
+                       WHERE id_juego = ?
+                       ORDER BY fecha_inicio DESC");
+if (!$stmt) {
+    die("Error en prepare (torneos): " . $conn->error);
+}
 $stmt->bind_param("i", $id_juego);
 $stmt->execute();
 $resultTorneos = $stmt->get_result();
@@ -93,6 +130,28 @@ $conn->close();
         <?php echo nl2br(htmlspecialchars($game['descripcion'])); ?>
       </div>
       
+      <!-- Categorías -->
+      <div class="categories">
+        <strong>Categorías:</strong><br>
+        <?php
+          if (count($categories) > 0) {
+              echo implode(", ", array_map('htmlspecialchars', $categories));
+          } else {
+              echo "Sin categorías asignadas.";
+          }
+        ?>
+      </div>
+
+      <!-- Capturas -->
+      <div class="screenshots">
+        <strong>Capturas:</strong><br>
+        <?php if ($capturesBase64): ?>
+          <img src="<?php echo $capturesBase64; ?>" alt="Captura del juego" style="width:300px;">
+        <?php else: ?>
+          <p>No hay capturas disponibles.</p>
+        <?php endif; ?>
+      </div>
+
       <!-- Ranking -->
       <div class="ranking">
         <strong>Ranking de Jugadores:</strong><br>
@@ -113,8 +172,8 @@ $conn->close();
             <?php 
               $fi = !empty($t['fecha_inicio']) ? $t['fecha_inicio'] : "N/A";
               $ff = !empty($t['fecha_fin']) ? $t['fecha_fin'] : "N/A";
+              echo htmlspecialchars($t['nombre_torneo']) . " ($fi - $ff) - Estado: " . htmlspecialchars($t['estado']) . "<br>";
             ?>
-            <?php echo htmlspecialchars($t['nombre_torneo']) . " (" . $fi . " - " . $ff . ") - Estado: " . htmlspecialchars($t['estado']) . "<br>"; ?>
           <?php endforeach; ?>
         <?php else: ?>
           <p>No hay torneos para este juego.</p>
