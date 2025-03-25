@@ -1,0 +1,427 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background: #F9DFBC;
+   /* overflow: hidden;*/
+    overflow-x: hidden; 
+    /*background-image: url('images/Imágenes/fondo\ desenfocado1.jpg');*/
+    background-size: cover;
+}
+.contenedor-logo  {
+    position: absolute;
+    top: 50%;
+    left: 13.5%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.contenedor-logo img {
+    width: 300px; 
+    height: auto;
+}
+
+.container{
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1000px;
+    height: 600px;
+    background: #f4f4f4;
+    box-shadow: 0 30px 50px #dbdbdb;
+    margin-bottom: auto;
+}
+
+.destacados{
+    position: absolute;
+    top: 10%;
+    left: 40px;
+    width: 350px;
+    padding: 10px 10px;
+    text-align: justify;
+    color:#F9DFBC;
+    transform: translate(0, -50%);
+    font-family: system-ui;
+    background-color: #000000a4;
+    border-radius: 20%;
+    z-index: 1000;
+    font-size: 35px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.container .slide .item{
+    width: 200px;
+    height: 300px;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    border-radius: 20px;
+    box-shadow: 0 30px 50px #505050;
+    background-position: 50% 50%;
+    background-size: cover;
+    display: inline-block;
+    transition: 0.5s;
+}
+
+.slide .item:nth-child(1),
+.slide .item:nth-child(2){
+    top: 0;
+    left: 0;
+    transform: translate(0, 0);
+    border-radius: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+.slide .item:nth-child(3){
+    left: 50%;
+}
+.slide .item:nth-child(4){
+    left: calc(50% + 220px);
+}
+.slide .item:nth-child(5){
+    left: calc(50% + 440px);
+}
+
+/* here n = 0, 1, 2, 3,... */
+.slide .item:nth-child(n + 6){
+    left: calc(50% + 660px);
+    opacity: 0;
+}
+
+.item .content{
+    position: absolute;
+    top: 50%;
+    left: 40px;
+    width: 350px;
+    padding: 3.95% 20px;
+    text-align: justify;
+    color: #F9DFBC;
+    transform: translate(0, -50%);
+    font-family: system-ui;
+    display: none;
+    background-color: #000000a4;
+    border-radius: 12%;
+}
+
+
+.slide .item:nth-child(2) .content{
+    display: block;
+}
+
+
+.content .name{
+    font-size: 35px;
+    text-transform: uppercase;
+    font-weight: bold;
+    opacity: 0;
+    animation: animate 1s ease-in-out 1 forwards;
+}
+
+.content .des{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: animate 1s ease-in-out 0.3s 1 forwards;
+}
+
+.content button{
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    opacity: 0;
+    animation: animate 1s ease-in-out 0.6s 1 forwards;
+}
+
+
+@keyframes animate {
+    from{
+        opacity: 0;
+        transform: translate(0, 100px);
+        filter: blur(33px);
+    }
+
+    to{
+        opacity: 1;
+        transform: translate(0);
+        filter: blur(0);
+    }
+}
+
+.boton2{
+    color: #000000;
+    background-color: #F9DFBC;
+
+}
+
+.button{
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    bottom: 20px;
+    color: #000000;
+}
+
+.button button{
+    width: 40px;
+    height: 35px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin: 0 5px;
+    border: 1px solid #000;
+    transition: 0.3s;
+    background-color: #F9DFBC;
+}
+
+.button button:hover{
+    background:#f1e4d4;
+    color: #010101;
+}
+
+/* Menú superior */
+.menu-superior {
+    height: 90px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background: #7d110d; 
+    padding-right: 7%;
+    padding-top: 10px;
+    position: relative; /* Para que el menú de idiomas esté dentro */
+    z-index: 1000;
+}
+.menu-superior a {
+    color: #F9DFBC; /* Cambia el color del texto a blanco o el color que prefieras */
+    text-decoration: none; /* Opcional: Elimina el subrayado del enlace */
+    font-weight: bold;
+    font-size: 20px; /* Ajusta el tamaño del texto según lo desees */
+}
+
+.menu-superior a:hover {
+    text-decoration: underline;
+}
+
+.menu-superior a + span { /* Esto selecciona el span que contiene la barra */
+    font-weight: bold; /* Pone la barra en negrita */
+    color: #F9DFBC;
+    padding: 15px 10px; /* Da el mismo espacio horizontal que los enlaces */
+}
+
+/* Dropdown - Menú de idiomas */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+    color: #F9DFBC;
+    padding: 5px 10px;
+    font-weight: bold;
+    font-size: 20px; /* Ajusta el tamaño del texto según lo desees */
+}
+
+
+/* Estilos del menú desplegable */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0; /* Para que se alinee a la derecha */
+    top: 100%; /* Para que aparezca justo debajo */
+    background-color: #7d110dbd;
+    border-radius: 5px;
+    max-height: 250px; /* Evita que se extienda demasiado */
+    overflow-y: auto; /* Agrega scroll si hay muchos idiomas */
+    width: 200px; /* Ajusta según el diseño */
+    z-index: 1000;
+}
+
+/* Muestra el menú cuando se le agrega la clase 'show' */
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-menu li {
+    list-style: none;
+    padding: 10px;
+}
+
+.dropdown-menu li a {
+    text-decoration: none;
+    color: #F9DFBC;
+    display: block;
+    transition: background 0.3s;
+}
+
+.dropdown-menu li a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.menu-superior a img {
+    width: 20px; /* Ajusta el tamaño de las banderas */
+    height: auto;
+    margin-right: 8px; /* Espacio entre la bandera y el texto */
+    vertical-align: middle; /* Alinea verticalmente la bandera con el texto */
+}
+
+/* Footer bien posicionado */
+footer {
+    width: 100%;
+    background: #7d110d;
+    color: #F9DFBC;
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    margin-top: 6%; /* Esta es la clave: empuja el footer hacia abajo */
+}
+
+footer nav {
+    margin-top: 5px;
+}
+
+footer a {
+    color: #F9DFBC;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 8px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/*-------------------------------------------------------------------------*/
+.nav-item {
+    color: #F9DFBC;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 16px;
+  }
+  
+  .nav-item:hover {
+    text-decoration: underline;
+  }
+  
+  /* 3) Contenedor principal (distribución general) */
+  main {
+    display: flex;
+    padding: 20px;
+  }
+  
+  /* 4) Barra lateral de filtros */
+  .filter-sidebar {
+    width: 2000px;
+    background: #7d110dab;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 70%;
+  }
+  
+  .filter-sidebar h3,
+  .filter-sidebar h4 {
+    margin-bottom: 10px;
+    color: #F9DFBC;
+  }
+  
+  .filter-sidebar label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #F9DFBC;
+  }
+
+  .search-bar {
+    width: 1000px; /* Aumenta el tamaño según lo necesites */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+  
+  /* 5) Catálogo de juegos */
+  /*.game-catalog {
+    flex-grow: 1;
+    margin-left: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .game-catalog h2 {
+    text-align: center;
+    color: white;
+  }
+  
+  .game-list {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .game-card {
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 150px;
+  }
+  
+  .game-card img {
+    width: 100%;
+    border-radius: 8px;
+  }
+  
+  .game-card h4 {
+    margin-top: 10px;
+    font-size: 14px;
+  }*/
+  
+  /* 6) Sección de Acceso Restringido */
+  .restricted-access {
+    max-width: 600px;
+    margin: 80px auto; /* separa verticalmente del navbar */
+    padding: 40px;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo semitransparente */
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    color: #F9DFBC;
+  }
+  
+  .restricted-access h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .restricted-access p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+  
+  /* 7) Botón de acceso */
+  .btn-acceso {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #fbc531; /* color base del botón */
+    color: #000;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-acceso:hover {
+    background-color: #e1a200; /* color al pasar el ratón */
+    color: #fff;              /* el texto se pone blanco */
+  }

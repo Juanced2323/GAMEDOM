@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: gamedom_users
       MYSQL_USER: usuario
-      MYSQL_PASSWORD: usuario
+      MYSQL_PASSWORD: usuariopassword
     ports:
       - "3307:3306"  # Cambia a 3306:3306 si no tienes conflicto
     volumes:
