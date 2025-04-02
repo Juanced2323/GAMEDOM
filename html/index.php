@@ -101,6 +101,7 @@ if (!$filtersApplied && isset($_SESSION['usuario'])) {
 
 $conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -112,6 +113,7 @@ $conn->close();
   <!-- Font Awesome para los íconos de las flechas del slider -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
+     
 <body>
   <!-- Menú Superior con dropdown de idiomas -->
   <div class="menu-superior">
@@ -176,7 +178,7 @@ $conn->close();
           <input type="text" id="search" name="search" placeholder="Buscar juegos..." value="<?php echo htmlspecialchars($searchTerm); ?>">
         </div>
         <div class="filter-group">
-          <h4>Categoría</h4>
+          <h4 data-text="categoria">Categoría</h4>
           <?php
           foreach ($allCategories as $catName) {
               $checked = in_array($catName, $selectedCategories) ? 'checked' : '';
@@ -274,4 +276,15 @@ $conn->close();
   <!-- Script para slider y cambio de idioma -->
   <script src="js/Index.js"></script>
 </body>
-</html>
+
+<footer>
+    <p data-text="footer">© 2025 CodeCrafters. Todos los derechos reservados. 
+    Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países. <br>
+    Todos los precios incluyen IVA (donde sea aplicable).</p>
+    <nav>
+        <a href="Política de privacidad.html" data-text="privacy">Política de Privacidad</a> |
+        <a href="Información legal.html" data-text="legal">Información legal</a> |
+        <a href="Cookies.html" data-text="cookies">Cookies</a> |
+        <a href="A cerca de.html" data-text="about">A cerca de CodeCrafters</a>
+    </nav> 
+</footer>
