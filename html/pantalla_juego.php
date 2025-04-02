@@ -127,6 +127,12 @@ $conn->close();
       height: 30px;
       margin-right: 10px;
     }
+    /* Botón Manual (opcional) */
+    .manual-button {
+      margin: 15px 0;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -218,6 +224,11 @@ $conn->close();
         <?php endif; ?>
       </div>
       
+      <!-- Botón para ver el manual del juego -->
+      <button class="manual-button" onclick="window.open('Manuales/Hunde La Flota.pdf', '_blank')">
+        Ver Manual de Hunde La Flota
+      </button>
+
       <!-- Botón Jugar Ahora: Actualiza el ranking y luego redirige al juego -->
       <button class="play-button" onclick="playGame(<?php echo $game['id_juego']; ?>, '<?php echo htmlspecialchars($game['ruta_index']); ?>')">
         Jugar Ahora
