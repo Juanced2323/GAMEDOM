@@ -1,4 +1,9 @@
-*{
+/* ===========================
+   TODO TU CSS ORIGINAL
+   =========================== */
+
+/* Asegurar que se mantenga igual el resto */
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -6,11 +11,12 @@
 
 body{
     background: #F9DFBC;
-   /* overflow: hidden;*/
+    /* overflow: hidden;*/
     overflow-x: hidden; 
     /*background-image: url('images/Imágenes/fondo\ desenfocado1.jpg');*/
     background-size: cover;
 }
+
 .contenedor-logo  {
     position: absolute;
     top: 50%;
@@ -78,7 +84,6 @@ body{
     height: 100%;
 }
 
-
 .slide .item:nth-child(3){
     left: 50%;
 }
@@ -110,11 +115,9 @@ body{
     border-radius: 12%;
 }
 
-
 .slide .item:nth-child(2) .content{
     display: block;
 }
-
 
 .content .name{
     font-size: 35px;
@@ -139,14 +142,12 @@ body{
     animation: animate 1s ease-in-out 0.6s 1 forwards;
 }
 
-
 @keyframes animate {
     from{
         opacity: 0;
         transform: translate(0, 100px);
         filter: blur(33px);
     }
-
     to{
         opacity: 1;
         transform: translate(0);
@@ -157,7 +158,6 @@ body{
 .boton2{
     color: #000000;
     background-color: #F9DFBC;
-
 }
 
 .button{
@@ -185,33 +185,61 @@ body{
     color: #010101;
 }
 
-/* Menú superior */
+/* ==============================
+   MENÚ SUPERIOR (SOLO MODIFICADO)
+============================== */
 .menu-superior {
     height: 90px;
-    display: flex;
-    justify-content: flex-end;
+    display: flex; 
+    /* en lugar de justify-content: flex-end,
+       usamos space-between para dejar logo a la izq 
+       y resto a la dcha */
+    justify-content: space-between; 
     align-items: center;
     background: #7d110d; 
     padding-right: 7%;
+    padding-left: 20px; /* espacio a la izq para el logo */
     padding-top: 10px;
     position: relative; /* Para que el menú de idiomas esté dentro */
     z-index: 1000;
 }
+
+/* Logo un poco más grande a la izquierda */
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+/* Ajusta el tamaño del logo aquí */
+.nav-left .logo {
+  height: 60px; 
+  width: auto;
+  margin-right: 20px; 
+}
+
+/* Bloque derecho con los enlaces y dropdown */
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Estilos de los enlaces del menú */
 .menu-superior a {
-    color: #F9DFBC; /* Cambia el color del texto a blanco o el color que prefieras */
-    text-decoration: none; /* Opcional: Elimina el subrayado del enlace */
+    color: #F9DFBC;
+    text-decoration: none;
     font-weight: bold;
-    font-size: 20px; /* Ajusta el tamaño del texto según lo desees */
+    font-size: 20px;
 }
 
 .menu-superior a:hover {
     text-decoration: underline;
 }
 
-.menu-superior a + span { /* Esto selecciona el span que contiene la barra */
-    font-weight: bold; /* Pone la barra en negrita */
+/* La barra | entre algunos enlaces */
+.menu-superior a + span { 
+    font-weight: bold; 
     color: #F9DFBC;
-    padding: 15px 10px; /* Da el mismo espacio horizontal que los enlaces */
+    padding: 15px 10px;
 }
 
 /* Dropdown - Menú de idiomas */
@@ -225,25 +253,23 @@ body{
     color: #F9DFBC;
     padding: 5px 10px;
     font-weight: bold;
-    font-size: 20px; /* Ajusta el tamaño del texto según lo desees */
+    font-size: 20px;
 }
-
 
 /* Estilos del menú desplegable */
 .dropdown-menu {
     display: none;
     position: absolute;
-    right: 0; /* Para que se alinee a la derecha */
-    top: 100%; /* Para que aparezca justo debajo */
+    right: 0; 
+    top: 100%; 
     background-color: #7d110dbd;
     border-radius: 5px;
-    max-height: 250px; /* Evita que se extienda demasiado */
-    overflow-y: auto; /* Agrega scroll si hay muchos idiomas */
-    width: 200px; /* Ajusta según el diseño */
+    max-height: 250px; 
+    overflow-y: auto; 
+    width: 200px; 
     z-index: 1000;
 }
 
-/* Muestra el menú cuando se le agrega la clase 'show' */
 .dropdown-menu.show {
     display: block;
 }
@@ -265,13 +291,15 @@ body{
 }
 
 .menu-superior a img {
-    width: 20px; /* Ajusta el tamaño de las banderas */
+    width: 20px; 
     height: auto;
-    margin-right: 8px; /* Espacio entre la bandera y el texto */
-    vertical-align: middle; /* Alinea verticalmente la bandera con el texto */
+    margin-right: 8px; 
+    vertical-align: middle; 
 }
 
-/* Footer bien posicionado */
+/* ==============================
+   FOOTER BIEN POSICIONADO
+============================== */
 footer {
     width: 100%;
     background: #7d110d;
@@ -279,7 +307,7 @@ footer {
     text-align: center;
     padding: 15px;
     font-size: 14px;
-    margin-top: 6%; /* Esta es la clave: empuja el footer hacia abajo */
+    margin-top: 6%;
 }
 
 footer nav {
@@ -297,131 +325,90 @@ footer a:hover {
     text-decoration: underline;
 }
 
-/*-------------------------------------------------------------------------*/
+/* ==============================
+   Resto de estilos que ya tenías
+============================== */
 .nav-item {
     color: #F9DFBC;
     text-decoration: none;
     margin: 0 15px;
     font-size: 16px;
-  }
-  
-  .nav-item:hover {
+}
+
+.nav-item:hover {
     text-decoration: underline;
-  }
-  
-  /* 3) Contenedor principal (distribución general) */
-  main {
+}
+
+/* 3) Contenedor principal (distribución general) */
+main {
     display: flex;
     padding: 20px;
-  }
-  
-  /* 4) Barra lateral de filtros */
-  .filter-sidebar {
+}
+
+/* 4) Barra lateral de filtros */
+.filter-sidebar {
     width: 2000px;
     background: #7d110dab;
     padding: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     margin-top: 70%;
-  }
-  
-  .filter-sidebar h3,
-  .filter-sidebar h4 {
+}
+
+.filter-sidebar h3,
+.filter-sidebar h4 {
     margin-bottom: 10px;
     color: #F9DFBC;
-  }
-  
-  .filter-sidebar label {
+}
+
+.filter-sidebar label {
     display: block;
     margin-bottom: 5px;
     font-size: 14px;
     color: #F9DFBC;
-  }
+}
 
-  .search-bar {
-    width: 1000px; /* Aumenta el tamaño según lo necesites */
+.search-bar {
+    width: 1000px; 
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-  
-  /* 5) Catálogo de juegos */
-  /*.game-catalog {
-    flex-grow: 1;
-    margin-left: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .game-catalog h2 {
-    text-align: center;
-    color: white;
-  }
-  
-  .game-list {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 20px;
-  }
-  
-  .game-card {
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 150px;
-  }
-  
-  .game-card img {
-    width: 100%;
-    border-radius: 8px;
-  }
-  
-  .game-card h4 {
-    margin-top: 10px;
-    font-size: 14px;
-  }*/
-  
-  /* 6) Sección de Acceso Restringido */
-  .restricted-access {
+/* 6) Sección de Acceso Restringido */
+.restricted-access {
     max-width: 600px;
-    margin: 80px auto; /* separa verticalmente del navbar */
+    margin: 80px auto; 
     padding: 40px;
-    background-color: rgba(0, 0, 0, 0.7); /* Fondo semitransparente */
+    background-color: rgba(0, 0, 0, 0.7); 
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     text-align: center;
     color: #F9DFBC;
-  }
-  
-  .restricted-access h2 {
+}
+
+.restricted-access h2 {
     font-size: 2rem;
     margin-bottom: 20px;
-  }
-  
-  .restricted-access p {
+}
+
+.restricted-access p {
     font-size: 1.2rem;
     margin-bottom: 20px;
-  }
-  
-  /* 7) Botón de acceso */
-  .btn-acceso {
+}
+
+/* 7) Botón de acceso */
+.btn-acceso {
     display: inline-block;
     text-decoration: none;
-    background-color: #fbc531; /* color base del botón */
+    background-color: #fbc531;
     color: #000;
     padding: 12px 24px;
     border-radius: 4px;
     font-weight: bold;
     transition: all 0.3s ease;
-  }
-  
-  .btn-acceso:hover {
-    background-color: #e1a200; /* color al pasar el ratón */
-    color: #fff;              /* el texto se pone blanco */
-  }
+}
+
+.btn-acceso:hover {
+    background-color: #e1a200; 
+    color: #fff;  
+}
