@@ -1,8 +1,8 @@
-<?php
+<?php 
 session_start();
 require_once "php/db_connect.php";
 
-// Verificar que se envíe un ID de juego
+// Verificar que se envíe un ID de juego por GET
 if (!isset($_GET['id'])) {
     header("Location: index.php");
     exit();
@@ -26,7 +26,7 @@ if (!$game) {
     exit();
 }
 
-// Convertir el icono del juego (almacenado como BLOB) a base64 (suponemos JPG)
+// Convertir el icono del juego (almacenado como BLOB) a base64
 if (!empty($game['icono'])) {
     $iconoBase64 = "data:image/jpeg;base64," . base64_encode($game['icono']);
 } else {
@@ -111,11 +111,11 @@ $conn->close();
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><?php echo htmlspecialchars($game['nombre']); ?> - Información del Juego</title>
   <link rel="stylesheet" href="css/pantalla_juego.css">
+  <link rel="stylesheet" href="css/achievement.css"> <!-- Tus estilos de logros -->
   <style>
-    /* Agrega estilos básicos para el contenedor de favoritos */
+    /* Estilos básicos para el contenedor de favoritos */
     .favorite-container {
       margin: 15px 0;
       display: flex;
@@ -229,27 +229,95 @@ $conn->close();
         Ver Manual de Hunde La Flota
       </button>
 
-      <!-- Botón Jugar Ahora: Actualiza el ranking y luego redirige al juego -->
+      <!-- Botón Jugar Ahora: Llama a la función playGame -->
       <button class="play-button" onclick="playGame(<?php echo $game['id_juego']; ?>, '<?php echo htmlspecialchars($game['ruta_index']); ?>')">
         Jugar Ahora
       </button>
     </div>
   </main>
   
+  <!-- Script con la lógica de achievements (notificaciones) -->
   <script>
-  // Función para actualizar el ranking al pulsar "Jugar Ahora"
+  // Esta función muestra la notificación de logro con una animación de fade in/out
+  function showAchievementNotification(achievement) {
+      // Contenedor principal de notificaciones
+      let container = document.getElementById('achievementContainer');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'achievementContainer';
+        // Estilos básicos
+        container.style.position = 'fixed';
+        container.style.bottom = '20px';
+        container.style.right = '20px';
+        container.style.zIndex = '10000';
+        document.body.appendChild(container);
+      }
+      
+      // Crear el elemento de notificación
+      const notif = document.createElement('div');
+      notif.className = 'achievement-notification';
+      // Estilos inline o puedes usar clases de CSS
+      notif.style.display = 'flex';
+      notif.style.alignItems = 'center';
+      notif.style.background = 'rgba(0, 0, 0, 0.85)';
+      notif.style.color = '#fff';
+      notif.style.padding = '10px 15px';
+      notif.style.borderRadius = '8px';
+      notif.style.marginTop = '10px';
+      notif.style.opacity = '0';
+      notif.style.transition = 'opacity 1s ease';
+
+      notif.innerHTML = `
+        <img src="${achievement.imagen}" alt="${achievement.nombre}" style="width:50px;height:50px;margin-right:10px;border-radius:5px;object-fit:cover;">
+        <div>
+          <strong>${achievement.nombre}</strong>
+          <p style="margin:0;font-size:0.8em;">${achievement.descripcion}</p>
+        </div>
+      `;
+      container.appendChild(notif);
+      
+      // Fade in
+      requestAnimationFrame(() => {
+        notif.style.opacity = '1';
+      });
+      
+      // Después de 5 segundos, fade out y eliminar
+      setTimeout(() => {
+        notif.style.opacity = '0';
+        setTimeout(() => {
+          if (notif.parentNode) {
+            notif.parentNode.removeChild(notif);
+          }
+        }, 1000);
+      }, 5000);
+  }
+
+  // Función para actualizar el ranking al pulsar "Jugar Ahora" y mostrar logros
   function playGame(id_juego, ruta_index) {
     const formData = new FormData();
     formData.append('id_juego', id_juego);
 
+    // Llamada al endpoint que actualiza ranking/logros
     fetch('php/update_ranking.php', {
       method: 'POST',
       body: formData
     })
     .then(response => response.json())
     .then(data => {
-      if(data.status === 'success'){
-        window.location.href = ruta_index;
+      if (data.status === 'success') {
+        // Si hay logros, los mostramos con notificación
+        if (data.achievements && data.achievements.length > 0) {
+          data.achievements.forEach(achievement => {
+            showAchievementNotification(achievement);
+          });
+          // Esperamos ~6 segundos para que se vean las animaciones y luego redirigimos
+          setTimeout(() => {
+            window.location.href = ruta_index;
+          }, 6000);
+        } else {
+          // Si no hay logros, redirigimos inmediatamente
+          window.location.href = ruta_index;
+        }
       } else {
         alert("Error al actualizar ranking: " + data.message);
         window.location.href = ruta_index;

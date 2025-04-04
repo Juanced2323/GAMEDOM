@@ -1,35 +1,28 @@
 <?php
-require_once "db_connect.php";
+// php/logros.php
+require_once "db_connect.php"; // Asegúrate de que $conn esté disponible
 
-// Función que asigna un logro al usuario
-function asignarLogro($usuario, $nombre_logro){
+/**
+ * Asigna un logro al usuario si aún no lo tiene.
+ *
+ * @param string $usuario El nombre de usuario.
+ * @param int $id_logro El ID del logro a asignar.
+ */
+function asignarLogro($usuario, $id_logro) {
     global $conn;
 
-    // Comprobar si ya tiene el logro
-    $stmt = $conn->prepare("SELECT id_logro FROM logros WHERE nombre = ?");
-    $stmt->bind_param("s", $nombre_logro);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $logro = $result->fetch_assoc();
-    $stmt->close();
-
-    if(!$logro) return; // Logro no encontrado
-
-    // Comprobar si el usuario ya tiene ese logro
+    // Verificar si el usuario ya tiene el logro
     $stmt = $conn->prepare("SELECT * FROM usuarios_logros WHERE usuario = ? AND id_logro = ?");
-    $stmt->bind_param("si", $usuario, $logro['id_logro']);
+    $stmt->bind_param("si", $usuario, $id_logro);
     $stmt->execute();
     $result = $stmt->get_result();
-    if($result->num_rows > 0){
-        $stmt->close();
-        return; // Ya lo tiene
+    if ($result->num_rows === 0) {
+        // Si no lo tiene, lo asignamos
+        $stmtInsert = $conn->prepare("INSERT INTO usuarios_logros (usuario, id_logro) VALUES (?, ?)");
+        $stmtInsert->bind_param("si", $usuario, $id_logro);
+        $stmtInsert->execute();
+        $stmtInsert->close();
     }
-    $stmt->close();
-
-    // Asignar el logro al usuario
-    $stmt = $conn->prepare("INSERT INTO usuarios_logros (usuario, id_logro) VALUES (?, ?)");
-    $stmt->bind_param("si", $usuario, $logro['id_logro']);
-    $stmt->execute();
     $stmt->close();
 }
 ?>
