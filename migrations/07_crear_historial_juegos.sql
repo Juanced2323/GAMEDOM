@@ -15,3 +15,6 @@ CREATE TABLE IF NOT EXISTS `historial_juegos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 COMMIT;
+
+ALTER TABLE historial_juegos 
+ADD COLUMN resultado ENUM('victoria','derrota','jugado') NOT NULL DEFAULT 'jugado';

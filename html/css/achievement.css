@@ -1,0 +1,37 @@
+#achievementContainer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10000;
+  }
+  
+  .achievement-notification {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-top: 10px;
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  
+  .achievement-icon {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  
+  .achievement-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .achievement-info p {
+    font-size: 0.8em;
+    margin: 0;
+  }
+  
