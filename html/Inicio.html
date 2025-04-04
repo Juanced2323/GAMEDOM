@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gamedom - Inicio</title>
+  <!-- Hoja de estilos -->
+  <link rel="stylesheet" href="css/Inicio.css" />
+</head>
+<body>
+  <!-- Menú Superior -->
+  <header class="menu-superior">
+    <!-- Izquierda: Logo -->
+    <div class="menu-left">
+      <img src="images/imagenes/Logo.png" alt="Logo de Gamedom" class="logo">
+    </div>
+    <!-- Derecha: Iniciar sesión + Idiomas -->
+    <div class="menu-right">
+      <a href="login.html" data-text="login">Iniciar sesión</a>
+      <!-- Dropdown de idiomas -->
+      <div class="dropdown">
+        <span class="dropdown-toggle" data-text="idiomas">Idiomas ▼</span>
+        <ul class="dropdown-menu">
+          <!-- Ejemplo de idiomas con banderas -->
+          <li>
+            <a href="#" onclick="changeLanguage('es')">
+              <img src="images/Banderas/España.png" alt="Español">Español
+            </a>
+          </li>
+          <li>
+            <a href="#" onclick="changeLanguage('en')">
+              <img src="images/Banderas/Inglés.png" alt="Inglés">English
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenido Principal: Botón centrado -->
+  <main class="contenedor">
+    <a href="index.php">
+      <button class="boton1" data-text="boton">¡Vamos allá!</button>
+    </a>
+  </main>
+
+  <!-- Footer fijo al final -->
+  <footer class="footer">
+    <p data-text="footer">
+      © 2025 CodeCrafters. Todos los derechos reservados.<br>
+      Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.<br>
+      Todos los precios incluyen IVA (donde sea aplicable).
+    </p>
+    <nav>
+      <a href="Política de privacidad.html" data-text="privacy">Política de Privacidad</a> |
+      <a href="Información legal.html" data-text="legal">Información legal</a> |
+      <a href="Cookies.html" data-text="cookies">Cookies</a> |
+      <a href="A cerca de.html" data-text="about">A cerca de CodeCrafters</a>
+    </nav>
+  </footer>
+
+  <!-- Tu script para manejar el dropdown e idiomas -->
+  <script src="js/Inicio.js"></script>
+</body>
+</html>

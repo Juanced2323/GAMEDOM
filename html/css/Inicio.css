@@ -1,0 +1,179 @@
+/* ---------------------------------------------
+   1) CARGA DE FUENTE PERSONALIZADA (si la usas)
+   Ajusta la ruta según tu estructura de carpetas.
+   Ejemplo: la fuente está en ../../Fuentes/MKX-Title/MKX Title.ttf
+--------------------------------------------- */
+@font-face {
+    font-family: 'MKXTitle';
+    src: url('../../Fuentes/MKX-Title/MKX Title.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  /* RESETEO BÁSICO */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* HTML, BODY */
+  html, body {
+    width: 100%;
+    height: 100%;
+    /* Aplica tu fuente (o la que tengas) */
+    font-family: 'MKXTitle', Arial, sans-serif;
+    color: #F9DFBC;
+  }
+  
+  /* FONDO */
+  body {
+    /* Imagen de fondo a pantalla completa */
+    background: url('../images/imagenes/wallpaper3final.jpg') no-repeat center center;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* ----- MENÚ SUPERIOR (HEADER) ----- */
+  .menu-superior {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 70px;  /* Ajusta la altura */
+    background: rgba(125, 17, 13, 0.8);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 1000;
+  }
+  
+  /* Logo más grande */
+  .logo {
+    height: 60px; /* Ajusta el tamaño que quieras */
+    width: auto;
+  }
+  
+  /* Sección derecha: "Iniciar sesión" + dropdown */
+  .menu-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  .menu-right a {
+    color: #F9DFBC;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    transition: color 0.3s;
+  }
+  .menu-right a:hover {
+    color: #fff;
+  }
+  
+  /* ------ DROPDOWN ------ */
+  .dropdown {
+    position: relative;
+  }
+  .dropdown-toggle {
+    cursor: pointer;
+    color: #F9DFBC;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;   /* Se alinea a la derecha del toggle */
+    background: rgba(125, 17, 13, 0.9);
+    border-radius: 5px;
+    width: 200px;
+    z-index: 9999;
+    padding: 5px 0; /* Espacio vertical interno */
+  }
+  .dropdown-menu.show {
+    display: block;
+  }
+  .dropdown-menu li {
+    list-style: none;
+  }
+  .dropdown-menu li a {
+    color: #F9DFBC;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;   /* Espacio entre bandera y texto */
+    padding: 8px 15px; /* Espacio interno */
+  }
+  .dropdown-menu li a:hover {
+    background: rgba(249, 223, 188, 0.2);
+  }
+  .dropdown-menu li img {
+    width: 24px;
+    height: auto;
+    border-radius: 3px;
+  }
+  
+  /* ----- CONTENIDO PRINCIPAL ----- */
+  .contenedor {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Evita que se oculte tras header/footer fijos */
+    margin-top: 70px;     /* la altura del header */
+    padding-bottom: 80px; /* la altura del footer */
+  }
+  
+  /* BOTÓN "¡VAMOS ALLÁ!" */
+  .boton1 {
+    position: relative;
+    background: linear-gradient(135deg, #7D100D, #9B541E);
+    color: #F9DFBC;
+    padding: 15px 35px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 24px; /* Tamaño de letra mayor */
+    text-transform: uppercase;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+  }
+  
+  /* Efecto hover */
+  .boton1:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.4);
+    background: linear-gradient(135deg, #9B541E, #7D100D);
+    color: #fff;
+  }
+  
+  /* ----- FOOTER FIJO ABAJO ----- */
+  .footer {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%;
+    background: rgba(125, 17, 13, 0.8);
+    color: #F9DFBC;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    z-index: 1000;
+  }
+  .footer nav {
+    margin-top: 5px;
+  }
+  .footer nav a {
+    color: #F9DFBC;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 8px;
+    transition: color 0.3s;
+  }
+  .footer nav a:hover {
+    color: #fff;
+  }
+  
