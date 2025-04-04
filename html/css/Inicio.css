@@ -5,7 +5,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh; /* Hace que el body tenga al menos el tamaño de la pantalla */
-    background-image: url('images/Imágenes/wallpaper3\ \(1\).jpg'); /* Verifica la ruta */
+    background-image: url('images\Imágenes\wallpaper3 (1).jpg'); /* Verifica la ruta */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
