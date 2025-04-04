@@ -21,6 +21,7 @@ if (!isset($_SESSION['usuario'])) {
     <ul>
       <li><a href="admin_juegos.php">Administración de Juegos</a></li>
       <li><a href="admin_categorias.php">Administración de Categorías</a></li>
+      <li><a href="admin_logros.php">Administración de Logros</a></li> <!-- NUEVO -->
     </ul>
   </nav>
   <footer>
