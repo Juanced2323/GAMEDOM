@@ -7,20 +7,41 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST" || !isset($_POST['id_logro'])) {
     exit();
 }
 
-$id_logro    = intval($_POST['id_logro']);
-$nombre      = trim($_POST['nombre']);
-$descripcion = trim($_POST['descripcion']);
+$id_logro = intval($_POST['id_logro']);
+$nombre = trim($_POST['nombre'] ?? '');
+$descripcion = trim($_POST['descripcion'] ?? '');
 
-// Verificar si se ha subido una nueva imagen
+// Recoger el tipo de logro
+$tipo = $_POST['tipo'] ?? 'global';
+$id_juego = null;
+if ($tipo === 'juego') {
+    $id_juego = intval($_POST['id_juego'] ?? 0);
+}
+
+// Preparar la consulta UPDATE de forma dinámica
+$sql = "UPDATE logros 
+        SET nombre = ?, descripcion = ?, tipo = ?, id_juego = ?";
+$types = "sssi";
+$params = [$nombre, $descripcion, $tipo, $id_juego];
+
+// Si se sube una nueva imagen, actualizamos la columna imagen
 if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
     $imagenContent = file_get_contents($_FILES['imagen']['tmp_name']);
-    $stmt = $conn->prepare("UPDATE logros SET nombre = ?, descripcion = ?, imagen = ? WHERE id_logro = ?");
-    $stmt->bind_param("sssi", $nombre, $descripcion, $imagenContent, $id_logro);
-} else {
-    // Si no se subió nueva imagen, actualizamos solo nombre y descripción
-    $stmt = $conn->prepare("UPDATE logros SET nombre = ?, descripcion = ? WHERE id_logro = ?");
-    $stmt->bind_param("ssi", $nombre, $descripcion, $id_logro);
+    $sql .= ", imagen = ?";
+    $types .= "s";
+    $params[] = $imagenContent;
 }
+
+$sql .= " WHERE id_logro = ?";
+$types .= "i";
+$params[] = $id_logro;
+
+$stmt = $conn->prepare($sql);
+if (!$stmt) {
+    die("Error en prepare: " . $conn->error);
+}
+
+$stmt->bind_param($types, ...$params);
 
 if ($stmt->execute()) {
     header("Location: ../admin_logros.php?success=updated");
