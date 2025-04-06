@@ -9,6 +9,7 @@ $activePage = basename($_SERVER['PHP_SELF'], ".php");
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Comunidad - GAMEDOM</title>
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/chat.css">
 </head>
 <body>
   <header>
@@ -43,5 +44,20 @@ $activePage = basename($_SERVER['PHP_SELF'], ".php");
       </section>
     <?php endif; ?>
   </main>
+
+  <!-- Contenedor del Chat -->
+  <div id="chat-container" class="chat-container">
+    <h2>Chat en Vivo</h2>
+    <div id="chat-box" class="chat-box"></div>
+    <div id="chat-input-container">
+    <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autofocus>
+    <button>Enviar</button>
+    </div> 
+  </div>
+
+  <!-- Script del Chat -->
+  <script src="http://localhost:8090/socket.io/socket.io.js"></script>
+  <script src="js/chat.js"></script>
+  
 </body>
 </html>
