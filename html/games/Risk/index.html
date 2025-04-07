@@ -7,17 +7,22 @@
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
     <style>
+      /* Estilos generales */
       body {
         font-family: 'Arial', sans-serif;
         background-color: #f4f4f4;
         margin: 0;
         padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 20px;
+        padding-top: 20px;
       }
 
       #marcador {
-        position: absolute;
-        top: 20px;
-        left: 20px;
+        position: relative;
         background: rgba(255, 255, 255, 0.9);
         padding: 20px;
         border-radius: 12px;
@@ -81,7 +86,70 @@
         color: #ff4500;
       }
 
-      /* Colores personalizados por jugador */
+      .eliminado {
+        color: red;
+        font-weight: bold;
+      }
+
+      /* Estilo del historial */
+      #historial {
+        margin-top: 20px;
+        max-height: 200px;
+        overflow-y: auto;
+        border-top: 1px solid #ccc;
+        padding-top: 10px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+      }
+
+      #historial h4 {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+        color: #333;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      #historial ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+      }
+
+      #historial li {
+        margin-bottom: 10px;
+        padding: 12px;
+        background-color: #f9f9f9;
+        border-left: 5px solid #007bff;
+        border-radius: 8px;
+        font-size: 1.1em;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+      }
+
+      #historial li:nth-child(odd) {
+        background-color: #e7f7ff;
+      }
+
+      #historial li:nth-child(even) {
+        background-color: #fff3e0;
+      }
+
+      #historial li:hover {
+        transform: translateX(10px);
+        background-color: #d1e7fd;
+      }
+
+      #historial li .icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+
+      /* Colores personalizados */
       .jugador-1 {
         background-color: #e0f7fa; /* Azul claro */
       }
@@ -115,6 +183,12 @@
         background-color: #0056b3;
       }
 
+      /* Contenedor de Unity ajustado */
+      #unity-container {
+        width: 960px;
+        height: 600px;
+      }
+
       /* Responsividad */
       @media (max-width: 768px) {
         #marcador {
@@ -125,17 +199,22 @@
           width: 100%;
           height: auto;
         }
+
+        #unity-container {
+          width: 100%;
+          height: auto;
+        }
       }
     </style>
   </head>
   <body>
-    <div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; margin-top: 20px;">
-      <!-- Marcador personalizado para Risk -->
+    <div style="display: flex; justify-content: center; align-items: flex-start; flex-direction: column; gap: 20px;">
+      <!-- Marcador y Historial juntos, pero ajustados para estar en la parte superior -->
       <div id="marcador">
         <h3>Marcador</h3>
         
         <!-- Jugador 1 -->
-        <div class="player jugador-1">
+        <div id="jugador1" class="player jugador-1">
           <div class="player-name">Jugador 1</div>
           <div class="info">
             <span>Territorios conquistados:</span>
@@ -148,7 +227,7 @@
         </div>
 
         <!-- Jugador 2 -->
-        <div class="player jugador-2">
+        <div id="jugador2" class="player jugador-2">
           <div class="player-name">Jugador 2</div>
           <div class="info">
             <span>Territorios conquistados:</span>
@@ -161,7 +240,7 @@
         </div>
 
         <!-- Jugador 3 -->
-        <div class="player jugador-3">
+        <div id="jugador3" class="player jugador-3">
           <div class="player-name">Jugador 3</div>
           <div class="info">
             <span>Territorios conquistados:</span>
@@ -174,7 +253,7 @@
         </div>
 
         <!-- Jugador 4 -->
-        <div class="player jugador-4">
+        <div id="jugador4" class="player jugador-4">
           <div class="player-name">Jugador 4</div>
           <div class="info">
             <span>Territorios conquistados:</span>
@@ -188,6 +267,14 @@
 
         <!-- Información del turno -->
         <p class="turno">Turno: <span id="turno">Jugador 1</span></p>
+        <p class="turno">Número de Turno: <span id="numero-turno">1</span></p>
+        <p id="ganador" class="turno"></p>
+      </div>
+
+      <!-- Historial de movimientos debajo del marcador -->
+      <div id="historial">
+        <h4>Historial de Movimientos</h4>
+        <ul id="historial-lista"></ul>
       </div>
 
       <!-- Juego Unity -->
@@ -207,7 +294,7 @@
         </div>
       </div>
     </div>
-
+    
     <script>
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
@@ -215,29 +302,94 @@
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var fullscreenButton = document.querySelector("#unity-fullscreen-button");
       var warningBanner = document.querySelector("#unity-warning");
-
-      // Simulación de datos del juego
-      let territorios = [0, 0, 0, 0]; // Territorios conquistados
-      let cartas = [0, 0, 0, 0]; // Cartas en poder de los jugadores
+    
+      // Inicializar territorios con el total de 42 correctamente distribuidos
+      let territorios = [11, 11, 10, 10];  // Jugador 1 con 11, Jugador 2 con 11, Jugador 3 con 10, Jugador 4 con 10
       let jugadorActual = 0;
-
-      // Función para actualizar el marcador
+      let turno = 1;
+    
+      // Función para actualizar el marcador en el DOM
       function actualizarMarcador() {
-        for (let i = 0; i < 4; i++) {
-          territorios[i] = Math.floor(Math.random() * 20); // Número aleatorio entre 0 y 20
-          cartas[i] = Math.floor(Math.random() * 5); // Número aleatorio entre 0 y 5
-          document.getElementById(`territorios${i + 1}`).textContent = territorios[i];
-          document.getElementById(`cartas${i + 1}`).textContent = cartas[i];
+        // Solo actualizar el jugador actual y el que fue atacado
+        if (jugadorActual === 0) {
+          document.querySelector("#territorios1").textContent = territorios[0];
         }
-
-        // Cambiar el turno
-        jugadorActual = (jugadorActual + 1) % 4;
-        document.getElementById("turno").textContent = `Jugador ${jugadorActual + 1}`;
+        if (jugadorActual === 1) {
+          document.querySelector("#territorios2").textContent = territorios[1];
+        }
+        if (jugadorActual === 2) {
+          document.querySelector("#territorios3").textContent = territorios[2];
+        }
+        if (jugadorActual === 3) {
+          document.querySelector("#territorios4").textContent = territorios[3];
+        }
+    
+        // Actualizar el jugador atacado, solo si no es el mismo que el actual
+        if (jugadorAtacado !== -1) {
+          if (jugadorAtacado === 0) {
+            document.querySelector("#territorios1").textContent = territorios[0];
+          }
+          if (jugadorAtacado === 1) {
+            document.querySelector("#territorios2").textContent = territorios[1];
+          }
+          if (jugadorAtacado === 2) {
+            document.querySelector("#territorios3").textContent = territorios[2];
+          }
+          if (jugadorAtacado === 3) {
+            document.querySelector("#territorios4").textContent = territorios[3];
+          }
+        }
+    
+        document.querySelector("#turno").textContent = `Jugador ${jugadorActual + 1}`;
+        document.querySelector("#numero-turno").textContent = turno;
       }
-
-      // Actualización cada 3 segundos
-      setInterval(actualizarMarcador, 3000);
-
+    
+      // Función para agregar al historial
+      function agregarAlHistorial(atacante, defensor) {
+        let historialLista = document.querySelector("#historial-lista");
+        let historialItem = document.createElement("li");
+    
+        historialItem.textContent = `Jugador ${atacante + 1} ha atacado y conquistado un territorio del Jugador ${defensor + 1}`;
+        historialLista.appendChild(historialItem);
+      }
+    
+      // Simulación de un ataque: el jugador actual ataca a otro jugador aleatorio
+      function atacar() {
+        let atacante = jugadorActual;
+        let defensores = [0, 1, 2, 3].filter(i => i !== atacante && territorios[i] > 0);  // Filtrar jugadores activos
+    
+        if (defensores.length > 0) {
+          let defensor = defensores[Math.floor(Math.random() * defensores.length)];
+          let jugadorAtacado = defensor;
+    
+          // Simular conquista de un territorio (solo uno)
+          if (territorios[defensor] > 0) {
+            territorios[atacante]++;  // Aumenta un territorio al jugador atacante
+            territorios[defensor]--;  // Resta un territorio al jugador defensor
+    
+            // Agregar al historial
+            agregarAlHistorial(atacante, defensor);
+          }
+          
+          console.log(`Jugador ${atacante + 1} ha atacado y conquistado un territorio del Jugador ${defensor + 1}`);
+          
+          // Solo actualizamos los jugadores involucrados en el ataque
+          actualizarMarcador();
+    
+          // Cambiar turno
+          jugadorActual = (jugadorActual + 1) % 4;
+          turno++;
+        }
+      }
+    
+      // Inicializar el juego
+      window.onload = function() {
+        console.log(`Juego iniciado. Territorios iniciales: ${territorios}`);
+        actualizarMarcador();  // Mostrar el estado inicial
+        atacar();  // Hacer un ataque al inicio para ver cómo cambia el estado
+      };
+    
+      // Compatibilidad con dispositivos móviles
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         var meta = document.createElement('meta');
         meta.name = 'viewport';
@@ -250,9 +402,9 @@
         canvas.style.width = "960px";
         canvas.style.height = "600px";
       }
-
+    
       loadingBar.style.display = "block";
-
+    
       var script = document.createElement("script");
       script.src = "Build/Risk.loader.js";
       script.onload = () => {
@@ -277,7 +429,7 @@
         });
       };
       document.body.appendChild(script);
-
+    
       function unityShowBanner(msg, type) {
         var div = document.createElement('div');
         div.innerHTML = msg;
@@ -285,11 +437,11 @@
         if (type == 'error') div.style = 'background: red; padding: 10px;';
         else {
           if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
+          setTimeout(function () {
             warningBanner.removeChild(div);
           }, 5000);
         }
       }
     </script>
-  </body>
-</html>
+    
+    
