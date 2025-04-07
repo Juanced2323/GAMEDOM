@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:8.0
@@ -38,6 +36,15 @@ services:
         - "8081:80"
       depends_on:
         - db
+
+  websocket-chat:
+    build:
+      context: ./websocket
+      dockerfile: Dockerfile
+    container_name: gamedom_websocket
+    ports:
+      - "8090:8080"
+    command: node /app/server.js
 
 volumes:
   db_data:

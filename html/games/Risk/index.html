@@ -129,85 +129,33 @@
     </style>
   </head>
   <body>
-    <div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; margin-top: 20px;">
-      <!-- Marcador personalizado para Risk -->
-      <div id="marcador">
-        <h3>Marcador</h3>
-        
-        <!-- Jugador 1 -->
-        <div class="player jugador-1">
-          <div class="player-name">Jugador 1</div>
-          <div class="info">
-            <span>Territorios conquistados:</span>
-            <span id="territorios1" class="info-value">0</span>
-          </div>
-          <div class="info">
-            <span>Cartas:</span>
-            <span id="cartas1" class="info-value">0</span>
-          </div>
+    <!-- Contenedor del Chat -->
+    <div id="chat-container" class="chat-container">
+      <h2>Chat en Vivo</h2>
+      <div id="chat-box" class="chat-box"></div>
+      <div id="chat-input-container">
+      <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autofocus>
+      <button>Enviar</button>
+      </div> 
+    </div>
+    <!-- Contenedor del juego -->
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width=960 height=600></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
         </div>
-
-        <!-- Jugador 2 -->
-        <div class="player jugador-2">
-          <div class="player-name">Jugador 2</div>
-          <div class="info">
-            <span>Territorios conquistados:</span>
-            <span id="territorios2" class="info-value">0</span>
-          </div>
-          <div class="info">
-            <span>Cartas:</span>
-            <span id="cartas2" class="info-value">0</span>
-          </div>
-        </div>
-
-        <!-- Jugador 3 -->
-        <div class="player jugador-3">
-          <div class="player-name">Jugador 3</div>
-          <div class="info">
-            <span>Territorios conquistados:</span>
-            <span id="territorios3" class="info-value">0</span>
-          </div>
-          <div class="info">
-            <span>Cartas:</span>
-            <span id="cartas3" class="info-value">0</span>
-          </div>
-        </div>
-
-        <!-- Jugador 4 -->
-        <div class="player jugador-4">
-          <div class="player-name">Jugador 4</div>
-          <div class="info">
-            <span>Territorios conquistados:</span>
-            <span id="territorios4" class="info-value">0</span>
-          </div>
-          <div class="info">
-            <span>Cartas:</span>
-            <span id="cartas4" class="info-value">0</span>
-          </div>
-        </div>
-
-        <!-- Información del turno -->
-        <p class="turno">Turno: <span id="turno">Jugador 1</span></p>
       </div>
-
-      <!-- Juego Unity -->
-      <div id="unity-container" class="unity-desktop">
-        <canvas id="unity-canvas" width="960" height="600"></canvas>
-        <div id="unity-loading-bar">
-          <div id="unity-logo"></div>
-          <div id="unity-progress-bar-empty">
-            <div id="unity-progress-bar-full"></div>
-          </div>
-        </div>
-        <div id="unity-warning"> </div>
-        <div id="unity-footer">
-          <div id="unity-webgl-logo"></div>
-          <div id="unity-fullscreen-button"></div>
-          <div id="unity-build-title">RiskASP</div>
-        </div>
+      <div id="unity-warning"> </div>
+      <div id="unity-footer">
+        <div id="unity-webgl-logo"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">RiskASP</div>
       </div>
     </div>
 
+    <!-- Script del Juego -->
     <script>
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
@@ -247,7 +195,9 @@
         canvas.className = "unity-mobile";
         unityShowBanner('WebGL builds are not supported on mobile devices.');
       } else {
-        canvas.style.width = "960px";
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+
+        canvas.style.width = "900px";
         canvas.style.height = "600px";
       }
 
@@ -291,5 +241,13 @@
         }
       }
     </script>
+
+    <!-- Script del Chat -->
+    <!-- <script src="http://localhost:8090/socket.io/socket.io.js"></script> -->
+    <script src="../../js/chatjuegos.js"></script>
+    
+    <!-- Script de interaccion entre juego y chat -->
+    <!-- <script src="../../js/interaccion.js"></script> -->
+
   </body>
 </html>

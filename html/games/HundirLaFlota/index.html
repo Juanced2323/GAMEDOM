@@ -85,47 +85,33 @@
     </style>
   </head>
   <body>
-    <div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; margin-top: 20px;">
-      <!-- Marcador Moderno más pequeño -->
-      <div id="marcador">
-        <h3>Marcador</h3>
-        
-        <!-- Barcos restantes por jugador -->
-        <div class="barcos">
-          <span>Barcos Jugador 1:</span>
-          <span id="barcos1">5</span>
+    <!-- Contenedor del Chat -->
+    <div id="chat-container" class="chat-container">
+      <h2>Chat en Vivo</h2>
+      <div id="chat-box" class="chat-box"></div>
+      <div id="chat-input-container">
+      <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autofocus>
+      <button>Enviar</button>
+      </div> 
+    </div>
+    <!-- Contenedor del juego -->
+    <div id="unity-container" style="pointer-events: auto;" class="unity-desktop">
+      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
         </div>
-        <div class="barcos">
-          <span>Barcos Jugador 2:</span>
-          <span id="barcos2">5</span>
-        </div>
-
-        <!-- Turno actual -->
-        <p class="turno">Turno: <span id="turno">Jugador 1</span></p>
-
-        <!-- Mensaje de victoria -->
-        <p id="ganador"></p>
       </div>
-    
-      <!-- Juego Unity a la derecha -->
-      <div id="unity-container" class="unity-desktop">
-        <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
-        <div id="unity-loading-bar">
-          <div id="unity-logo"></div>
-          <div id="unity-progress-bar-empty">
-            <div id="unity-progress-bar-full"></div>
-          </div>
-        </div>
-        <div id="unity-warning"> </div>
-        <div id="unity-footer">
-          <div id="unity-logo-title-footer"></div>
-          <div id="unity-fullscreen-button"></div>
-          <div id="unity-build-title">HundirLaFlota</div>
-        </div>
+      <div id="unity-warning"> </div>
+      <div id="unity-footer">
+        <div id="unity-logo-title-footer"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">HundeLaFlota</div>
       </div>
     </div>
-    
 
+    <!-- Script del Juego -->
     <script>
       // VARIABLES DEL MARCADOR
       let puntajeJugador1 = 0;
@@ -213,7 +199,8 @@
         document.querySelector("#unity-container").className = "unity-mobile";
         canvas.className = "unity-mobile";
       } else {
-        canvas.style.width = "960px";
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+        canvas.style.width = "900px"; //para el chat quito 60px
         canvas.style.height = "600px";
       }
 
@@ -236,5 +223,13 @@
 
       document.body.appendChild(script);
     </script>
+
+    <!-- Script del Chat -->
+    <!-- <script src="http://localhost:8090/socket.io/socket.io.js"></script> -->
+    <script src="../../js/chatjuegos.js"></script>
+    
+    <!-- Script de interaccion entre juego y chat -->
+    <!-- <script src="../../js/interaccion.js"></script> -->
+
   </body>
 </html>
