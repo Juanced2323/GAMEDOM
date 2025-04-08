@@ -3,14 +3,13 @@ session_start();
 $activePage = basename($_SERVER['PHP_SELF'], ".php");
 
 if (!isset($_SESSION['usuario'])) {
-    // Si no está logueado, se mostrará un mensaje de acceso restringido.
-    // No se necesita conexión a la BBDD.
+    // Si no está logueado, no se consultan datos
     $favGames = [];
 } else {
     require_once "php/db_connect.php";
     $usuario = $_SESSION['usuario'];
 
-    // Consultar los juegos favoritos del usuario, uniendo la tabla favoritos y juegos.
+    // Consultar los juegos favoritos del usuario
     $stmt = $conn->prepare("
         SELECT j.*
         FROM favoritos f
@@ -36,40 +35,42 @@ if (!isset($_SESSION['usuario'])) {
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Biblioteca - GAMEDOM</title>
-  <link rel="stylesheet" href="css/main.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Se carga el CSS principal (como en index.php) -->
+  <link rel="stylesheet" href="css/Index.css">
+  <!-- CSS extra para la biblioteca (estilos grid) -->
+  <link rel="stylesheet" href="css/library.css">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="nav-left">
-        <!-- Nuevo enlace a Inicio -->
-        <a href="index.php" class="nav-item <?php echo ($activePage === 'index') ? 'active' : ''; ?>">Inicio</a>
-        <a href="biblioteca.php" class="nav-item <?php echo ($activePage === 'biblioteca') ? 'active' : ''; ?>">Biblioteca</a>
-        <a href="comunidad.php" class="nav-item <?php echo ($activePage === 'comunidad') ? 'active' : ''; ?>">Comunidad</a>
-        <a href="premios.php" class="nav-item <?php echo ($activePage === 'premios') ? 'active' : ''; ?>">Premios</a>
-      </div>
-      <div class="nav-right">
-        <?php if (isset($_SESSION['usuario'])): ?>
-          <a href="perfil.php" class="nav-item <?php echo ($activePage === 'perfil') ? 'active' : ''; ?>">Perfil</a>
-        <?php else: ?>
-          <a href="login.html" class="nav-item">Iniciar Sesión</a>
-        <?php endif; ?>
-      </div>
-    </nav>
-  </header>
-  
+  <!-- MENÚ SUPERIOR (igual que en index.php) -->
+  <div class="menu-superior">
+    <div class="nav-left">
+      <img src="images/imagenes/Logo.png" alt="Logo Gamedom" class="logo">
+    </div>
+    <div class="nav-right">
+      <a href="index.php" class="nav-item <?php echo ($activePage === 'index') ? 'active' : ''; ?>">Inicio</a>
+      <a href="biblioteca.php" class="nav-item <?php echo ($activePage === 'biblioteca') ? 'active' : ''; ?>">Biblioteca</a>
+      <a href="comunidad.php" class="nav-item <?php echo ($activePage === 'comunidad') ? 'active' : ''; ?>">Comunidad</a>
+      <a href="premios.php" class="nav-item <?php echo ($activePage === 'premios') ? 'active' : ''; ?>">Premios</a>
+      <?php if (isset($_SESSION['usuario'])): ?>
+        <a href="perfil.php" class="nav-item <?php echo ($activePage === 'perfil') ? 'active' : ''; ?>">Perfil</a>
+      <?php else: ?>
+        <a href="login.html" class="nav-item">Iniciar Sesión</a>
+      <?php endif; ?>
+    </div>
+  </div>
+
   <main>
     <?php if (!isset($_SESSION['usuario'])): ?>
-      <!-- Mensaje de restricción -->
       <div class="restricted-access">
         <h2>Acceso Restringido</h2>
         <p>Esta sección está disponible solo para usuarios registrados.</p>
         <a href="login.html" class="btn-acceso">Iniciar Sesión</a>
       </div>
     <?php else: ?>
-      <!-- Contenido de la biblioteca: se muestran los juegos favoritos -->
+      <!-- Sección Biblioteca de Juegos -->
       <section class="game-catalog">
         <h2>Biblioteca de Juegos</h2>
         <div class="game-list">
@@ -78,24 +79,38 @@ if (!isset($_SESSION['usuario'])) {
               <div class="game-card">
                 <a href="pantalla_juego.php?id=<?php echo $game['id_juego']; ?>">
                   <?php
-                    // Si el juego tiene icono (almacenado como BLOB), se convierte a base64
-                    if (!empty($game['icono'])) {
-                        $iconoBase64 = "data:image/jpeg;base64," . base64_encode($game['icono']);
-                        echo '<img src="' . $iconoBase64 . '" alt="' . htmlspecialchars($game['nombre']) . '">';
-                    } else {
-                        echo '<img src="images/default-game.png" alt="Juego sin icono">';
-                    }
+                  // Mostrar el icono (blob) si existe; de lo contrario, default
+                  if (!empty($game['icono'])) {
+                      $iconoBase64 = "data:image/jpeg;base64," . base64_encode($game['icono']);
+                      echo '<img src="' . $iconoBase64 . '" alt="' . htmlspecialchars($game['nombre']) . '">';
+                  } else {
+                      echo '<img src="images/default-game.png" alt="Juego sin icono">';
+                  }
                   ?>
                   <h4><?php echo htmlspecialchars($game['nombre']); ?></h4>
                 </a>
               </div>
             <?php endforeach; ?>
           <?php else: ?>
-            <p>No tienes juegos en tu biblioteca.</p>
+            <p class="no-games">No tienes juegos en tu biblioteca.</p>
           <?php endif; ?>
         </div>
       </section>
     <?php endif; ?>
   </main>
+
+  <!-- FOOTER (igual que index) -->
+  <footer class="footer">
+    <p>
+      © 2025 CodeCrafters. Todos los derechos reservados. Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.<br>
+      Todos los precios incluyen IVA (donde sea aplicable).
+    </p>
+    <nav>
+      <a href="Política de privacidad.html">Política de Privacidad</a> |
+      <a href="Información legal.html">Información legal</a> |
+      <a href="Cookies.html">Cookies</a> |
+      <a href="A cerca de.html">A cerca de CodeCrafters</a>
+    </nav>
+  </footer>
 </body>
 </html>

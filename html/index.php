@@ -3,29 +3,26 @@ session_start();
 require_once "php/db_connect.php";
 require_once "php/recommendations.php";
 
-// 1) Recoger filtros desde GET
-$searchTerm = trim($_GET['search'] ?? '');
-$selectedCategories = $_GET['category'] ?? [];  // array de strings
-
-// 2) Verificar si hay filtros aplicados
-$filtersApplied = ($searchTerm !== '' || !empty($selectedCategories));
-
-// 3) Obtener la lista de categorías desde la tabla `categorias`
-$catQuery = "SELECT nombre FROM categorias ORDER BY nombre ASC";
-$catResult = $conn->query($catQuery);
+// 1. Obtener categorías para los filtros
 $allCategories = [];
-while ($catRow = $catResult->fetch_assoc()) {
+$sqlAllCat = "SELECT nombre FROM categorias ORDER BY nombre ASC";
+$resCat = $conn->query($sqlAllCat);
+while ($catRow = $resCat->fetch_assoc()) {
     $allCategories[] = $catRow['nombre'];
 }
-$catResult->close();
+$resCat->close();
 
-$orderedGames = []; // Arreglo final de juegos que se mostrarán
+// 2. Lógica de filtros / recomendaciones
+$searchTerm = trim($_GET['search'] ?? '');
+$selectedCategories = $_GET['category'] ?? [];
+$filtersApplied = ($searchTerm !== '' || !empty($selectedCategories));
 
-// 4) Lógica de recomendación o consulta según filtros
+$orderedGames = [];
+
 if (!$filtersApplied && isset($_SESSION['usuario'])) {
     $usuario = $_SESSION['usuario'];
     $recommended = getContentBasedRecommendations($usuario, $conn, 10);
-
+    
     $sqlAll = "SELECT * FROM juegos";
     $resAll = $conn->query($sqlAll);
     $allGames = [];
@@ -42,14 +39,17 @@ if (!$filtersApplied && isset($_SESSION['usuario'])) {
         }
     }
 } else {
+    // Consulta filtrada
     $sql = "SELECT DISTINCT j.* FROM juegos j";
     $wheres = [];
     $params = [];
     $types = '';
 
     if (!empty($selectedCategories)) {
-        $sql .= " JOIN juegos_categorias jc ON j.id_juego = jc.id_juego
-                  JOIN categorias c ON c.id_categoria = jc.id_categoria";
+        $sql .= "
+            JOIN juegos_categorias jc ON j.id_juego = jc.id_juego
+            JOIN categorias c ON c.id_categoria = jc.id_categoria
+        ";
         $placeholders = implode(',', array_fill(0, count($selectedCategories), '?'));
         $wheres[] = "c.nombre IN ($placeholders)";
         $types .= str_repeat('s', count($selectedCategories));
@@ -83,28 +83,29 @@ if (!$filtersApplied && isset($_SESSION['usuario'])) {
     }
     $stmt->close();
 }
+
 $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GAMEDOM - Inicio</title>
-  <!-- Enlaza tu CSS principal -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- CSS principal con los estilos originales -->
   <link rel="stylesheet" href="css/Index.css">
+  <!-- CSS para el catálogo (tarjetas) -->
+  <link rel="stylesheet" href="css/catalogo.css">
   <!-- Font Awesome para íconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
 <body>
   <!-- MENÚ SUPERIOR -->
-  <div class="menu-superior">
-  <!-- Bloque Izquierdo: Logo -->
+  <header class="menu-superior">
     <div class="nav-left">
       <img src="images/imagenes/Logo.png" alt="Logo Gamedom" class="logo">
     </div>
-
-    <!-- Bloque Derecho: Enlaces y dropdown -->
     <div class="nav-right">
       <a href="biblioteca.php" class="nav-item">Biblioteca</a>
       <a href="comunidad.php" class="nav-item">Comunidad</a>
@@ -114,7 +115,6 @@ $conn->close();
       <?php else: ?>
         <a href="login.html" class="nav-item">Iniciar Sesión</a>
       <?php endif; ?>
-
       <div class="dropdown">
         <span class="dropdown-toggle" data-text="idiomas">Idiomas ▼</span>
         <ul class="dropdown-menu">
@@ -124,101 +124,113 @@ $conn->close();
           <li><a href="#" onclick="changeLanguage('en')">
             <img src="images/Banderas/Inglés.png" alt="Inglés">English
           </a></li>
-          <!-- Más idiomas si quieres -->
         </ul>
       </div>
     </div>
-  </div>
+  </header>
 
-  <!-- CONTENIDO PRINCIPAL: Filtros y Slider -->
-  <main class="main-content">
-    <!-- Barra lateral de filtros -->
-    <aside class="filter-sidebar">
-      <h3>Filtrar Juegos</h3>
-      <form method="GET" action="index.php">
-        <div class="filter-group">
-          <label for="search">Buscar:</label>
-          <input type="text" id="search" name="search" placeholder="Buscar juegos..." value="<?php echo htmlspecialchars($searchTerm); ?>">
-        </div>
-        <div class="filter-group">
-          <h4 data-text="categoria">Categoría</h4>
-          <?php
-          foreach ($allCategories as $catName) {
-              $checked = in_array($catName, $selectedCategories) ? 'checked' : '';
-              echo "<label>
-                      <input type='checkbox' name='category[]' value='" . htmlspecialchars($catName) . "' $checked>
-                      " . htmlspecialchars($catName) . "
-                    </label>";
-          }
-          ?>
-        </div>
-        <button type="submit">Filtrar</button>
-      </form>
-    </aside>
-
-    <!-- Slider de juegos -->
+  <!-- SECCIÓN: JUEGOS DESTACADOS (SLIDER) -->
+  <section class="juegos-destacados">
+    <h2>Juegos Destacados</h2>
     <div class="container">
       <div class="slide">
-        <!-- Ítems fijos (puedes conservar o eliminar estos si lo deseas) -->
+        <!-- Ítem fijo 1: Hundir la flota -->
         <div class="item" style="background-image: url('images/Juegos/Hundir la flota.jpg');">
           <div class="content">
             <div class="name" data-text="Hundirlaflota">Hundir la flota</div>
             <div class="des" data-text="txthundirlaflota">
               ¡Zarpa hacia la estrategia definitiva!
             </div>
-            <button data-text="Jugar">Jugar</button>
+            <button data-text="Jugar" onclick="window.location.href='pantalla_juego.php?id=1'">Jugar</button>
           </div>
         </div>
+        <!-- Ítem fijo 2: Risk -->
         <div class="item" style="background-image: url('images/Juegos/risk1.jpg');">
           <div class="content">
             <div class="name" data-text="Risk">Risk</div>
             <div class="des" data-text="txtRisk">
               ¡Prepárate para una batalla legendaria!
             </div>
-            <button data-text="Jugar">Jugar</button>
+            <button data-text="Jugar" onclick="window.location.href='pantalla_juego.php?id=2'">Jugar</button>
           </div>
         </div>
-
-        <!-- Ítems dinámicos -->
-        <?php if (!empty($orderedGames)): ?>
-          <?php foreach ($orderedGames as $game): ?>
-            <?php
-              if (!empty($game['icono'])) {
-                  $iconoBase64 = "data:image/jpeg;base64," . base64_encode($game['icono']);
-              } else {
-                  $iconoBase64 = "images/default-game.png";
-              }
-            ?>
-            <div class="item" style="background-image: url('<?php echo $iconoBase64; ?>');">
-              <div class="content">
-                <div class="name"><?php echo htmlspecialchars($game['nombre']); ?></div>
-                <div class="des">
-                  <?php echo isset($game['descripcion']) ? htmlspecialchars($game['descripcion']) : "Descripción no disponible"; ?>
-                </div>
-                <button onclick="window.location.href='pantalla_juego.php?id=<?php echo $game['id_juego']; ?>'">
-                  Jugar
-                </button>
-              </div>
-            </div>
-          <?php endforeach; ?>
-        <?php else: ?>
-          <div class="item" style="background: #ccc;">
-            <div class="content">
-              <div class="name">Sin resultados</div>
-              <div class="des">No hay juegos que coincidan con tu búsqueda.</div>
-            </div>
-          </div>
-        <?php endif; ?>
       </div>
-      <!-- Controles del slider -->
       <div class="button">
         <button class="prev"><i class="fa-solid fa-arrow-left"></i></button>
         <button class="next"><i class="fa-solid fa-arrow-right"></i></button>
       </div>
     </div>
-  </main>
+  </section>
 
-  <!-- FOOTER (único) -->
+  <!-- SECCIÓN COMPLETA DEL CATÁLOGO DE JUEGOS -->
+  <section class="catalog-section">
+    <!-- Título de la sección (estilo "perfecto" de bloque) -->
+    <div class="catalog-title">
+      <h2>Catálogo de Juegos</h2>
+    </div>
+    <!-- Envoltorio para dos columnas: Filtros a la izq, Tarjetas a la der -->
+    <div class="catalog-wrapper">
+      <!-- FILTROS A LA IZQUIERDA -->
+      <aside class="filter-sidebar">
+        <h3>Filtrar Juegos</h3>
+        <form method="GET" action="index.php">
+          <div class="filter-group">
+            <label for="search">Buscar:</label>
+            <input type="text" id="search" name="search"
+                   placeholder="Buscar juegos..."
+                   value="<?php echo htmlspecialchars($searchTerm); ?>">
+          </div>
+          <div class="filter-group">
+            <h4>Categoría</h4>
+            <?php
+            foreach ($allCategories as $catName) {
+                $checked = in_array($catName, $selectedCategories) ? 'checked' : '';
+                echo "<label>
+                        <input type='checkbox' name='category[]' value='" . htmlspecialchars($catName) . "' $checked>
+                        " . htmlspecialchars($catName) . "
+                      </label>";
+            }
+            ?>
+          </div>
+          <button type="submit">Filtrar</button>
+        </form>
+      </aside>
+      
+      <!-- TARJETAS DE JUEGOS A LA DERECHA -->
+      <div class="catalogo-juegos">
+        <div class="cards-container">
+          <?php if (!empty($orderedGames)): ?>
+            <?php foreach ($orderedGames as $game): ?>
+              <?php
+                $iconoBase64 = "images/default-game.png";
+                if (!empty($game['icono'])) {
+                    $iconoBase64 = "data:image/jpeg;base64," . base64_encode($game['icono']);
+                }
+              ?>
+              <div class="card">
+                <img src="<?php echo $iconoBase64; ?>" alt="<?php echo htmlspecialchars($game['nombre']); ?>" class="card-img">
+                <div class="card-content">
+                  <h3><?php echo htmlspecialchars($game['nombre']); ?></h3>
+                  <p>
+                    <?php echo !empty($game['descripcion']) 
+                               ? htmlspecialchars($game['descripcion'])
+                               : "Descripción no disponible"; ?>
+                  </p>
+                  <button onclick="window.location.href='pantalla_juego.php?id=<?php echo $game['id_juego']; ?>'">
+                    Jugar
+                  </button>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <p style="text-align:center;">No hay juegos para mostrar.</p>
+          <?php endif; ?>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
   <footer class="footer">
     <p data-text="footer">
       © 2025 CodeCrafters. Todos los derechos reservados. Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.<br>

@@ -1,0 +1,74 @@
+.catalogo-juegos h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #7d110d;
+    font-size: 2rem;
+  }
+  
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .card {
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    width: 230px;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .card-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+  }
+  
+  .card-content {
+    padding: 15px;
+  }
+  
+  .card-content h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #7d110d;
+  }
+  
+  .card-content p {
+    font-size: 14px;
+    color: #333;
+    height: 60px;
+    overflow: hidden;
+  }
+  
+  .card-content button {
+    background: #7d110d;
+    border: none;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+  }
+  
+  .card-content button:hover {
+    background: #a42620;
+  }
+  
+  .catalog-section {
+    /* Un padding, si quieres */
+    padding: 20px;
+}
+
+.catalog-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}

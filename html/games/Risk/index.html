@@ -6,23 +6,320 @@
     <title>Unity WebGL Player | RiskASP</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+    <style>
+      /* Estilos generales */
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 20px;
+        padding-top: 20px;
+      }
+
+      #marcador {
+        position: relative;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 12px;
+        width: 260px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+        font-size: 1em;
+        font-family: 'Arial', sans-serif;
+        color: #333;
+      }
+
+      #marcador h3 {
+        margin-top: 0;
+        color: #444;
+        font-size: 1.5em;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #ddd;
+      }
+  
+      
+      .player {
+        margin: 10px 0;
+        padding: 12px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .player-name {
+        font-weight: bold;
+        font-size: 1.1em;
+      }
+
+      .info {
+        display: flex;
+        justify-content: space-between;
+        margin: 6px 0;
+      }
+
+      .info span {
+        font-weight: bold;
+        color: #555;
+      }
+
+      .info-value {
+        color: #777;
+        font-weight: normal;
+      }
+
+      .turno {
+        margin-top: 15px;
+        font-size: 1.1em;
+        font-weight: bold;
+        color: #007bff;
+      }
+
+      .turno span {
+        font-weight: bolder;
+        color: #ff4500;
+      }
+
+      .eliminado {
+        color: red;
+        font-weight: bold;
+      }
+
+      /* Estilo del historial */
+      #historial {
+        margin-top: 20px;
+        max-height: 200px;
+        overflow-y: auto;
+        border-top: 1px solid #ccc;
+        padding-top: 10px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+      }
+
+      #historial h4 {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+        color: #333;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      #historial ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+      }
+
+      #historial li {
+        margin-bottom: 10px;
+        padding: 12px;
+        background-color: #f9f9f9;
+        border-left: 5px solid #007bff;
+        border-radius: 8px;
+        font-size: 1.1em;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease-in-out;
+      }
+
+      #historial li:nth-child(odd) {
+        background-color: #e7f7ff;
+      }
+
+      #historial li:nth-child(even) {
+        background-color: #fff3e0;
+      }
+
+      #historial li:hover {
+        transform: translateX(10px);
+        background-color: #d1e7fd;
+      }
+
+      #historial li .icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+
+      /* Colores personalizados */
+      .jugador-1 {
+        background-color: #e0f7fa; /* Azul claro */
+      }
+
+      .jugador-2 {
+        background-color: #fff3e0; /* Amarillo claro */
+      }
+
+      .jugador-3 {
+        background-color: #e8f5e9; /* Verde claro */
+      }
+
+      .jugador-4 {
+        background-color: #fce4ec; /* Rosa claro */
+      }
+
+      /* Estilo de los botones del juego */
+      .button {
+        margin-top: 10px;
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1em;
+      }
+
+      .button:hover {
+        background-color: #0056b3;
+      }
+
+      /* Contenedor de Unity ajustado */
+      #unity-container {
+        width: 960px;
+        height: 600px;
+      }
+
+      /* Responsividad */
+      @media (max-width: 768px) {
+        #marcador {
+          width: 220px;
+        }
+
+        canvas {
+          width: 100%;
+          height: auto;
+        }
+
+        #unity-container {
+          width: 100%;
+          height: auto;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
+    <div style="display: flex; justify-content: center; align-items: flex-start; flex-direction: column; gap: 20px;">
+      <!-- Marcador y Historial (Interfaz Actualizada) -->
+      <div id="marcador">
+        <h3>Marcador</h3>
+        
+        <!-- Jugador 1 -->
+        <div id="jugador1" class="player jugador-1">
+          <div class="player-name">Jugador 1</div>
+          <div class="info">
+            <span>Territorios conquistados:</span>
+            <span id="territorios1" class="info-value">0</span>
+          </div>
+          <div class="info">
+            <span>Cartas:</span>
+            <span id="cartas1" class="info-value">0</span>
+          </div>
+        </div>
+    
+        <!-- Jugador 2 -->
+        <div id="jugador2" class="player jugador-2">
+          <div class="player-name">Jugador 2</div>
+          <div class="info">
+            <span>Territorios conquistados:</span>
+            <span id="territorios2" class="info-value">0</span>
+          </div>
+          <div class="info">
+            <span>Cartas:</span>
+            <span id="cartas2" class="info-value">0</span>
+          </div>
+        </div>
+    
+        <!-- Jugador 3 -->
+        <div id="jugador3" class="player jugador-3">
+          <div class="player-name">Jugador 3</div>
+          <div class="info">
+            <span>Territorios conquistados:</span>
+            <span id="territorios3" class="info-value">0</span>
+          </div>
+          <div class="info">
+            <span>Cartas:</span>
+            <span id="cartas3" class="info-value">0</span>
+          </div>
+        </div>
+    
+        <!-- Jugador 4 -->
+        <div id="jugador4" class="player jugador-4">
+          <div class="player-name">Jugador 4</div>
+          <div class="info">
+            <span>Territorios conquistados:</span>
+            <span id="territorios4" class="info-value">0</span>
+          </div>
+          <div class="info">
+            <span>Cartas:</span>
+            <span id="cartas4" class="info-value">0</span>
+          </div>
+        </div>
+    
+        <!-- Información del turno -->
+        <p class="turno">Turno: <span id="turno">Jugador 1</span></p>
+        <p class="turno">Número de Turno: <span id="numero-turno">1</span></p>
+        <p id="ganador" class="turno"></p>
+      </div>
+    
+      <!-- Historial de Movimientos -->
+      <div id="historial">
+        <h4>Historial de Movimientos</h4>
+        <ul id="historial-lista"></ul>
+      </div>
+    
+      <!-- Juego Unity (único contenedor, de la nueva versión) -->
+      <div id="unity-container" class="unity-desktop">
+        <canvas id="unity-canvas" width="960" height="600"></canvas>
+        <div id="unity-loading-bar">
+          <div id="unity-logo"></div>
+          <div id="unity-progress-bar-empty">
+            <div id="unity-progress-bar-full"></div>
+          </div>
+        </div>
+        <div id="unity-warning"> </div>
+        <div id="unity-footer">
+          <div id="unity-webgl-logo"></div>
+          <div id="unity-fullscreen-button"></div>
+          <div id="unity-build-title">RiskASP</div>
         </div>
       </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-webgl-logo"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">RiskASP</div>
+    </div>
+    
+    <!-- Contenedor del Chat (se conserva de la versión antigua) -->
+    <div id="chat-container" class="chat-container">
+      <h2>Chat en Vivo</h2>
+      <div id="chat-box" class="chat-box"></div>
+      <div id="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autofocus>
+        <button>Enviar</button>
+      </div> 
+    </div>
+    
+<!-- Contenedor del Chat (se conserva de la versión antigua) -->
+<div id="chat-container" class="chat-container">
+  <h2>Chat en Vivo</h2>
+  <div id="chat-box" class="chat-box"></div>
+  <div id="chat-input-container">
+    <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autofocus>
+    <button>Enviar</button>
+  </div> 
+</div>
+
       </div>
     </div>
+    
+    <!-- Script del Juego -->
     <script>
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
@@ -30,79 +327,124 @@
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
       var fullscreenButton = document.querySelector("#unity-fullscreen-button");
       var warningBanner = document.querySelector("#unity-warning");
-
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
-      function unityShowBanner(msg, type) {
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+    
+      // Inicializar territorios con el total de 42 correctamente distribuidos
+      let territorios = [11, 11, 10, 10];  // Jugador 1 con 11, Jugador 2 con 11, Jugador 3 con 10, Jugador 4 con 10
+      let jugadorActual = 0;
+      let turno = 1;
+    
+      // Función para actualizar el marcador en el DOM
+      function actualizarMarcador() {
+        // Solo actualizar el jugador actual y el que fue atacado
+        if (jugadorActual === 0) {
+          document.querySelector("#territorios1").textContent = territorios[0];
         }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
+        if (jugadorActual === 1) {
+          document.querySelector("#territorios2").textContent = territorios[1];
         }
-        updateBannerVisibility();
+        if (jugadorActual === 2) {
+          document.querySelector("#territorios3").textContent = territorios[2];
+        }
+        if (jugadorActual === 3) {
+          document.querySelector("#territorios4").textContent = territorios[3];
+        }
+    
+        // Actualizar el jugador atacado, solo si no es el mismo que el actual
+        if (jugadorAtacado !== -1) {
+          if (jugadorAtacado === 0) {
+            document.querySelector("#territorios1").textContent = territorios[0];
+          }
+          if (jugadorAtacado === 1) {
+            document.querySelector("#territorios2").textContent = territorios[1];
+          }
+          if (jugadorAtacado === 2) {
+            document.querySelector("#territorios3").textContent = territorios[2];
+          }
+          if (jugadorAtacado === 3) {
+            document.querySelector("#territorios4").textContent = territorios[3];
+          }
+        }
+    
+        document.querySelector("#turno").textContent = `Jugador ${jugadorActual + 1}`;
+        document.querySelector("#numero-turno").textContent = turno;
       }
-
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Risk.loader.js";
-      var config = {
-        dataUrl: buildUrl + "/Risk.data",
-        frameworkUrl: buildUrl + "/Risk.framework.js",
-        codeUrl: buildUrl + "/Risk.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "RiskASP",
-        productVersion: "1.0",
-        showBanner: unityShowBanner,
+    
+      // Función para agregar al historial
+      function agregarAlHistorial(atacante, defensor) {
+        let historialLista = document.querySelector("#historial-lista");
+        let historialItem = document.createElement("li");
+    
+        historialItem.textContent = `Jugador ${atacante + 1} ha atacado y conquistado un territorio del Jugador ${defensor + 1}`;
+        historialLista.appendChild(historialItem);
+      }
+    
+      // Simulación de un ataque: el jugador actual ataca a otro jugador aleatorio
+      function atacar() {
+        let atacante = jugadorActual;
+        let defensores = [0, 1, 2, 3].filter(i => i !== atacante && territorios[i] > 0);  // Filtrar jugadores activos
+    
+        if (defensores.length > 0) {
+          let defensor = defensores[Math.floor(Math.random() * defensores.length)];
+          let jugadorAtacado = defensor;
+    
+          // Simular conquista de un territorio (solo uno)
+          if (territorios[defensor] > 0) {
+            territorios[atacante]++;  // Aumenta un territorio al jugador atacante
+            territorios[defensor]--;  // Resta un territorio al jugador defensor
+    
+            // Agregar al historial
+            agregarAlHistorial(atacante, defensor);
+          }
+          
+          console.log(`Jugador ${atacante + 1} ha atacado y conquistado un territorio del Jugador ${defensor + 1}`);
+          
+          // Solo actualizamos los jugadores involucrados en el ataque
+          actualizarMarcador();
+    
+          // Cambiar turno
+          jugadorActual = (jugadorActual + 1) % 4;
+          turno++;
+        }
+      }
+    
+      // Inicializar el juego
+      window.onload = function() {
+        console.log(`Juego iniciado. Territorios iniciales: ${territorios}`);
+        actualizarMarcador();  // Mostrar el estado inicial
+        atacar();  // Hacer un ataque al inicio para ver cómo cambia el estado
       };
-
-      // By default Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-
+    
+      // Compatibilidad con dispositivos móviles
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-
         var meta = document.createElement('meta');
         meta.name = 'viewport';
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
         container.className = "unity-mobile";
         canvas.className = "unity-mobile";
-
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
-
         unityShowBanner('WebGL builds are not supported on mobile devices.');
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
-        canvas.style.width = "960px";
+        canvas.style.width = "900px";
         canvas.style.height = "600px";
       }
-
+    
       loadingBar.style.display = "block";
-
+    
       var script = document.createElement("script");
-      script.src = loaderUrl;
+      script.src = "Build/Risk.loader.js";
       script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
+        createUnityInstance(canvas, {
+          dataUrl: "Build/Risk.data",
+          frameworkUrl: "Build/Risk.framework.js",
+          codeUrl: "Build/Risk.wasm",
+          streamingAssetsUrl: "StreamingAssets",
+          companyName: "DefaultCompany",
+          productName: "RiskASP",
+          productVersion: "1.0",
+          showBanner: unityShowBanner,
+        }, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
           loadingBar.style.display = "none";
@@ -114,6 +456,26 @@
         });
       };
       document.body.appendChild(script);
+    
+      function unityShowBanner(msg, type) {
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function () {
+            warningBanner.removeChild(div);
+          }, 5000);
+        }
+      }
     </script>
-  </body>
-</html>
+
+    <!-- Script del Chat -->
+    <!-- <script src="http://localhost:8090/socket.io/socket.io.js"></script> -->
+    <script src="../../js/chatjuegos.js"></script>
+    
+    <!-- Script de interaccion entre juego y chat -->
+    <!-- <script src="../../js/interaccion.js"></script> -->
+
+    

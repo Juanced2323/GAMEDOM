@@ -1,16 +1,257 @@
-body { padding: 0; margin: 0 }
-#unity-container { position: absolute }
-#unity-container.unity-desktop { left: 50%; top: 50%; transform: translate(-50%, -50%) }
-#unity-container.unity-mobile { position: fixed; width: 100%; height: 100% }
-#unity-canvas { background: #231F20 }
-.unity-mobile #unity-canvas { width: 100%; height: 100% }
-#unity-loading-bar { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none }
-#unity-logo { width: 154px; height: 130px; background: url('unity-logo-dark.png') no-repeat center }
-#unity-progress-bar-empty { width: 141px; height: 18px; margin-top: 10px; margin-left: 6.5px; background: url('progress-bar-empty-dark.png') no-repeat center }
-#unity-progress-bar-full { width: 0%; height: 18px; margin-top: 10px; background: url('progress-bar-full-dark.png') no-repeat center }
-#unity-footer { position: relative }
-.unity-mobile #unity-footer { display: none }
-#unity-logo-title-footer { float:left; width: 102px; height: 38px; background: url('unity-logo-title-footer.png') no-repeat center }
-#unity-build-title { float: right; margin-right: 10px; line-height: 38px; font-family: arial; font-size: 18px }
-#unity-fullscreen-button { cursor:pointer; float: right; width: 38px; height: 38px; background: url('fullscreen-button.png') no-repeat center }
-#unity-warning { position: absolute; left: 50%; top: 5%; transform: translate(-50%); background: white; padding: 10px; display: none }
+/* Estilo general para el body */
+body {
+    padding: 0;
+    margin: 0;
+}
+
+/* Estilos del contenedor del juego Unity */
+#unity-container {
+    position: absolute;
+    z-index: 0;
+}
+
+#unity-container.unity-desktop {
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+#unity-container.unity-mobile {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#unity-canvas {
+    background: #231F20;
+}
+
+.unity-mobile #unity-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+#unity-loading-bar {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+#unity-logo {
+    width: 154px;
+    height: 130px;
+    background: url('unity-logo-dark.png') no-repeat center;
+}
+
+#unity-progress-bar-empty {
+    width: 141px;
+    height: 18px;
+    margin-top: 10px;
+    margin-left: 6.5px;
+    background: url('progress-bar-empty-dark.png') no-repeat center;
+}
+
+#unity-progress-bar-full {
+    width: 0%;
+    height: 18px;
+    margin-top: 10px;
+    background: url('progress-bar-full-dark.png') no-repeat center;
+}
+
+#unity-footer {
+    position: relative;
+}
+
+.unity-mobile #unity-footer {
+    display: none;
+}
+
+#unity-logo-title-footer {
+    float: left;
+    width: 102px;
+    height: 38px;
+    background: url('unity-logo-title-footer.png') no-repeat center;
+}
+
+#unity-build-title {
+    float: right;
+    margin-right: 10px;
+    line-height: 38px;
+    font-family: arial;
+    font-size: 18px;
+}
+
+#unity-fullscreen-button {
+    cursor: pointer;
+    float: right;
+    width: 38px;
+    height: 38px;
+    background: url('fullscreen-button.png') no-repeat center;
+}
+
+#unity-warning {
+    position: absolute;
+    left: 50%;
+    top: 5%;
+    transform: translate(-50%);
+    background: white;
+    padding: 10px;
+    display: none;
+}
+
+/* Estilos para el contenedor del chat */
+#chat-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    background-color: #111;
+    color: white;
+    padding: 15px;
+    box-sizing: border-box;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 9999;
+}
+
+/* Titulo del chat */
+#chat-container h2 {
+    margin-top: 0;
+    font-size: 22px;
+    text-align: center;
+    color: #ff4081;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Estilo del contenedor de los mensajes */
+.chat-box {
+    width: 100%;
+    height: calc(100% - 130px);
+    overflow-y: auto;
+    background-color: #222;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilo para los mensajes de los jugadores */
+.chat-box .message {
+    background-color: #333;
+    border-radius: 10px;
+    padding: 8px;
+    margin-bottom: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
+    font-family: 'Arial', sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+.chat-box .message.user {
+    background-color: #007BFF;
+    align-self: flex-end;
+}
+
+.chat-box .message.other {
+    background-color: #444;
+    align-self: flex-start;
+}
+
+.chat-box .message:hover {
+    background-color: #ff4081;
+}
+
+/* Contenedor para la barra de mensaje y el botón */
+#chat-input-container {
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+    justify-content: space-between;
+}
+
+/* Estilo del input y botón */
+#chat-input {
+    width: 70%;
+    padding: 12px;
+    background-color: #333;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: background-color 0.3s;
+}
+
+#chat-input:focus {
+    outline: none;
+    background-color: #444;
+}
+
+button {
+    width: 25%;
+    padding: 12px;
+    background-color: #ff4081;
+    border: none;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #ff80ab;
+}
+
+/* Deshabilitar interacción con el canvas cuando el chat está activo */
+#chat-container.active #unity-canvas {
+    pointer-events: none;
+}
+
+/* Efecto de animación al enviar un mensaje */
+@keyframes sendMessage {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.chat-box .message {
+    animation: sendMessage 0.3s ease-out;
+}
+
+/* Estilos responsivos para dispositivos móviles */
+@media (max-width: 768px) {
+    #chat-container {
+        width: 100%;
+        height: 50%;
+        bottom: 0;
+        top: auto;
+        border-radius: 0;
+        padding: 10px;
+    }
+
+    .chat-box {
+        font-size: 12px;
+    }
+
+    #chat-input {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    button {
+        padding: 10px;
+        font-size: 12px;
+    }
+}

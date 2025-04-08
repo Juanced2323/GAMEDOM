@@ -3,35 +3,252 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | HundeLaFlota</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <title>HundirLaFlota</title>
     <link rel="stylesheet" href="TemplateData/style.css">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f9;
+      }
+
+      #marcador {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 15px;
+        border-radius: 8px;
+        width: 250px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        font-size: 1em;
+      }
+
+      #marcador h3 {
+        margin-top: 0;
+        font-size: 1.4em;
+        color: #333;
+        text-align: center;
+        margin-bottom: 15px;
+      }
+
+      .barcos {
+        display: flex;
+        justify-content: space-between;
+        margin: 8px 0;
+        font-size: 1.1em;
+        color: #555;
+      }
+
+      .barcos span {
+        font-weight: bold;
+        color: #007bff;
+      }
+
+      #marcador p {
+        font-size: 1.1em;
+        color: #777;
+      }
+
+      #marcador .turno {
+        margin-top: 15px;
+        font-size: 1.1em;
+        font-weight: bold;
+        color: #333;
+      }
+
+      #marcador .turno span {
+        color: #007bff;
+      }
+
+      #ganador {
+        margin-top: 20px;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #d9534f;
+        text-align: center;
+      }
+
+      #historial {
+        margin-top: 20px;
+        max-height: 200px;
+        overflow-y: auto;
+        border-top: 1px solid #ccc;
+        padding-top: 10px;
+      }
+
+      #historial h4 {
+        margin: 0 0 10px;
+        font-size: 1.1em;
+        color: #444;
+      }
+
+      #historial ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+        font-size: 0.95em;
+        color: #333;
+      }
+
+      #historial li {
+        margin-bottom: 6px;
+        border-bottom: 1px dashed #ddd;
+        padding-bottom: 4px;
+      }
+
+      @media (max-width: 768px) {
+        #marcador {
+          width: 200px;
+          padding: 12px;
+        }
+
+        canvas {
+          width: 100%;
+          height: auto;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-logo-title-footer"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">HundeLaFlota</div>
+    <!-- Interfaz de la Nueva Actualización -->
+<div style="display: flex; justify-content: center; align-items: flex-start; gap: 20px; margin-top: 20px;">
+  <!-- Sección de Marcador -->
+  <div id="marcador">
+    <h3>Marcador</h3>
+    <div class="barcos">
+      <span>Barcos Jugador 1:</span>
+      <span id="barcos1">5</span>
+    </div>
+    <div class="barcos">
+      <span>Barcos Jugador 2:</span>
+      <span id="barcos2">5</span>
+    </div>
+    <p class="turno">Turno: <span id="turno">Jugador 1</span></p>
+    <p id="ganador"></p>
+    <div id="historial">
+      <h4>Historial de movimientos</h4>
+      <ul id="listaHistorial"></ul>
+    </div>
+  </div>
+
+  <!-- Contenedor del Juego Unity (Nueva Versión) -->
+  <div id="unity-container" class="unity-desktop">
+    <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
+    <div id="unity-loading-bar">
+      <div id="unity-logo"></div>
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
       </div>
     </div>
+    <div id="unity-warning"></div>
+    <div id="unity-footer">
+      <div id="unity-logo-title-footer"></div>
+      <div id="unity-fullscreen-button"></div>
+      <div id="unity-build-title">HundirLaFlota</div>
+    </div>
+  </div>
+</div>
+
+<!-- Se conserva el Chat de la Versión Antigua -->
+<div id="chat-container" class="chat-container">
+  <h2>Chat en Vivo</h2>
+  <div id="chat-box" class="chat-box"></div>
+  <div id="chat-input-container">
+    <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autofocus>
+    <button>Enviar</button>
+  </div>
+</div>
+
+
     <script>
+      let turno = 1;
+      let juegoTerminado = false;
+      let numeroMovimiento = 1;
+
+      // Vida de cada barco (entre 2 y 5)
+      let barcosJugador1 = Array.from({ length: 5 }, () => Math.floor(Math.random() * 4) + 2);
+      let barcosJugador2 = Array.from({ length: 5 }, () => Math.floor(Math.random() * 4) + 2);
+
+      function actualizarMarcador() {
+        document.getElementById("barcos1").textContent = barcosJugador1.length;
+        document.getElementById("barcos2").textContent = barcosJugador2.length;
+        document.getElementById("turno").textContent = turno === 1 ? "Jugador 1" : "Jugador 2";
+
+        if (barcosJugador1.length === 0) {
+          document.getElementById("ganador").textContent = "¡Ha ganado el Jugador 2!";
+          juegoTerminado = true;
+        } else if (barcosJugador2.length === 0) {
+          document.getElementById("ganador").textContent = "¡Ha ganado el Jugador 1!";
+          juegoTerminado = true;
+        }
+      }
+
+      function registrarMovimiento(texto, color) {
+        const li = document.createElement("li");
+        li.textContent = texto;
+        li.style.color = color;
+        document.getElementById("listaHistorial").prepend(li);
+      }
+
+      function cambiarBarcos(jugador) {
+        if (juegoTerminado) return;
+
+        const acierto = Math.random() < 0.5; // 50% probabilidad de acertar
+        let mensaje = "";
+        let color = "";
+
+        if (jugador === 1 && barcosJugador2.length > 0) {
+          if (acierto) {
+            barcosJugador2[0]--;
+            if (barcosJugador2[0] === 0) {
+              barcosJugador2.shift();
+              mensaje = `Turno ${numeroMovimiento}: Jugador 1 disparó a Jugador 2 - ¡Barco hundido!`;
+              color = "green";
+            } else {
+              mensaje = `Turno ${numeroMovimiento}: Jugador 1 disparó a Jugador 2 - ¡Impacto!`;
+              color = "blue";
+            }
+          } else {
+            mensaje = `Turno ${numeroMovimiento}: Jugador 1 disparó a Jugador 2 - Falló`;
+            color = "red";
+          }
+        }
+
+        if (jugador === 2 && barcosJugador1.length > 0) {
+          if (acierto) {
+            barcosJugador1[0]--;
+            if (barcosJugador1[0] === 0) {
+              barcosJugador1.shift();
+              mensaje = `Turno ${numeroMovimiento}: Jugador 2 disparó a Jugador 1 - ¡Barco hundido!`;
+              color = "green";
+            } else {
+              mensaje = `Turno ${numeroMovimiento}: Jugador 2 disparó a Jugador 1 - ¡Impacto!`;
+              color = "blue";
+            }
+          } else {
+            mensaje = `Turno ${numeroMovimiento}: Jugador 2 disparó a Jugador 1 - Falló`;
+            color = "red";
+          }
+        }
+
+        if (mensaje) registrarMovimiento(mensaje, color);
+
+        actualizarMarcador();
+        turno = turno === 1 ? 2 : 1;
+        numeroMovimiento++;
+      }
+
+      setInterval(() => {
+        cambiarBarcos(turno);
+      }, 3000);
+
+      actualizarMarcador();
+
+      // Unity config
       var canvas = document.querySelector("#unity-canvas");
 
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
       function unityShowBanner(msg, type) {
         var warningBanner = document.querySelector("#unity-warning");
         function updateBannerVisibility() {
@@ -40,10 +257,10 @@
         var div = document.createElement('div');
         div.innerHTML = msg;
         warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        if (type === 'error') div.style = 'background: red; padding: 10px;';
         else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
+          if (type === 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function () {
             warningBanner.removeChild(div);
             updateBannerVisibility();
           }, 5000);
@@ -60,45 +277,21 @@
         codeUrl: buildUrl + "/hlf.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
-        productName: "HundeLaFlota",
+        productName: "HundirLaFlota",
         productVersion: "0.1.0",
         showBanner: unityShowBanner,
       };
 
-      // By default, Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
-
-      // If you would like all file writes inside Unity Application.persistentDataPath
-      // directory to automatically persist so that the contents are remembered when
-      // the user revisits the site the next time, uncomment the following line:
-      // config.autoSyncPersistentDataPath = true;
-      // This autosyncing is currently not the default behavior to avoid regressing
-      // existing user projects that might rely on the earlier manual
-      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
-      // expected to change.
-
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
-
         var meta = document.createElement('meta');
         meta.name = 'viewport';
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
         document.querySelector("#unity-container").className = "unity-mobile";
         canvas.className = "unity-mobile";
-
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
-
-
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "960px";
+        canvas.style.width = "900px"; //para el chat quito 60px
         canvas.style.height = "600px";
       }
 
@@ -109,19 +302,25 @@
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
-              }).then((unityInstance) => {
-                document.querySelector("#unity-loading-bar").style.display = "none";
-                document.querySelector("#unity-fullscreen-button").onclick = () => {
-                  unityInstance.SetFullscreen(1);
-                };
-
-              }).catch((message) => {
-                alert(message);
-              });
-            };
+        }).then((unityInstance) => {
+          document.querySelector("#unity-loading-bar").style.display = "none";
+          document.querySelector("#unity-fullscreen-button").onclick = () => {
+            unityInstance.SetFullscreen(1);
+          };
+        }).catch((message) => {
+          alert(message);
+        });
+      };
 
       document.body.appendChild(script);
-
     </script>
+
+    <!-- Script del Chat -->
+    <!-- <script src="http://localhost:8090/socket.io/socket.io.js"></script> -->
+    <script src="../../js/chatjuegos.js"></script>
+    
+    <!-- Script de interaccion entre juego y chat -->
+    <!-- <script src="../../js/interaccion.js"></script> -->
+
   </body>
 </html>
