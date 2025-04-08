@@ -292,12 +292,11 @@ $conn->close();
       }, 5000);
   }
 
-  // Función para actualizar el ranking al pulsar "Jugar Ahora" y mostrar logros
-  function playGame(id_juego, ruta_index) {
+    function playGame(id_juego, ruta_index) {
     const formData = new FormData();
-    formData.append('id_juego', id_juego);
+    formData.append('juego_id', id_juego);
 
-    // Llamada al endpoint que actualiza ranking/logros
+    // Paso 1: Actualizar ranking y logros
     fetch('php/update_ranking.php', {
       method: 'POST',
       body: formData
@@ -305,19 +304,35 @@ $conn->close();
     .then(response => response.json())
     .then(data => {
       if (data.status === 'success') {
-        // Si hay logros, los mostramos con notificación
+        const handleRedirect = () => {
+          // Paso 2: Crear o unirse a una partida
+          fetch('php/gestor_partidas.php', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(partidaData => {
+            if (partidaData.status === 'success') {
+              window.location.href = partidaData.redirect;
+            } else {
+              alert("Error al unirse o crear partida.");
+            }
+          })
+          .catch(error => {
+            console.error("Error al crear/unirse a partida:", error);
+          });
+        };
+
+        // Si hay logros, mostrarlos y luego continuar
         if (data.achievements && data.achievements.length > 0) {
           data.achievements.forEach(achievement => {
             showAchievementNotification(achievement);
           });
-          // Esperamos ~6 segundos para que se vean las animaciones y luego redirigimos
-          setTimeout(() => {
-            window.location.href = ruta_index;
-          }, 6000);
+          setTimeout(handleRedirect, 6000);
         } else {
-          // Si no hay logros, redirigimos inmediatamente
-          window.location.href = ruta_index;
+          handleRedirect();
         }
+
       } else {
         alert("Error al actualizar ranking: " + data.message);
         window.location.href = ruta_index;

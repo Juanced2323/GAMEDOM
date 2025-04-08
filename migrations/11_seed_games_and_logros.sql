@@ -1,10 +1,10 @@
 USE gamedom_users;
 
 -- Insertar los 2 juegos (sin imágenes, se usan NULL o cadenas vacías para capturas)
-INSERT INTO juegos (nombre, icono, descripcion, capturas, ruta_index, modo_juego)
+INSERT INTO juegos (nombre, icono, descripcion, capturas, ruta_index, modo_juego, max_jugadores)
 VALUES 
-  ('Risk', NULL, 'Juego de estrategia y conquista.', NULL, 'games/Risk/index.html', 'Multijugador'),
-  ('Hundir la Flota', NULL, 'Reinvención del clásico juego de estrategia naval.', NULL, 'games/HundirLaFlota/index.html', 'Individual');
+  ('Risk', NULL, 'Juego de estrategia y conquista.', NULL, 'games/Risk/index.html', 'Multijugador', 6),
+  ('Hundir la Flota', NULL, 'Reinvención del clásico juego de estrategia naval.', NULL, 'games/HundirLaFlota/index.html', 'Individual', 2);
 
 -- Suponiendo que el primer juego insertado tiene id_juego = 1 y el segundo = 2
 
