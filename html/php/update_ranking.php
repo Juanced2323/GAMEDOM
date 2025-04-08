@@ -14,7 +14,8 @@ require_once "db_connect.php";
 require_once "logros.php"; // Archivo con función asignarLogro()
 
 $usuario = $_SESSION['usuario'];
-$id_juego = intval($_POST['id_juego'] ?? 0);
+// Se cambia de 'id_juego' a 'juego_id'
+$id_juego = intval($_POST['juego_id'] ?? 0);
 $elo_a_sumar = 50; // Asegúrate de que este valor sea el adecuado para sumar
 
 // Unificar y normalizar el resultado de la partida (se espera: "victoria", "derrota" o "jugado")
