@@ -1,0 +1,75 @@
+/* ===============================
+   Estilos para la Biblioteca
+=============================== */
+
+/* Contenedor principal de la biblioteca */
+.game-catalog {
+    max-width: 1200px;
+    margin: 20px auto; 
+    padding: 20px;
+    background: #f9dfbc; /* mismo color de fondo si quieres un bloque */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .game-catalog h2 {
+    text-align: center;
+    color: #7d110d;
+    margin-bottom: 20px;
+  }
+  
+  /* Contenedor de la lista de juegos (display grid) */
+  .game-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+  
+  /* Tarjetas de juego */
+  .game-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.3s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  
+  .game-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .game-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .game-card h4 {
+    margin: 10px 0;
+    color: #7d110d;
+    font-size: 1.1rem;
+    padding: 0 5px;
+  }
+  
+  /* Enlace de la tarjeta */
+  .game-card a {
+    text-decoration: none;
+    color: #333;
+    display: block; /* Para que ocupe todo el card */
+  }
+  
+  .game-card a:hover h4 {
+    text-decoration: underline;
+  }
+  
+  /* Mensaje cuando no hay juegos */
+  .no-games {
+    text-align: center;
+    color: #7d110d;
+    font-size: 1rem;
+    margin-top: 30px;
+  }
+  
