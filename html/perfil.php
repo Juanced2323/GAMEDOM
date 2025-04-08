@@ -231,6 +231,15 @@ if (!empty($userData['imagen'])) {
           </div>
         <?php endforeach; ?>
       </div>
+
+      <!-- Sección de Partidas Pendientes -->
+      <div class="logros-section" id="partidas-section">
+        <h2>Partidas en Curso</h2>
+        <div id="partidas-lista">
+          <p>Cargando tus partidas...</p>
+        </div>
+      </div>
+
       <?php else: ?>
         <p>Aún no has conseguido ningún logro.</p>
       <?php endif; ?>
@@ -295,5 +304,39 @@ if (!empty($userData['imagen'])) {
     }
   </script>
   <script src="js/achievements.js"></script>
+
+    <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    fetch('php/obtener_partidas.php')
+      .then(response => response.json())
+      .then(data => {
+        const lista = document.getElementById('partidas-lista');
+        lista.innerHTML = ''; // Limpiar mensaje de carga
+
+        if (data.length === 0) {
+          lista.innerHTML = '<p>No estás en ninguna partida actualmente.</p>';
+          return;
+        }
+
+        data.forEach(partida => {
+          const partidaDiv = document.createElement('div');
+          partidaDiv.classList.add('logro-item');
+
+          partidaDiv.innerHTML = `
+            <h4>${partida.nombre_juego}</h4>
+            <p>ID Partida: ${partida.partida_id}</p>
+            <p>${partida.es_tu_turno === 'Sí' ? '🎯 ¡Es tu turno!' : '⏳ Esperando turno'}</p>
+          `;
+
+          lista.appendChild(partidaDiv);
+        });
+      })
+      .catch(error => {
+        console.error('Error al cargar partidas:', error);
+        document.getElementById('partidas-lista').innerHTML = '<p>Error al cargar las partidas.</p>';
+      });
+  });
+  </script>
+
 </body>
 </html>
