@@ -10,8 +10,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $estado = $_POST["estado"];
     $elo_minimo = intval($_POST["elo_minimo"]);
 
+    // Preparamos la consulta con verificación de error
     $stmt = $conn->prepare("INSERT INTO torneos (id_juego, nombre_torneo, fecha_inicio, fecha_fin, estado, descripcion, elo_minimo)
                             VALUES (?, ?, ?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        die("Error en prepare: " . $conn->error);
+    }
+
     $stmt->bind_param("isssssi", $id_juego, $nombre, $fecha_inicio, $fecha_fin, $estado, $descripcion, $elo_minimo);
 
     if ($stmt->execute()) {
