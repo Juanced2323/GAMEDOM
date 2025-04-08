@@ -1,24 +1,26 @@
-/* ESTILOS PARA LA SECCIÓN DE COMUNIDAD Y RANKINGS */
+/* ========================================
+   ESTILOS PARA LA SECCIÓN DE COMUNIDAD Y RANKINGS
+======================================== */
 
-/* Estilos para el formulario de selección de juego */
+/* Selector de juego */
 .game-selector {
     max-width: 600px;
     margin: 20px auto;
     text-align: center;
 }
-
 .game-selector label {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: bold;
     color: #7d110d;
+    margin-right: 10px;
 }
-
 .game-selector select {
-    padding: 8px;
+    padding: 8px 10px;
     font-size: 1rem;
     margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
-
 .game-selector button {
     padding: 8px 16px;
     font-size: 1rem;
@@ -27,66 +29,116 @@
     border: none;
     cursor: pointer;
     border-radius: 4px;
-    transition: background 0.3s;
+    transition: background 0.3s ease;
 }
-
 .game-selector button:hover {
     background: #a42620;
 }
 
-/* Información del juego seleccionado y posición del usuario */
+/* Información del juego seleccionado */
 .selected-game-info {
+    max-width: 600px;
+    margin: 20px auto 30px auto;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     text-align: center;
-    margin-bottom: 30px;
 }
-
 .selected-game-info h3 {
     color: #7d110d;
     font-size: 1.8rem;
+    margin-bottom: 10px;
 }
-
 .selected-game-info p {
     font-size: 1rem;
     color: #333;
 }
 
-/* Contenedores para secciones de ranking */
+/* Contenedor de Rankings */
 .ranking-section {
     margin: 40px auto;
     max-width: 1200px;
-    padding: 20px;
+    padding: 20px 30px;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-
 .ranking-section h3 {
     margin-bottom: 20px;
     color: #7d110d;
     text-align: center;
+    font-size: 1.8rem;
+    border-bottom: 2px solid #7d110d;
+    padding-bottom: 10px;
 }
 
-/* Ranking de cada juego o de usuarios con menos de 50 partidas */
+/* Tablas de Ranking */
 .ranking-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
 }
-
 .ranking-table th,
 .ranking-table td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 12px;
     text-align: center;
 }
-
 .ranking-table th {
     background: #7d110d;
     color: #F9DFBC;
+    font-size: 1rem;
 }
-
-/* Resaltar la fila del usuario actual en el ranking general */
+.ranking-table td {
+    font-size: 0.95rem;
+}
 .ranking-table tr.highlight {
     background: #f8e9d6;
     font-weight: bold;
+}
+
+/* Estilos para la sección Comunidad */
+.community-section {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #F9DFBC;
+    border-radius: 8px;
+    text-align: center;
+    color: #7d110d;
+}
+.community-section h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+.community-section p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+/* ==============================
+   FOOTER (Similar al de Index)
+============================== */
+.footer {
+    width: 100%;
+    background: #7d110d;
+    color: #F9DFBC;
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    margin-top: 6%;
+}
+.footer nav {
+    margin-top: 5px;
+}
+.footer a {
+    color: #F9DFBC;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 8px;
+}
+.footer a:hover {
+    text-decoration: underline;
 }
