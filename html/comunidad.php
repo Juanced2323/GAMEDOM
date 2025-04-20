@@ -14,7 +14,7 @@ while ($rowGame = $resultGames->fetch_assoc()) {
 }
 $resultGames->close();
 
-// ========== Verificar login ==========
+// ========== PAGINA PARA USUARIOS NO LOGUEADOS ==========
 if (!isset($_SESSION['usuario'])) {
     $conn->close();
     ?>
@@ -26,10 +26,6 @@ if (!isset($_SESSION['usuario'])) {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <!-- CSS principal (igual que index) -->
       <link rel="stylesheet" href="css/Index.css">
-      <!-- CSS para comunidad (rankings, etc.) -->
-      <link rel="stylesheet" href="css/community.css">
-      <!-- CSS del chat si lo necesitas -->
-      <link rel="stylesheet" href="css/chat.css">
     </head>
     <body>
       <!-- MENÚ SUPERIOR (idéntico a index.php) -->
@@ -41,7 +37,7 @@ if (!isset($_SESSION['usuario'])) {
           <a href="index.php" class="nav-item <?php echo ($activePage === 'index') ? 'active' : ''; ?>">Inicio</a>
           <a href="biblioteca.php" class="nav-item <?php echo ($activePage === 'biblioteca') ? 'active' : ''; ?>">Biblioteca</a>
           <a href="comunidad.php" class="nav-item <?php echo ($activePage === 'comunidad') ? 'active' : ''; ?>">Comunidad</a>
-          <a href="premios.php" class="nav-item <?php echo ($activePage === 'premios') ? 'active' : ''; ?>">Premios</a>
+          <a href="torneos.php" class="nav-item <?php echo ($activePage === 'torneos') ? 'active' : ''; ?>">Torneos</a>
           <a href="login.html" class="nav-item">Iniciar Sesión</a>
         </div>
       </div>
@@ -68,19 +64,6 @@ if (!isset($_SESSION['usuario'])) {
           <a href="A cerca de.html">A cerca de CodeCrafters</a>
         </nav>
       </footer>
-
-      <!-- Chat si lo necesitas -->
-      <div id="chat-container" class="chat-container">
-        <h2>Chat en Vivo</h2>
-        <div id="chat-box" class="chat-box"></div>
-        <div id="chat-input-container">
-          <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autofocus>
-          <button>Enviar</button>
-        </div> 
-      </div>
-      <!-- Scripts -->
-      <script src="js/socket.io.js"></script>
-      <script src="js/chat.js"></script>
     </body>
     </html>
     <?php
@@ -185,6 +168,8 @@ if ($selectedGame > 0) {
 
 $conn->close();
 ?>
+
+<!-- PAGINA PARA USUARIOS LOGUEADOS -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -194,13 +179,11 @@ $conn->close();
   
   <!-- CSS principal (mismo que index) -->
   <link rel="stylesheet" href="css/Index.css">
-  <!-- CSS del Chat -->
-  <link rel="stylesheet" href="css/chat.css">
   <!-- CSS para Comunidad (rankings, etc.) -->
   <link rel="stylesheet" href="css/community.css">
 </head>
 <body>
-  <!-- MENÚ SUPERIOR (igual que en index.php) -->
+  <!-- MENÚ SUPERIOR -->
   <div class="menu-superior">
     <div class="nav-left">
       <img src="images/imagenes/Logo.png" alt="Logo Gamedom" class="logo">
@@ -209,7 +192,7 @@ $conn->close();
       <a href="index.php" class="nav-item <?php echo ($activePage === 'index') ? 'active' : ''; ?>">Inicio</a>
       <a href="biblioteca.php" class="nav-item <?php echo ($activePage === 'biblioteca') ? 'active' : ''; ?>">Biblioteca</a>
       <a href="comunidad.php" class="nav-item <?php echo ($activePage === 'comunidad') ? 'active' : ''; ?>">Comunidad</a>
-      <a href="premios.php" class="nav-item <?php echo ($activePage === 'premios') ? 'active' : ''; ?>">Premios</a>
+      <a href="torneos.php" class="nav-item <?php echo ($activePage === 'torneos') ? 'active' : ''; ?>">Torneos</a>
       <?php if (isset($_SESSION['usuario'])): ?>
         <a href="perfil.php" class="nav-item <?php echo ($activePage === 'perfil') ? 'active' : ''; ?>">Perfil</a>
       <?php else: ?>
@@ -368,6 +351,43 @@ $conn->close();
     </section>
   </main>
 
+  <!-- Boton flotante del chat -->
+  <div id="chat-toggle-btn" class="chat-toggle-btn" title="Abrir chat">
+  💬
+  </div>
+
+  <div id="chat-container" class="chat-container hidden">
+    <!-- Cabecera del chat con botón del menú -->
+    <div class="chat-header">
+      <h2>Chat en Vivo</h2>
+      <button class="openbtn" onclick="toggleSidebar()">☰</button>
+    </div>
+
+    <!-- Sidebar de opciones dentro del chat -->
+    <div id="sidebar" class="chat-sidebar hidden">
+      <a href="#" onclick="mostrarFormularioAmigo()">➕ Añadir amigo</a>
+      <a href="#">📩 Chat privado</a>
+      <a href="#">🎮🔒 Partida privada</a>
+    </div>
+
+    <!-- Añadir amigos -->
+    <div id="form-solicitud-amigo" class="chat-popup hidden">
+      <h3>Enviar solicitud de amistad</h3>
+      <input type="email" id="correo-amigo" placeholder="Correo del usuario" required>
+      <button onclick="enviarSolicitudAmistad()">Añadir</button>
+      <button onclick="cerrarFormularioAmigo()">Cancelar</button>
+    </div>
+
+    <!-- Mensajes -->
+    <div id="chat-box" class="chat-box"></div>
+
+    <!-- Entrada de mensaje -->
+    <div id="chat-input-container">
+      <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autofocus>
+      <button id="chat-send-btn">Enviar</button>
+    </div>
+  </div>
+
   <!-- FOOTER igual que index -->
   <footer class="footer">
     <p>
@@ -383,19 +403,13 @@ $conn->close();
     </nav>
   </footer>
 
-  <!-- Chat -->
-  <div id="chat-container" class="chat-container">
-    <h2>Chat en Vivo</h2>
-    <div id="chat-box" class="chat-box"></div>
-    <div id="chat-input-container">
-      <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autofocus>
-      <button>Enviar</button>
-    </div> 
-  </div>
-
   <!-- Scripts -->
-  <script src="js/socket.io.js"></script>
+  <script>
+    document.body.dataset.userCorreo = "<?php echo htmlspecialchars($_SESSION['correo'], ENT_QUOTES); ?>";
+    document.body.dataset.userNombre = "<?php echo htmlspecialchars($_SESSION['usuario'], ENT_QUOTES); ?>";
+  </script>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
   <script src="js/chat.js"></script>
-  <script src="js/main.js"></script>
+  
 </body>
 </html>

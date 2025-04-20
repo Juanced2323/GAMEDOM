@@ -1,68 +1,112 @@
 const socket = io("http://localhost:8090");
+
 const chatBox = document.getElementById("chat-box");
 const chatInput = document.getElementById("chat-input");
-const sendButton = document.querySelector("button");
+const sendButton = document.querySelector("#chat-input-container button");
+const toggleBtn = document.getElementById("chat-toggle-btn");
+const chatContainer = document.getElementById("chat-container");
+const userCorreo = document.body.dataset.userCorreo;
+const userNombre = document.body.dataset.userNombre;
 
-let userId = '';
 let isChatFocused = false;
 
-// Recibir el nombre de usuario del servidor
-socket.on('user_id', (id) => {
-  userId = id;
+// Registrar identidad del usuario
+socket.emit("registrar_usuario", {
+  correo: userCorreo,
+  nombre: userNombre,
 });
 
-// Evento cuando se recibe un mensaje
-socket.on("message", function(data) {
-  if (data.userId !== userId) { // Verificar si el mensaje no es del usuario actual
-    const messageDiv = document.createElement("div");
-    messageDiv.classList.add("message", "other");
-    messageDiv.textContent = `${data.userId}: ${data.message}`;
-    chatBox.appendChild(messageDiv);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
+// Mostrar mensajes entrantes
+socket.on("message", function (data) {
+  if (!chatBox || !data.message) return;
+
+  const isOwn = data.correo === userCorreo;
+  const messageDiv = document.createElement("div");
+  messageDiv.classList.add("message", isOwn ? "user" : "other");
+
+  const span = document.createElement("span");
+  span.classList.add("username");
+  span.classList.add(isOwn ? "username-user" : "username-other");
+  span.textContent = `${data.nombre} (${data.correo}): `;
+  span.dataset.userid = data.correo;
+
+  const msg = document.createTextNode(data.message);
+
+  messageDiv.appendChild(span);
+  messageDiv.appendChild(msg);
+
+  chatBox.appendChild(messageDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
 });
 
-sendButton.addEventListener("click", sendMessage);
+// Enviar mensaje
+function sendMessage() {
+  const message = chatInput.value.trim();
+  if (!message) return;
 
-chatInput.addEventListener("keydown", function(e) {
+  // Emitir mensaje al servidor (será reenviado para todos, incluido el emisor)
+  socket.emit("message", { message });
+  chatInput.value = "";
+}
+
+sendButton?.addEventListener("click", sendMessage);
+chatInput?.addEventListener("keydown", function (e) {
   if (e.key === "Enter") {
     sendMessage();
   }
 });
 
-chatInput.addEventListener("focus", function() {
-  isChatFocused = true;
-});
+chatInput?.addEventListener("focus", () => isChatFocused = true);
+chatInput?.addEventListener("blur", () => isChatFocused = false);
 
-chatInput.addEventListener("blur", function() {
-  isChatFocused = false;
-});
-
-function sendMessage() {
-  const message = chatInput.value.trim();
-
-  if (message) {
-    // Enviar mensaje al servidor Socket.IO
-    socket.emit("message", { userId: userId, message: message });
-
-    // Mostrar el mensaje del usuario a la derecha y en azul
-    const userMessage = document.createElement("div");
-    userMessage.classList.add("message", "user");
-    userMessage.textContent = `Tú: ${message}`; // Mostrar "Tú" en lugar del userId
-    chatBox.appendChild(userMessage);
-    chatBox.scrollTop = chatBox.scrollHeight;
-
-    chatInput.value = "";
-  }
-}
-
-// Mantener el enfoque en el campo de entrada si alguna vez fue enfocado
 setInterval(() => {
-  if (isChatFocused) {
-    chatInput.focus();
-  }
+  if (isChatFocused && chatInput) chatInput.focus();
 }, 100);
 
-document.getElementById("chat-input").addEventListener("keydown", (event) => {
-  console.log("Input detected:", event.key);
+toggleBtn?.addEventListener("click", () => {
+  chatContainer?.classList.toggle("hidden");
 });
+
+//Menu del chat
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar");
+  sidebar.classList.toggle("hidden");
+}
+
+//Añadir amigo
+
+function mostrarFormularioAmigo() {
+  const form = document.getElementById("form-solicitud-amigo");
+  form.classList.remove("hidden");
+}
+
+function cerrarFormularioAmigo() {
+  const form = document.getElementById("form-solicitud-amigo");
+  form.classList.add("hidden");
+}
+
+function enviarSolicitudAmistad() {
+  const correo = document.getElementById("correo-amigo").value.trim();
+  if (!correo) return alert("Introduce un correo válido");
+
+  fetch("php/add_amistad.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ correo })
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert("Solicitud enviada correctamente");
+      } else {
+        alert(data.error || "Error al enviar solicitud");
+      }
+    })
+    .catch(err => {
+      console.error("Error:", err);
+      alert("Error de conexión con el servidor");
+    });
+
+  document.getElementById("correo-amigo").value = "";
+  cerrarFormularioAmigo();
+}

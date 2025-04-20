@@ -1,55 +1,4 @@
 /* ========================
-RESET Y ESTILOS GLOBALES
-======================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-  
-body {
-    background: #F9DFBC;
-    font-family: system-ui, sans-serif;
-    color: #000;
-}
-  
-/* ========================
-HEADER / NAVBAR
-======================== */
-header {
-    background-color: #7d110d;
-    padding: 15px 5%;
-}
-  
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-}
-  
-.nav-left,
-.nav-right {
-    display: flex;
-    align-items: center;
-}
-  
-.nav-item {
-    color: #F9DFBC;
-    text-decoration: none;
-    margin: 0 12px;
-    font-weight: bold;
-    font-size: 16px;
-    transition: color 0.3s;
-}
-  
-.nav-item:hover,
-.nav-item.active {
-    text-decoration: underline;
-    color: #fff2c7;
-}
-  
-/* ========================
 MAIN - SECCIONES
 ======================== */
 .main-content {
@@ -173,29 +122,6 @@ PREMIOS Y BENEFICIOS
   
 .premios-lista li:last-child {
     border-bottom: none;
-}
-  
-/* ========================
-FOOTER
-======================== */
-footer {
-    background-color: #7d110d;
-    color: #F9DFBC;
-    text-align: center;
-    padding: 20px;
-    font-size: 14px;
-    margin-top: 40px;
-}
-  
-footer a {
-    color: #F9DFBC;
-    text-decoration: none;
-    margin: 0 10px;
-    font-weight: bold;
-}
-  
-footer a:hover {
-    text-decoration: underline;
 }
   
 /* ========================

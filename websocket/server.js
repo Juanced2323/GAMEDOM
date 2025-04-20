@@ -6,39 +6,53 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server, {
     cors: {
-        origin: "http://localhost:8080", // Permite conexiones desde tu aplicación
+        origin: "*", // Asegúrate que permite conexión desde tu frontend
         methods: ["GET", "POST"]
     }
 });
 
-const users = {}; // Objeto para almacenar usuarios y sus sockets
+// Almacenamos info de usuario por socket.id
+const usuarios = {};
 
 io.on('connection', (socket) => {
-    console.log('Nuevo cliente conectado');
+    console.log('Cliente conectado:', socket.id);
 
-    // Asignar un nombre de usuario único al cliente
-    const userId = `user_${Date.now()}`;
-    users[userId] = socket;
-
-    // Enviar el nombre de usuario al cliente
-    socket.emit('user_id', userId);
-
-    // Manejar mensajes del cliente
-    socket.on('message', (data) => {
-        console.log(`Mensaje de ${data.userId}: ${data.message}`);
-
-        // Enviar el mensaje a todos los clientes conectados como un objeto
-        io.emit('message', { userId: data.userId, message: data.message });
+    // Escuchar evento de registro
+    socket.on('registrar_usuario', (data) => {
+        usuarios[socket.id] = {
+            correo: data.correo,
+            nombre: data.nombre
+        };
+        console.log(`Usuario registrado: ${data.nombre} (${data.correo})`);
     });
 
-    // Manejar desconexiones
+    // Escuchar mensajes
+    socket.on('message', (data) => {
+        const usuario = usuarios[socket.id];
+
+        if (!usuario) {
+            console.warn("Usuario no registrado aún");
+            return;
+        }
+
+        console.log(`Mensaje de ${usuario.correo}: ${data.message}`);
+
+        // Emitir a todos los clientes incluyendo nombre y correo reales
+        io.emit('message', {
+            correo: usuario.correo,
+            nombre: usuario.nombre,
+            message: data.message
+        });
+    });
+
+    // Desconexión
     socket.on('disconnect', () => {
-        console.log(`Cliente ${userId} desconectado`);
-        delete users[userId];
+        console.log('Cliente desconectado:', socket.id);
+        delete usuarios[socket.id];
     });
 });
 
 const PORT = 8080;
 server.listen(PORT, () => {
-    console.log(`Servidor Socket.IO iniciado en el puerto ${PORT}`);
+    console.log(`Servidor WebSocket escuchando en puerto ${PORT}`);
 });

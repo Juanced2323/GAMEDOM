@@ -41,26 +41,27 @@ $resultFinalizados = $conn->query($queryFinalizados);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Torneos - GAMEDOM</title>
+  <link rel="stylesheet" href="css/Index.css">
   <link rel="stylesheet" href="css/torneos.css">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="nav-left">
-        <a href="index.php" class="nav-item <?php echo ($activePage === 'index') ? 'active' : ''; ?>">Inicio</a>
-        <a href="biblioteca.php" class="nav-item <?php echo ($activePage === 'biblioteca') ? 'active' : ''; ?>">Biblioteca</a>
-        <a href="comunidad.php" class="nav-item <?php echo ($activePage === 'comunidad') ? 'active' : ''; ?>">Comunidad</a>
-        <a href="torneos.php" class="nav-item <?php echo ($activePage === 'torneos') ? 'active' : ''; ?>">Torneos</a>
-      </div>
-      <div class="nav-right">
-        <?php if (isset($_SESSION['usuario'])): ?>
-          <a href="perfil.php" class="nav-item">Perfil</a>
-        <?php else: ?>
-          <a href="login.html" class="nav-item">Iniciar sesión</a>
-        <?php endif; ?>
-      </div>
-    </nav>
-  </header>
+  <!-- MENÚ SUPERIOR -->
+  <div class="menu-superior">
+    <div class="nav-left">
+      <img src="images/imagenes/Logo.png" alt="Logo Gamedom" class="logo">
+    </div>
+    <div class="nav-right">
+      <a href="index.php" class="nav-item <?php echo ($activePage === 'index') ? 'active' : ''; ?>">Inicio</a>
+      <a href="biblioteca.php" class="nav-item <?php echo ($activePage === 'biblioteca') ? 'active' : ''; ?>">Biblioteca</a>
+      <a href="comunidad.php" class="nav-item <?php echo ($activePage === 'comunidad') ? 'active' : ''; ?>">Comunidad</a>
+      <a href="torneos.php" class="nav-item <?php echo ($activePage === 'torneos') ? 'active' : ''; ?>">Torneos</a>
+      <?php if (isset($_SESSION['usuario'])): ?>
+        <a href="perfil.php" class="nav-item <?php echo ($activePage === 'perfil') ? 'active' : ''; ?>">Perfil</a>
+      <?php else: ?>
+        <a href="login.html" class="nav-item">Iniciar Sesión</a>
+      <?php endif; ?>
+    </div>
+  </div>
 
   <main class="main-content">
     <!-- Torneos Activos -->
@@ -114,16 +115,18 @@ $resultFinalizados = $conn->query($queryFinalizados);
     </section>
   </main>
 
+  <!-- FOOTER igual que index -->
   <footer class="footer">
-    <p data-text="footer">
-      © 2025 CodeCrafters. Todos los derechos reservados. Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.<br>
+    <p>
+      © 2025 CodeCrafters. Todos los derechos reservados.  
+      Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.<br>
       Todos los precios incluyen IVA (donde sea aplicable).
     </p>
     <nav>
-      <a href="Política de privacidad.html" data-text="privacy">Política de Privacidad</a> |
-      <a href="Información legal.html" data-text="legal">Información legal</a> |
-      <a href="Cookies.html" data-text="cookies">Cookies</a> |
-      <a href="A cerca de.html" data-text="about">A cerca de CodeCrafters</a>
+      <a href="Política de privacidad.html">Política de Privacidad</a> |
+      <a href="Información legal.html">Información legal</a> |
+      <a href="Cookies.html">Cookies</a> |
+      <a href="A cerca de.html">A cerca de CodeCrafters</a>
     </nav>
   </footer>
 </body>

@@ -28,6 +28,27 @@ if (!empty($userData['imagen'])) {
     $img_src = 'images/default-profile.png';
 }
 
+// Obtener lista de amigos
+$correoUsuario = $userData['correo'];
+$stmtAmigos = $conn->prepare("SELECT u.usuario, u.correo FROM usuarios u 
+                             JOIN amistades a ON (a.solicitante = u.correo OR a.destinatario = u.correo) 
+                             WHERE (a.solicitante = ? OR a.destinatario = ?) AND u.correo != ? AND a.estado = 'aceptada'");
+$stmtAmigos->bind_param("sss", $correoUsuario, $correoUsuario, $correoUsuario);
+$stmtAmigos->execute();
+$resAmigos = $stmtAmigos->get_result();
+$amigos = $resAmigos->fetch_all(MYSQLI_ASSOC);
+$stmtAmigos->close();
+
+// Obtener solicitudes pendientes
+$stmtPendientes = $conn->prepare("SELECT u.usuario, u.correo FROM usuarios u 
+                                JOIN amistades a ON a.solicitante = u.correo 
+                                WHERE a.destinatario = ? AND a.estado = 'pendiente'");
+$stmtPendientes->bind_param("s", $correoUsuario);
+$stmtPendientes->execute();
+$resPendientes = $stmtPendientes->get_result();
+$pendientes = $resPendientes->fetch_all(MYSQLI_ASSOC);
+$stmtPendientes->close();
+
 // No cerramos la conexión aquí para poder usarla en las consultas de logros
 ?>
 <!DOCTYPE html>
@@ -36,96 +57,30 @@ if (!empty($userData['imagen'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Perfil - GAMEDOM</title>
+  <link rel="stylesheet" href="css/index.css">
   <link rel="stylesheet" href="css/perfil.css">
-  <link rel="stylesheet" href="css/achievement.css">
-  <style>
-    /* Estilos para imagen y botones */
-    .image-box img {
-      width: 150px;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-    #uploadForm {
-      display: none;
-      margin-top: 10px;
-    }
-    .pencil-btn {
-      display: none;
-    }
-    #editImageBtn {
-      margin-top: 5px;
-      font-size: 0.9em;
-      padding: 5px 10px;
-    }
-    /* Estilos para la sección de logros */
-    .logros-section {
-      margin-top: 30px;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    .logros-section h2,
-    .logros-section h3 {
-      margin-bottom: 15px;
-      font-weight: 600;
-    }
-    .logros-conseguidos, .logros-pendientes {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-    .logro-item {
-      width: 150px;
-      text-align: center;
-      background: rgba(0,0,0,0.2);
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .logro-item img {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 5px;
-      margin-bottom: 5px;
-    }
-    .logro-item.pendiente img {
-      filter: grayscale(100%);
-      opacity: 0.5;
-    }
-    .logro-item h4 {
-      font-size: 1em;
-      margin: 5px 0;
-    }
-    .logro-item p {
-      font-size: 0.8em;
-      margin: 0;
-    }
-    .logro-item small {
-      font-size: 0.7em;
-    }
-  </style>
+  <link rel="stylesheet" href="css/logros.css">
+  <link rel="stylesheet" href="css/amigos.css">
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <div class="nav-left">
-        <a href="index.php" class="nav-item">Inicio</a>
-        <a href="biblioteca.php" class="nav-item">Biblioteca</a>
-        <a href="comunidad.php" class="nav-item">Comunidad</a>
-        <a href="premios.php" class="nav-item">Premios</a>
-      </div>
-      <div class="nav-right">
-        <?php if (isset($_SESSION['usuario'])): ?>
-          <a href="perfil.php" class="nav-item">Perfil</a>
-        <?php else: ?>
-          <a href="login.html" class="nav-item">Iniciar Sesión</a>
-        <?php endif; ?>
-      </div>
-    </nav>
-  </header>
+  <!-- MENÚ SUPERIOR -->
+  <div class="menu-superior">
+    <div class="nav-left">
+      <img src="images/imagenes/Logo.png" alt="Logo Gamedom" class="logo">
+    </div>
+    <div class="nav-right">
+      <a href="index.php" class="nav-item <?php echo ($activePage === 'index') ? 'active' : ''; ?>">Inicio</a>
+      <a href="biblioteca.php" class="nav-item <?php echo ($activePage === 'biblioteca') ? 'active' : ''; ?>">Biblioteca</a>
+      <a href="comunidad.php" class="nav-item <?php echo ($activePage === 'comunidad') ? 'active' : ''; ?>">Comunidad</a>
+      <a href="torneos.php" class="nav-item <?php echo ($activePage === 'torneos') ? 'active' : ''; ?>">Torneos</a>
+      <?php if (isset($_SESSION['usuario'])): ?>
+        <a href="perfil.php" class="nav-item <?php echo ($activePage === 'perfil') ? 'active' : ''; ?>">Perfil</a>
+      <?php else: ?>
+        <a href="login.html" class="nav-item">Iniciar Sesión</a>
+      <?php endif; ?>
+    </div>
+  </div>
+
   <main>
     <div class="profile-container">
       <!-- Sección de Imagen de Perfil -->
@@ -337,6 +292,55 @@ if (!empty($userData['imagen'])) {
       });
   });
   </script>
+
+  <!-- Seccion Amistades -->
+  <div class="amigos-section">
+    <h2>Amigos</h2>
+    <?php if (count($amigos) > 0): ?>
+      <ul>
+        <?php foreach ($amigos as $amigo): ?>
+          <li><?php echo htmlspecialchars($amigo['usuario']) . " (" . htmlspecialchars($amigo['correo']) . ")"; ?></li>
+        <?php endforeach; ?>
+      </ul>
+    <?php else: ?>
+      <p>No tienes amigos aún.</p>
+    <?php endif; ?>
+  </div>
+
+  <div class="amigos-section">
+    <h2>Solicitudes de Amistad Pendientes</h2>
+    <?php if (count($pendientes) > 0): ?>
+      <ul>
+        <?php foreach ($pendientes as $pendiente): ?>
+          <li>
+            <?php echo htmlspecialchars($pendiente['usuario']) . " (" . htmlspecialchars($pendiente['correo']) . ")"; ?>
+            <form action="php/procesar_amistad.php" method="POST" style="display:inline">
+              <input type="hidden" name="correo" value="<?php echo $pendiente['correo']; ?>">
+              <button type="submit" name="accion" value="aceptar">Aceptar</button>
+              <button type="submit" name="accion" value="eliminar">Eliminar</button>
+            </form>
+          </li>
+        <?php endforeach; ?>
+      </ul>
+    <?php else: ?>
+      <p>No tienes solicitudes pendientes.</p>
+    <?php endif; ?>
+  </div>
+
+  <!-- FOOTER igual que index -->
+  <footer class="footer">
+    <p>
+      © 2025 CodeCrafters. Todos los derechos reservados.  
+      Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.<br>
+      Todos los precios incluyen IVA (donde sea aplicable).
+    </p>
+    <nav>
+      <a href="Política de privacidad.html">Política de Privacidad</a> |
+      <a href="Información legal.html">Información legal</a> |
+      <a href="Cookies.html">Cookies</a> |
+      <a href="A cerca de.html">A cerca de CodeCrafters</a>
+    </nav>
+  </footer>
 
 </body>
 </html>

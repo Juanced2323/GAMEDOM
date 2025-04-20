@@ -1,0 +1,65 @@
+/* ==========================
+AMIGOS.CSS
+========================== */
+
+.amigos-section {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 25px;
+    background: #fff4e6;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+  
+.amigos-section h2 {
+    color: #7d110d;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    text-align: center;
+}
+  
+.amigos-section ul {
+    list-style: none;
+    padding: 0;
+}
+  
+.amigos-section li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+  
+.amigos-section li form {
+    display: flex;
+    gap: 10px;
+}
+  
+.amigos-section li button {
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+  
+.amigos-section li button[name="accion"][value="aceptar"] {
+    background-color: #4caf50;
+    color: white;
+}
+  
+.amigos-section li button[name="accion"][value="eliminar"] {
+    background-color: #e53935;
+    color: white;
+}
+  
+.amigos-section p {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+  

@@ -37,10 +37,7 @@ if (!isset($_SESSION['usuario'])) {
   <meta charset="UTF-8">
   <title>Biblioteca - GAMEDOM</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- Se carga el CSS principal (como en index.php) -->
   <link rel="stylesheet" href="css/Index.css">
-  <!-- CSS extra para la biblioteca (estilos grid) -->
   <link rel="stylesheet" href="css/library.css">
 </head>
 <body>
@@ -53,7 +50,7 @@ if (!isset($_SESSION['usuario'])) {
       <a href="index.php" class="nav-item <?php echo ($activePage === 'index') ? 'active' : ''; ?>">Inicio</a>
       <a href="biblioteca.php" class="nav-item <?php echo ($activePage === 'biblioteca') ? 'active' : ''; ?>">Biblioteca</a>
       <a href="comunidad.php" class="nav-item <?php echo ($activePage === 'comunidad') ? 'active' : ''; ?>">Comunidad</a>
-      <a href="premios.php" class="nav-item <?php echo ($activePage === 'premios') ? 'active' : ''; ?>">Premios</a>
+      <a href="torneos.php" class="nav-item <?php echo ($activePage === 'torneos') ? 'active' : ''; ?>">Torneos</a>
       <?php if (isset($_SESSION['usuario'])): ?>
         <a href="perfil.php" class="nav-item <?php echo ($activePage === 'perfil') ? 'active' : ''; ?>">Perfil</a>
       <?php else: ?>
@@ -99,7 +96,7 @@ if (!isset($_SESSION['usuario'])) {
     <?php endif; ?>
   </main>
 
-  <!-- FOOTER (igual que index) -->
+  <!-- FOOTER -->
   <footer class="footer">
     <p>
       © 2025 CodeCrafters. Todos los derechos reservados. Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.<br>

@@ -1,0 +1,70 @@
+/* ==========================
+LOGROS.CSS
+========================== */
+
+.logros-section {
+    margin: 40px auto;
+    padding: 30px;
+    background: rgba(255, 245, 230, 0.9);
+    border-radius: 12px;
+    max-width: 1000px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+  
+.logros-section h2,
+.logros-section h3 {
+    font-size: 1.6em;
+    margin-bottom: 20px;
+    color: #7d110d;
+}
+  
+.logros-conseguidos,
+.logros-pendientes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+  
+.logro-item {
+    width: 160px;
+    padding: 10px;
+    text-align: center;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+  
+.logro-item:hover {
+    transform: translateY(-5px);
+}
+  
+.logro-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+  
+.logro-item.pendiente img {
+    filter: grayscale(100%);
+    opacity: 0.6;
+}
+  
+.logro-item h4 {
+    font-size: 1em;
+    margin: 5px 0;
+}
+  
+.logro-item p {
+    font-size: 0.85em;
+    color: #555;
+    margin: 0;
+}
+  
+.logro-item small {
+    font-size: 0.75em;
+    color: #888;
+}
+  
