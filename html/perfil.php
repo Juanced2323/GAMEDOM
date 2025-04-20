@@ -106,6 +106,31 @@ if (!empty($userData['imagen'])) {
     .logro-item small {
       font-size: 0.7em;
     }
+
+    /* Estilos para amigos */
+    .amigo-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .amigo-item img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    }
+
+    .amigo-item span {
+    font-weight: bold;
+    color: white;
+    }
+
   </style>
 </head>
 <body>
@@ -190,6 +215,17 @@ if (!empty($userData['imagen'])) {
         <button id="logoutBtn" class="save-btn" onclick="logoutUser()">Cerrar Sesión</button>
       </div>
     </div>
+
+    <!-- Sección de Amigos -->
+    <div class="friends-section logros-section">
+          <h2> Amigos </h2>
+          <div class="amigos-lista" id="amigos-lista">
+            <!-- Aqui se muestran hasta 5 amigos via JavaScript -->
+            <p>Cargando amigos...</p>
+          </div>
+          <a href="amigos.php" class="btn btn-secundario" style="margin-top: 15px; display: inline-block;">Gestionar amigos</a>
+    </div>
+    
 
     <!-- Sección de Logros -->
     <?php 
@@ -305,7 +341,7 @@ if (!empty($userData['imagen'])) {
   </script>
   <script src="js/achievements.js"></script>
 
-    <script>
+  <script>
   document.addEventListener("DOMContentLoaded", function() {
     fetch('php/obtener_partidas.php')
       .then(response => response.json())
@@ -337,6 +373,38 @@ if (!empty($userData['imagen'])) {
       });
   });
   </script>
+
+  <!-- Script para gestionar carga de amigos -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch("php/obtener_amigos.php")
+        .then(response => response.json())
+        .then(data => {
+          const contenedor = document.getElementById("amigos-lista");
+          contenedor.innerHTML = ""; // Limpiar mensaje de carga
+
+          if (!Array.isArray(data) || data.length === 0) {
+            contenedor.innerHTML = "<p>Aún no tienes amigos.</p>";
+            return;
+          }
+
+          data.forEach(amigo => {
+            const item = document.createElement("div");
+            item.className = "amigo-item";
+            item.innerHTML = `
+              <img src="${amigo.imagen}" alt="Avatar de ${amigo.usuario}">
+              <span>${amigo.usuario}</span>
+            `;
+            contenedor.appendChild(item);
+          });
+        })
+        .catch(error => {
+          console.error("Error al cargar amigos:", error);
+          document.getElementById("amigos-lista").innerHTML = "<p>Error al cargar los amigos.</p>";
+        });
+    });
+  </script>
+
 
 </body>
 </html>
