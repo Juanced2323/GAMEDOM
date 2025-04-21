@@ -1,0 +1,213 @@
+/* ========================
+RESET Y ESTILOS GLOBALES
+======================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+  
+body {
+    background: #F9DFBC;
+    font-family: system-ui, sans-serif;
+    color: #000;
+}
+  
+/* ========================
+HEADER / NAVBAR
+======================== */
+header {
+    background-color: #7d110d;
+    padding: 15px 5%;
+}
+  
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+  
+.nav-left,
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+  
+.nav-item {
+    color: #F9DFBC;
+    text-decoration: none;
+    margin: 0 12px;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+  
+.nav-item:hover,
+.nav-item.active {
+    text-decoration: underline;
+    color: #fff2c7;
+}
+  
+/* ========================
+MAIN - SECCIONES
+======================== */
+.main-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 40px 5%;
+    gap: 30px;
+}
+  
+.torneos-section {
+    flex: 1;
+    min-width: 300px;
+    max-width: 32%;
+    background-color: rgba(125, 17, 13, 0.08);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+  
+.torneos-section h2 {
+    color: #7d110d;
+    font-size: 24px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #7d110d;
+    padding-bottom: 6px;
+    text-align: center;
+}
+  
+/* ========================
+TARJETAS DE TORNEOS
+======================== */
+.torneo-card {
+    background-color: #fff;
+    border-left: 6px solid #7d110d;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+  
+.torneo-card:hover {
+    transform: scale(1.02);
+}
+  
+.torneo-card h3 {
+    margin-top: 0;
+    color: #7d110d;
+    font-size: 20px;
+}
+  
+.torneo-card p {
+    margin: 6px 0;
+    font-size: 15px;
+}
+
+/* Separación clara antes del botón */
+.torneo-card .participar-btn,
+.torneo-card .btn-disabled {
+    display: inline-block;
+    margin-top: 14px;
+}
+
+/* ========================
+BOTONES
+======================== */
+.participar-btn {
+    padding: 10px 18px;
+    background-color: #7d110d;
+    color: #F9DFBC;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    box-shadow: none;
+    outline: none;
+    text-decoration: none;
+}
+
+.participar-btn:hover {
+    background-color: #9e2a2a;
+}
+
+.participar-btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.btn-disabled {
+    padding: 10px 18px;
+    background-color: #ccc;
+    color: #666;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: not-allowed;
+}
+
+/* ========================
+TORNEOS FINALIZADOS
+======================== */
+.torneo-card.finalizado {
+    border-left-color: #999;
+    background-color: #f1f1f1;
+}
+  
+/* ========================
+PREMIOS Y BENEFICIOS
+======================== */
+.premios-lista {
+    list-style: none;
+    padding: 0;
+}
+  
+.premios-lista li {
+    padding: 10px 0;
+    font-size: 16px;
+    border-bottom: 1px solid #ddd;
+}
+  
+.premios-lista li:last-child {
+    border-bottom: none;
+}
+  
+/* ========================
+FOOTER
+======================== */
+footer {
+    background-color: #7d110d;
+    color: #F9DFBC;
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    margin-top: 40px;
+}
+  
+footer a {
+    color: #F9DFBC;
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: bold;
+}
+  
+footer a:hover {
+    text-decoration: underline;
+}
+  
+/* ========================
+RESPONSIVE
+======================== */
+@media (max-width: 960px) {
+    .main-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .torneos-section {
+        max-width: 100%;
+    }
+}

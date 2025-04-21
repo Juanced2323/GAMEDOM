@@ -1,0 +1,228 @@
+/* ========================
+RESET Y ESTILOS GLOBALES
+======================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+  
+body {
+    background: #F9DFBC;
+    font-family: system-ui, sans-serif;
+    color: #000;
+}
+  
+/* ========================
+HEADER / NAVBAR
+======================== */
+header {
+    background-color: #7d110d;
+    padding: 15px 5%;
+}
+  
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+  
+.nav-left,
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+  
+.nav-item {
+    color: #F9DFBC;
+    text-decoration: none;
+    margin: 0 12px;
+    font-weight: bold;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+  
+.nav-item:hover,
+.nav-item.active {
+    text-decoration: underline;
+    color: #fff2c7;
+}
+
+/* ========================
+MAIN ADMIN PANEL
+======================== */
+.admin-panel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 40px 5%;
+    gap: 30px;
+}
+
+/* Primera columna: formulario más angosto */
+.admin-column:first-child {
+    flex: 0 0 30%;
+    min-width: 300px;
+}
+
+/* Segunda columna: tabla más ancha */
+.admin-column:last-child {
+    flex: 0 0 65%;
+    min-width: 500px;
+}
+
+
+/* ========================
+SECCIÓN DE FORMULARIO
+======================== */
+.torneos-section {
+    background-color: rgba(125, 17, 13, 0.08);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.torneos-section h2 {
+    color: #7d110d;
+    font-size: 24px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #7d110d;
+    padding-bottom: 6px;
+    text-align: center;
+}
+
+.torneos-section label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+.torneos-section input,
+.torneos-section select,
+.torneos-section textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+/* Botón de crear torneo */
+.participar-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background-color: #7d110d;
+    color: #F9DFBC;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.participar-btn:hover {
+    background-color: #9e2a2a;
+}
+
+/* ========================
+TABLA DE TORNEOS
+======================== */
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+.tabla-contenedor {
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+table {
+    width: 100%;
+    min-width: 800px;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: center;
+    padding: 12px;
+    font-size: 14px;
+    border-bottom: 1px solid #ddd;
+    word-break: break-word;
+}
+
+th {
+    background-color: #7d110d;
+    color: #F9DFBC;
+    text-transform: uppercase;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* ========================
+BOTONES DE ACCIÓN
+======================== */
+.action-btn {
+    padding: 8px 12px;
+    margin: 2px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn {
+    background-color: #2980b9;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #3498db;
+}
+
+.delete-btn {
+    background-color: #c0392b;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #e74c3c;
+}
+
+/* ========================
+FOOTER
+======================== */
+footer {
+    background-color: #7d110d;
+    color: #F9DFBC;
+    text-align: center;
+    padding: 20px;
+    font-size: 14px;
+    margin-top: 40px;
+}
+
+/* ========================
+RESPONSIVE
+======================== */
+@media (max-width: 960px) {
+    .admin-panel {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .admin-column {
+        max-width: 100%;
+    }
+
+    .tabla-scroll {
+        width: 100%;
+    }
+}
