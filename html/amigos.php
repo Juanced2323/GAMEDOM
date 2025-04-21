@@ -45,12 +45,16 @@ $usuario_actual = $_SESSION['usuario'];
 
   <!-- Sección 1: Ver y buscar amigos -->
   <section>
-    <h2>Mis Amigos</h2>
-    <input type="text" id="buscador-amigos" placeholder="Buscar amigos...">
+  <h2>Mis Amigos</h2>
+  <input type="text" id="buscador-amigos" placeholder="Buscar amigos...">
+  <form id="form-eliminar-amigos">
     <div id="lista-amigos">
       <p>Cargando amigos...</p>
     </div>
+    <button type="submit" style="margin-top: 10px;">Eliminar seleccionados</button>
+  </form>
   </section>
+
 
   <!-- Sección 2: Enviar solicitud de amistad -->
   <section>

@@ -5,30 +5,31 @@ document.addEventListener('DOMContentLoaded', function () {
   
     // Función para renderizar los amigos (con filtro)
     function mostrarAmigos(filtro = '') {
-      listaAmigos.innerHTML = '';
-  
-      const filtrados = amigos.filter(amigo =>
-        amigo.usuario.toLowerCase().includes(filtro.toLowerCase()) ||
-        amigo.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
-        amigo.apellidos.toLowerCase().includes(filtro.toLowerCase())
-      );
-  
-      if (filtrados.length === 0) {
-        listaAmigos.innerHTML = '<p>No se encontraron amigos.</p>';
-        return;
-      }
-  
-      filtrados.forEach(amigo => {
-        const div = document.createElement('div');
-        div.classList.add('amigo-item');
-        div.innerHTML = `
-          <img src="${amigo.imagen}" alt="Avatar de ${amigo.usuario}">
-          <p><strong>${amigo.usuario}</strong></p>
-          <p>${amigo.nombre} ${amigo.apellidos}</p>
-        `;
-        listaAmigos.appendChild(div);
-      });
-    }
+        const lista = document.getElementById('lista-amigos');
+        lista.innerHTML = '';
+      
+        const filtrados = amigos.filter(amigo =>
+          amigo.usuario.toLowerCase().includes(filtro.toLowerCase()) ||
+          amigo.nombre.toLowerCase().includes(filtro.toLowerCase()) ||
+          amigo.apellidos.toLowerCase().includes(filtro.toLowerCase())
+        );
+      
+        if (filtrados.length === 0) {
+          lista.innerHTML = '<p>No se encontraron amigos.</p>';
+          return;
+        }
+      
+        filtrados.forEach(amigo => {
+          const div = document.createElement('div');
+          div.classList.add('amigo-item');
+          div.innerHTML = `
+            <input type="checkbox" name="amigos_eliminar[]" value="${amigo.usuario}">
+            <img src="${amigo.imagen}" alt="${amigo.usuario}">
+            <span>${amigo.usuario}</span>
+          `;
+          lista.appendChild(div);
+        });
+      }      
   
     // Obtener los amigos desde PHP
     fetch('php/obtener_amigos_completos.php')
@@ -146,6 +147,37 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // --------- ELIMINAR AMIGOS SELECCIONADOS ---------
+    document.getElementById('form-eliminar-amigos').addEventListener('submit', function (e) {
+        e.preventDefault();
+    
+        const seleccionados = Array.from(document.querySelectorAll('input[name="amigos_eliminar[]"]:checked'))
+        .map(cb => cb.value);
+    
+        if (seleccionados.length === 0) {
+        alert("Selecciona al menos un amigo para eliminar.");
+        return;
+        }
+    
+        const formData = new FormData();
+        seleccionados.forEach(usuario => {
+        formData.append('amigos[]', usuario);
+        });
+    
+        fetch('php/eliminar_amigos.php', {
+        method: 'POST',
+        body: formData
+        })
+        .then(res => res.text())
+        .then(msg => {
+            alert(msg);
+            cargarAmigos(); // Recargar lista de amigos
+        })
+        .catch(err => {
+            console.error("Error eliminando amigos:", err);
+            alert("Hubo un error al eliminar amigos.");
+        });
+    });
     
   });
   
