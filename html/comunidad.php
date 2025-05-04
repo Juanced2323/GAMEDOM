@@ -9,38 +9,42 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: login.html");
     exit;
 }
-
 $username = $_SESSION['usuario'];
 
-// 2) Cargar lista de juegos favoritos
+// 2) Recuperar IDs de tus juegos favoritos
 $favorites = [];
 $stmtFav = $conn->prepare("SELECT id_juego FROM favoritos WHERE usuario = ?");
 $stmtFav->bind_param("s", $username);
 $stmtFav->execute();
 $resFav = $stmtFav->get_result();
-while ($row = $resFav->fetch_assoc()) {
-    $favorites[] = $row['id_juego'];
+while ($r = $resFav->fetch_assoc()) {
+    $favorites[] = $r['id_juego'];
 }
 $stmtFav->close();
 
-// 3) Cargar detalles de esos juegos
-$favGames = [];
-if ($favorites) {
-    // Construimos tantos placeholders como juegos favoritos
-    $placeholders = implode(',', array_fill(0, count($favorites), '?'));
-    $sql = "SELECT id_juego, nombre FROM juegos WHERE id_juego IN ($placeholders) ORDER BY nombre";
-    $stmt = $conn->prepare($sql);
-    // Bind dinámico
-    $types = str_repeat('i', count($favorites));
-    $stmt->bind_param($types, ...$favorites);
-    $stmt->execute();
-    $favGames = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    $stmt->close();
+// 3) Recuperar todos los juegos, ordenados alfabéticamente
+$allGames = [];
+$resAll = $conn->query("SELECT id_juego, nombre FROM juegos ORDER BY nombre ASC");
+while ($g = $resAll->fetch_assoc()) {
+    $allGames[] = $g;
 }
+$resAll->close();
 
-// 4) Cargar comentarios (posts) de esos juegos
+// 4) Reordenar: primero tus favoritos (en orden alfabético), luego el resto
+$favOrdered   = [];
+$othersOrdered = [];
+foreach ($allGames as $g) {
+    if (in_array($g['id_juego'], $favorites, true)) {
+        $favOrdered[] = $g;
+    } else {
+        $othersOrdered[] = $g;
+    }
+}
+$orderedGames = array_merge($favOrdered, $othersOrdered);
+
+// 5) Cargar posts de tus juegos favoritos (igual que antes)
 $posts = [];
-if ($favorites) {
+if (!empty($favorites)) {
     $placeholders = implode(',', array_fill(0, count($favorites), '?'));
     $sql = "
       SELECT p.id_post, p.usuario, p.contenido, p.imagen, p.fecha_creado,
@@ -53,6 +57,7 @@ if ($favorites) {
       LIMIT 50
     ";
     $stmt = $conn->prepare($sql);
+    $types = str_repeat('i', count($favorites));
     $stmt->bind_param($types, ...$favorites);
     $stmt->execute();
     $posts = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -60,6 +65,12 @@ if ($favorites) {
 }
 
 $conn->close();
+
+// 6) Preparar array JS de sugerencias: «General» + $orderedGames
+$jsGames = [['id'=>0,'nombre'=>'General']];
+foreach ($orderedGames as $g) {
+    $jsGames[] = ['id'=>$g['id_juego'], 'nombre'=>$g['nombre']];
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -70,6 +81,23 @@ $conn->close();
   <link rel="stylesheet" href="css/Index.css">
   <link rel="stylesheet" href="css/community.css">
   <link rel="stylesheet" href="css/chat.css">
+  <style>
+    .suggestions {
+      border: 1px solid #ccc;
+      max-height: 150px;
+      overflow-y: auto;
+      list-style: none;
+      padding: 0;
+      margin: 4px 0 0;
+    }
+    .suggestions li {
+      padding: 8px;
+      cursor: pointer;
+    }
+    .suggestions li:hover {
+      background: #f0f0f0;
+    }
+  </style>
 </head>
 <body>
   <!-- MENÚ SUPERIOR -->
@@ -87,10 +115,9 @@ $conn->close();
   </div>
 
   <main class="community-page">
-    <!-- 1. Feed de comentarios de tus favoritos -->
+    <!-- Feed de comentarios de tus favoritos -->
     <section class="feed-section">
       <h2>Comentarios en tus juegos favoritos</h2>
-
       <?php if (empty($posts)): ?>
         <p>Aún no hay comentarios en tus juegos favoritos.</p>
       <?php else: ?>
@@ -115,47 +142,38 @@ $conn->close();
       <?php endif; ?>
     </section>
 
-    <!-- 2. Formulario para publicar un nuevo comentario -->
+    <!-- Formulario para publicar un nuevo comentario -->
     <section class="new-post-section">
       <h2>Publicar Comentario</h2>
       <form action="php/create_post.php" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="game_id" id="game_id">
         <div class="form-group">
-          <label for="game_select">Selecciona un juego:</label>
-          <select name="game_id" id="game_select" required>
-            <option value="">-- Elige uno de tus favoritos --</option>
-            <?php foreach ($favGames as $g): ?>
-              <option value="<?= $g['id_juego'] ?>"><?= htmlspecialchars($g['nombre']) ?></option>
-            <?php endforeach; ?>
-            <option value="other">Otro juego…</option>
-          </select>
+          <label for="game_search">Juego (o 'General'):</label>
+          <input type="text" id="game_search"
+                 placeholder="Empieza a escribir…"
+                 autocomplete="off">
+          <ul class="suggestions" id="suggestions"></ul>
         </div>
-
-        <div class="form-group" id="other_game_group" style="display:none;">
-          <label for="other_game">¿Qué juego quieres?</label>
-          <input type="text" name="other_game" id="other_game" placeholder="Escribe el nombre del juego">
-        </div>
-
         <div class="form-group">
           <label for="contenido">Comentario:</label>
           <textarea name="contenido" id="contenido" rows="4" required></textarea>
         </div>
-
         <div class="form-group">
           <label for="imagen">Adjuntar imagen (opcional):</label>
           <input type="file" name="imagen" id="imagen" accept="image/*">
         </div>
-
         <button type="submit" class="btn">Publicar</button>
       </form>
     </section>
 
-    <!-- 3. Solicitar un juego nuevo -->
-    <section class="request-section">
+    <!-- Solicitar un juego nuevo -->
+    <section class="request-section" id="request-section">
       <h2>Solicitar un juego</h2>
       <form action="php/request_game.php" method="post">
         <div class="form-group">
-          <label for="request_game">¿Qué juego te gustaría ver en GAMEDOM?</label>
-          <input type="text" name="game_request" id="request_game" required placeholder="Nombre del juego">
+          <label for="request_game">¿Qué juego te gustaría ver?</label>
+          <input type="text" name="game_request" id="request_game"
+                 placeholder="Nombre del juego" required>
         </div>
         <button type="submit" class="btn">Enviar solicitud</button>
       </form>
@@ -173,18 +191,53 @@ $conn->close();
       <a href="Política de privacidad.html">Política de Privacidad</a> |
       <a href="Información legal.html">Información legal</a> |
       <a href="Cookies.html">Cookies</a> |
-      <a href="A cerca de.html">A cerca de CodeCrafters</a>
+      <a href="A cerca de.html">Acerca de CodeCrafters</a>
     </nav>
   </footer>
 
+  <!-- Scripts -->
   <script src="js/chat.js"></script>
   <script>
-    // Mostrar/ocultar campo de "otro juego" según selección
-    document.getElementById('game_select')
-      .addEventListener('change', function() {
-        const otherGroup = document.getElementById('other_game_group');
-        otherGroup.style.display = this.value === 'other' ? 'block' : 'none';
-      });
+    const games      = <?= json_encode($jsGames, JSON_UNESCAPED_UNICODE) ?>;
+    const input       = document.getElementById('game_search');
+    const suggBox     = document.getElementById('suggestions');
+    const hiddenGameId= document.getElementById('game_id');
+    const form        = document.querySelector('.new-post-section form');
+
+    // Filtrar y mostrar sugerencias (favoritos primero)
+    input.addEventListener('input', () => {
+      const term = input.value.trim().toLowerCase();
+      suggBox.innerHTML = '';
+      if (!term) return;
+      games
+        .filter(g => g.nombre.toLowerCase().includes(term))
+        .forEach(g => {
+          const li = document.createElement('li');
+          li.textContent = g.nombre;
+          li.dataset.id = g.id;
+          li.addEventListener('click', () => {
+            input.value = g.nombre;
+            hiddenGameId.value = g.id;
+            suggBox.innerHTML = '';
+          });
+          suggBox.appendChild(li);
+        });
+    });
+
+    // Validar envío: si coincide exactamente, asignamos ID
+    form.addEventListener('submit', e => {
+      if (!hiddenGameId.value) {
+        const term = input.value.trim().toLowerCase();
+        const match = games.find(g => g.nombre.toLowerCase() === term);
+        if (match) {
+          hiddenGameId.value = match.id;
+        }
+      }
+      if (!hiddenGameId.value) {
+        alert('Por favor, selecciona un juego de la lista o "General".');
+        e.preventDefault();
+      }
+    });
   </script>
 </body>
 </html>
