@@ -1,75 +1,200 @@
-/* ===============================
+/* library.css */
+/* ================================
+   Variables de tema y reset básico
+================================= */
+:root {
+  --bg-page: #F9DFBC;
+  --bg-section: #FFFFFF;
+  --text-primary: #333333;
+  --text-secondary: #555555;
+  --accent: #7d110d;
+  --accent-light: #F9DFBC;
+  --border-radius: 8px;
+  --gap: 16px;
+  --font-base: "Segoe UI", Tahoma, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-page);
+  font-family: var(--font-base);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* ================================
    Estilos para la Biblioteca
-=============================== */
+================================= */
 
 /* Contenedor principal de la biblioteca */
 .game-catalog {
-    max-width: 1200px;
-    margin: 20px auto; 
-    padding: 20px;
-    background: #f9dfbc; /* mismo color de fondo si quieres un bloque */
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  
-  .game-catalog h2 {
-    text-align: center;
-    color: #7d110d;
-    margin-bottom: 20px;
-  }
-  
-  /* Contenedor de la lista de juegos (display grid) */
-  .game-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 20px;
-  }
-  
-  /* Tarjetas de juego */
-  .game-card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    text-align: center;
-    transition: transform 0.3s ease;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  }
-  
-  .game-card:hover {
-    transform: translateY(-5px);
-  }
-  
-  .game-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    display: block;
-  }
-  
-  .game-card h4 {
-    margin: 10px 0;
-    color: #7d110d;
-    font-size: 1.1rem;
-    padding: 0 5px;
-  }
-  
-  /* Enlace de la tarjeta */
-  .game-card a {
-    text-decoration: none;
-    color: #333;
-    display: block; /* Para que ocupe todo el card */
-  }
-  
-  .game-card a:hover h4 {
-    text-decoration: underline;
-  }
-  
-  /* Mensaje cuando no hay juegos */
-  .no-games {
-    text-align: center;
-    color: #7d110d;
-    font-size: 1rem;
-    margin-top: 30px;
-  }
-  
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background: var(--bg-page);
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.game-catalog h2 {
+  text-align: center;
+  color: var(--accent);
+  margin-bottom: var(--gap);
+}
+
+/* Contenedor de la lista de juegos (display grid) */
+.game-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* Tarjetas de juego */
+.game-card {
+  background: var(--bg-section);
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.3s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+}
+
+.game-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.game-card h4 {
+  margin: 10px 0;
+  color: var(--accent);
+  font-size: 1.1rem;
+  padding: 0 5px;
+}
+
+.game-card a {
+  text-decoration: none;
+  color: var(--text-primary);
+  display: block;
+}
+
+.game-card a:hover h4 {
+  text-decoration: underline;
+}
+
+/* Mensaje cuando no hay juegos */
+.no-games {
+  text-align: center;
+  color: var(--accent);
+  font-size: 1rem;
+  margin-top: 30px;
+}
+
+/* ================================
+   Estilos para el Sistema de Rankings
+================================= */
+.ranking-section {
+  background: var(--bg-section);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: var(--gap);
+  margin: 40px auto;
+  max-width: 1200px;
+}
+
+/* Top 5 de cada juego */
+.top-games-ranking .game-ranking-item {
+  margin-bottom: 32px;
+}
+.top-games-ranking .game-ranking-item h4 {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+/* Tabla de ranking */
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+.ranking-table th,
+.ranking-table td {
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 1px solid #EEE;
+}
+.ranking-table th {
+  background: var(--accent);
+  color: var(--accent-light);
+  font-weight: 500;
+}
+.ranking-table tbody tr:hover {
+  background: #f9f9f9;
+}
+.ranking-table tr.highlight {
+  background: #FFF0F0;
+  font-weight: bold;
+}
+
+/* Selector de juego */
+.game-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: var(--gap) 0;
+}
+.game-selector label {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.game-selector select {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #CCC;
+  border-radius: var(--border-radius);
+}
+.game-selector button {
+  padding: 8px 16px;
+  background: var(--accent);
+  color: var(--accent-light);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.game-selector button:hover {
+  background: #a42620;
+}
+
+/* Mensajes “no hay datos” */
+.no-posts,
+.ranking-section p {
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: var(--gap) 0;
+}
+
+/* Usuarios con menos de 50 partidas */
+.less50-ranking {
+  margin-top: 32px;
+}
+
+/* ================================
+   Utilidades finales
+================================= */
+/* Footer (si necesitas refinarlo) */
+footer {
+  margin-top: 40px;
+}

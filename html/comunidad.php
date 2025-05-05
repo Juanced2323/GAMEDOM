@@ -1,401 +1,297 @@
 <?php
 session_start();
 $activePage = basename($_SERVER['PHP_SELF'], ".php");
-
 require_once "php/db_connect.php";
 require_once "php/recommendations.php";
 
-// ========== Obtener la lista de juegos para el selector ==========
-$gamesList = [];
-$sqlGames = "SELECT id_juego, nombre FROM juegos ORDER BY nombre ASC";
-$resultGames = $conn->query($sqlGames);
-while ($rowGame = $resultGames->fetch_assoc()) {
-    $gamesList[] = $rowGame;
-}
-$resultGames->close();
-
-// ========== Verificar login ==========
+// 1) Validar sesión
 if (!isset($_SESSION['usuario'])) {
-    $conn->close();
-    ?>
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-      <meta charset="UTF-8">
-      <title>Comunidad - GAMEDOM</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- CSS principal (igual que index) -->
-      <link rel="stylesheet" href="css/Index.css">
-      <!-- CSS para comunidad (rankings, etc.) -->
-      <link rel="stylesheet" href="css/community.css">
-      <!-- CSS del chat si lo necesitas -->
-      <link rel="stylesheet" href="css/chat.css">
-    </head>
-    <body>
-      <!-- MENÚ SUPERIOR (idéntico a index.php) -->
-      <div class="menu-superior">
-        <div class="nav-left">
-          <img src="images/imagenes/Logo.png" alt="Logo Gamedom" class="logo">
-        </div>
-        <div class="nav-right">
-          <a href="index.php" class="nav-item <?php echo ($activePage === 'index') ? 'active' : ''; ?>">Inicio</a>
-          <a href="biblioteca.php" class="nav-item <?php echo ($activePage === 'biblioteca') ? 'active' : ''; ?>">Biblioteca</a>
-          <a href="comunidad.php" class="nav-item <?php echo ($activePage === 'comunidad') ? 'active' : ''; ?>">Comunidad</a>
-          <a href="premios.php" class="nav-item <?php echo ($activePage === 'premios') ? 'active' : ''; ?>">Premios</a>
-          <a href="login.html" class="nav-item">Iniciar Sesión</a>
-        </div>
-      </div>
-
-      <main>
-        <div class="restricted-access">
-          <h2>Acceso Restringido</h2>
-          <p>Esta sección está disponible solo para usuarios registrados.</p>
-          <a href="login.html" class="btn-acceso">Iniciar Sesión</a>
-        </div>
-      </main>
-
-      <!-- FOOTER (igual que en index.php) -->
-      <footer class="footer">
-        <p>
-          © 2025 CodeCrafters. Todos los derechos reservados.  
-          Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.<br>
-          Todos los precios incluyen IVA (donde sea aplicable).
-        </p>
-        <nav>
-          <a href="Política de privacidad.html">Política de Privacidad</a> |
-          <a href="Información legal.html">Información legal</a> |
-          <a href="Cookies.html">Cookies</a> |
-          <a href="A cerca de.html">A cerca de CodeCrafters</a>
-        </nav>
-      </footer>
-
-      <!-- Chat si lo necesitas -->
-      <div id="chat-container" class="chat-container">
-        <h2>Chat en Vivo</h2>
-        <div id="chat-box" class="chat-box"></div>
-        <div id="chat-input-container">
-          <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autofocus>
-          <button>Enviar</button>
-        </div> 
-      </div>
-      <!-- Scripts -->
-      <script src="js/socket.io.js"></script>
-      <script src="js/chat.js"></script>
-    </body>
-    </html>
-    <?php
+    header("Location: login.html");
     exit;
 }
+$username = $_SESSION['usuario'];
 
-// ========== Lógica de Rankings si el usuario está logueado ==========
-
-$selectedGame = isset($_GET['game']) ? intval($_GET['game']) : 0;
-$generalRanking = [];
-$userRankPosition = null;
-$rankingLess50 = [];
-
-// Ranking de cada juego (top 5)
-$rankingGames = [];
-$sqlRankGames = "SELECT DISTINCT id_juego FROM ranking";
-$result = $conn->query($sqlRankGames);
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $rankingGames[] = $row['id_juego'];
-    }
+// 2) Tus juegos favoritos
+$favorites = [];
+$stmtFav = $conn->prepare("SELECT id_juego FROM favoritos WHERE usuario = ?");
+$stmtFav->bind_param("s", $username);
+$stmtFav->execute();
+$resFav = $stmtFav->get_result();
+while ($r = $resFav->fetch_assoc()) {
+    $favorites[] = (int)$r['id_juego'];
 }
-$gameRankings = [];
-foreach ($rankingGames as $gId) {
-    // top 5 ELO descendente
-    $stmt = $conn->prepare("SELECT usuario, elo FROM ranking WHERE id_juego = ? ORDER BY elo DESC LIMIT 5");
-    $stmt->bind_param("i", $gId);
-    $stmt->execute();
-    $resRank = $stmt->get_result();
-    $topPlayers = [];
-    while ($r = $resRank->fetch_assoc()) {
-        $topPlayers[] = $r;
-    }
-    $stmt->close();
-    
-    // Obtener nombre del juego
-    $nombreJuego = "";
-    $stmt2 = $conn->prepare("SELECT nombre FROM juegos WHERE id_juego = ?");
-    $stmt2->bind_param("i", $gId);
-    $stmt2->execute();
-    $resNombre = $stmt2->get_result();
-    if ($n = $resNombre->fetch_assoc()) {
-        $nombreJuego = $n['nombre'];
-    }
-    $stmt2->close();
-    
-    $gameRankings[] = [
-        'id_juego' => $gId,
-        'nombre'   => $nombreJuego,
-        'players'  => $topPlayers
-    ];
+$stmtFav->close();
+
+// 3) Recomendaciones content-based
+$recomGames = getContentBasedRecommendations($username, $conn, 5);
+$recomIds   = array_map(fn($g) => (int)$g['id_juego'], $recomGames);
+
+// 4) Cargar todos los juegos
+$allGames = [];
+if ($resG = $conn->query("SELECT id_juego, nombre FROM juegos ORDER BY nombre ASC")) {
+    $allGames = $resG->fetch_all(MYSQLI_ASSOC);
+    $resG->close();
 }
 
-// Si se selecciona un juego, ranking detallado
-if ($selectedGame > 0) {
-    // Ranking general (ELO, total partidas)
-    $stmtG = $conn->prepare("
-        SELECT r.usuario, r.elo, COUNT(h.id_historial) AS total_matches
-        FROM ranking r
-        LEFT JOIN historial_juegos h ON r.usuario = h.usuario AND h.id_juego = ?
-        WHERE r.id_juego = ?
-        GROUP BY r.usuario, r.elo
-        ORDER BY r.elo DESC
-    ");
-    $stmtG->bind_param("ii", $selectedGame, $selectedGame);
-    $stmtG->execute();
-    $resG = $stmtG->get_result();
-    while ($row = $resG->fetch_assoc()) {
-        $generalRanking[] = $row;
-    }
-    $stmtG->close();
-    
-    // Posición del usuario actual
-    $currentUser = $_SESSION['usuario'];
-    $pos = 1;
-    foreach ($generalRanking as $rankRow) {
-        if ($rankRow['usuario'] === $currentUser) {
-            $userRankPosition = $pos;
+// 5) Leer filtros de GET
+$filterGameIdParam   = $_GET['filter_game_id']   ?? '';
+$filterGameNameParam = trim($_GET['filter_game_search'] ?? '');
+$timeFilter          = $_GET['time_filter'] ?? 'newest';
+
+// Determinar filtro activo
+$filterGame = null;
+if ($filterGameIdParam !== '') {
+    $filterGame = (int)$filterGameIdParam;
+} elseif ($filterGameNameParam !== '') {
+    foreach ($allGames as $g) {
+        if (mb_strtolower($g['nombre']) === mb_strtolower($filterGameNameParam)) {
+            $filterGame = (int)$g['id_juego'];
             break;
         }
-        $pos++;
     }
-    
-    // Ranking con menos de 50 partidas
-    $stmtL = $conn->prepare("
-        SELECT r.usuario, r.elo, COUNT(h.id_historial) AS total_matches
-        FROM ranking r
-        LEFT JOIN historial_juegos h ON r.usuario = h.usuario AND h.id_juego = ?
-        WHERE r.id_juego = ?
-        GROUP BY r.usuario, r.elo
-        HAVING total_matches < 50
-        ORDER BY r.elo DESC
-    ");
-    $stmtL->bind_param("ii", $selectedGame, $selectedGame);
-    $stmtL->execute();
-    $resL = $stmtL->get_result();
-    while ($row = $resL->fetch_assoc()) {
-        $rankingLess50[] = $row;
-    }
-    $stmtL->close();
 }
 
+// 6) Construir cláusulas WHERE
+$where = [];
+if ($filterGame !== null) {
+    $where[] = $filterGame === 0
+        ? "t.titulo = 'General'"
+        : "(t.titulo = 'General' OR t.id_juego = {$filterGame})";
+}
+switch ($timeFilter) {
+    case 'last_hour':
+        $where[] = "p.fecha_creado >= DATE_SUB(NOW(), INTERVAL 1 HOUR)";
+        break;
+    case 'last_day':
+        $where[] = "p.fecha_creado >= DATE_SUB(NOW(), INTERVAL 1 DAY)";
+        break;
+    case 'last_week':
+        $where[] = "p.fecha_creado >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+        break;
+    case 'last_month':
+        $where[] = "p.fecha_creado >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
+        break;
+}
+$whereSQL = $where ? 'WHERE '.implode(' AND ', $where) : '';
+
+// 7) ORDER BY según tiempo
+$orderDir = $timeFilter === 'oldest' ? 'ASC' : 'DESC';
+
+// 8) Recuperar posts
+$sql = "
+  SELECT 
+    p.id_post, p.usuario, p.contenido, p.imagen, p.fecha_creado,
+    t.id_juego, t.titulo AS topic, j.nombre AS juego
+  FROM forum_posts p
+  JOIN forum_topics t ON p.id_topic = t.id_topic
+  JOIN juegos j       ON t.id_juego = j.id_juego
+  {$whereSQL}
+  ORDER BY p.fecha_creado {$orderDir}
+  LIMIT 200
+";
+$posts = [];
+if ($res = $conn->query($sql)) {
+    $posts = $res->fetch_all(MYSQLI_ASSOC);
+    $res->close();
+}
 $conn->close();
+
+// 9) Reordenar: General + favoritos + recomendados
+$priorityIds   = array_unique(array_merge($favorites, $recomIds));
+$priorityPosts = $otherPosts = [];
+foreach ($posts as $post) {
+    if ($post['topic'] === 'General' || in_array((int)$post['id_juego'], $priorityIds, true)) {
+        $priorityPosts[] = $post;
+    } else {
+        $otherPosts[]    = $post;
+    }
+}
+$posts = array_merge($priorityPosts, $otherPosts);
+
+// 10) Preparar array JS de juegos
+$orderedGames = [];
+foreach ($allGames as $g) {
+    if (in_array((int)$g['id_juego'], $priorityIds, true)) {
+        $orderedGames[] = ['id'=>(int)$g['id_juego'],'nombre'=>$g['nombre']];
+    }
+}
+foreach ($allGames as $g) {
+    if (!in_array((int)$g['id_juego'], $priorityIds, true)) {
+        $orderedGames[] = ['id'=>(int)$g['id_juego'],'nombre'=>$g['nombre']];
+    }
+}
+$jsGames = array_merge([['id'=>0,'nombre'=>'General']], $orderedGames);
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Comunidad - GAMEDOM</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <!-- CSS principal (mismo que index) -->
-  <link rel="stylesheet" href="css/Index.css">
-  <!-- CSS del Chat -->
-  <link rel="stylesheet" href="css/chat.css">
-  <!-- CSS para Comunidad (rankings, etc.) -->
+  <title>Comunidad – GAMEDOM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="css/community.css">
+  <link rel="stylesheet" href="css/Index.css">
+  <link rel="stylesheet" href="css/chat.css">
 </head>
 <body>
-  <!-- MENÚ SUPERIOR (igual que en index.php) -->
+  <!-- MENÚ SUPERIOR -->
   <div class="menu-superior">
     <div class="nav-left">
-      <img src="images/imagenes/Logo.png" alt="Logo Gamedom" class="logo">
+      <img src="images/imagenes/Logo.png" alt="Logo" class="logo">
     </div>
     <div class="nav-right">
-      <a href="index.php" class="nav-item <?php echo ($activePage === 'index') ? 'active' : ''; ?>">Inicio</a>
-      <a href="biblioteca.php" class="nav-item <?php echo ($activePage === 'biblioteca') ? 'active' : ''; ?>">Biblioteca</a>
-      <a href="comunidad.php" class="nav-item <?php echo ($activePage === 'comunidad') ? 'active' : ''; ?>">Comunidad</a>
-      <a href="premios.php" class="nav-item <?php echo ($activePage === 'premios') ? 'active' : ''; ?>">Premios</a>
-      <?php if (isset($_SESSION['usuario'])): ?>
-        <a href="perfil.php" class="nav-item <?php echo ($activePage === 'perfil') ? 'active' : ''; ?>">Perfil</a>
-      <?php else: ?>
-        <a href="login.html" class="nav-item">Iniciar Sesión</a>
-      <?php endif; ?>
+      <a href="index.php"      class="nav-item <?= $activePage==='index'?'active':'' ?>">Inicio</a>
+      <a href="biblioteca.php" class="nav-item <?= $activePage==='biblioteca'?'active':'' ?>">Biblioteca</a>
+      <a href="comunidad.php"  class="nav-item <?= $activePage==='comunidad'?'active':'' ?>">Comunidad</a>
+      <a href="premios.php"    class="nav-item <?= $activePage==='premios'?'active':'' ?>">Premios</a>
+      <a href="perfil.php"     class="nav-item <?= $activePage==='perfil'?'active':'' ?>">Perfil</a>
     </div>
   </div>
 
-  <main>
-    <section class="community-section">
-      <h2>Comunidad</h2>
-      <p>Aquí encontrarás rankings, foros, chats y contenido exclusivo para usuarios.</p>
-
-      <!-- Ranking por cada juego (Top 5) -->
-      <div class="ranking-section">
-        <h3>Top 5 de cada juego</h3>
-        <?php if (!empty($gameRankings)): ?>
-          <?php foreach ($gameRankings as $gRank): ?>
-            <div class="game-ranking-item" style="margin-bottom: 30px;">
-              <h4><?php echo htmlspecialchars($gRank['nombre']); ?></h4>
-              <?php if (!empty($gRank['players'])): ?>
-                <table class="ranking-table">
-                  <thead>
-                    <tr>
-                      <th>Pos.</th>
-                      <th>Usuario</th>
-                      <th>ELO</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <?php
-                  $pos = 1;
-                  foreach ($gRank['players'] as $p) {
-                    echo "<tr>
-                            <td>{$pos}</td>
-                            <td>".htmlspecialchars($p['usuario'])."</td>
-                            <td>{$p['elo']}</td>
-                          </tr>";
-                    $pos++;
-                  }
-                  ?>
-                  </tbody>
-                </table>
-              <?php else: ?>
-                <p>No hay jugadores en este ranking.</p>
-              <?php endif; ?>
-            </div>
+  <main class="community-page">
+    <!-- IZQUIERDA: FEED -->
+    <section class="feed-section">
+      <?php if (empty($posts)): ?>
+        <p class="no-posts">No hay comentarios que mostrar.</p>
+      <?php else: ?>
+        <ul class="posts-list">
+          <?php foreach ($posts as $post): ?>
+            <li class="post-item">
+              <div class="post-header">
+                <div class="user-info">
+                  <strong><?= htmlspecialchars($post['usuario']) ?></strong>
+                  &nbsp;en&nbsp;
+                  <em><?= $post['topic']==='General' ? 'General' : htmlspecialchars($post['juego']) ?></em>
+                </div>
+                <time class="timestamp"><?= date("Y-m-d H:i", strtotime($post['fecha_creado'])) ?></time>
+              </div>
+              <div class="post-body">
+                <p><?= nl2br(htmlspecialchars($post['contenido'])) ?></p>
+                <?php if ($post['imagen']): ?>
+                  <img src="data:image/jpeg;base64,<?= base64_encode($post['imagen']) ?>"
+                       alt="Imagen publicada" class="post-image">
+                <?php endif; ?>
+              </div>
+            </li>
           <?php endforeach; ?>
-        <?php else: ?>
-          <p>No hay juegos en la tabla de ranking.</p>
-        <?php endif; ?>
-      </div>
+        </ul>
+      <?php endif; ?>
+    </section>
 
-      <!-- Selector de juego para Ranking detallado -->
-      <div class="game-selector">
-        <form method="GET" action="comunidad.php">
-          <label for="game-select">Elige un juego:</label>
-          <select name="game" id="game-select">
-            <option value="0">-- Selecciona un juego --</option>
-            <?php foreach ($gamesList as $game): ?>
-              <option value="<?php echo $game['id_juego']; ?>" <?php echo ($selectedGame === intval($game['id_juego'])) ? 'selected' : ''; ?>>
-                <?php echo htmlspecialchars($game['nombre']); ?>
-              </option>
-            <?php endforeach; ?>
-          </select>
-          <button type="submit">Ver Ranking</button>
+    <!-- DERECHA: SIDEBAR (Filtros + Publicar) -->
+    <aside class="sidebar">
+      <!-- PANEL FILTROS -->
+      <div class="filter-panel">
+        <h3>Filtrar Publicaciones</h3>
+        <form method="get" class="filter-form">
+          <div class="form-group">
+            <label for="filter_game_search">Juego:</label>
+            <input type="hidden" name="filter_game_id" id="filter_game_id"
+                   value="<?= htmlspecialchars($filterGame ?? '') ?>">
+            <input type="text" id="filter_game_search"
+                   placeholder="Escribe para filtrar…" autocomplete="off"
+                   value="<?= htmlspecialchars($filterGameNameParam ?? '') ?>">
+            <ul class="suggestions" id="filter_suggestions"></ul>
+          </div>
+          <div class="form-group">
+            <label for="time_filter">Tiempo:</label>
+            <select name="time_filter" id="time_filter">
+              <option value="newest"    <?= $timeFilter==='newest'?   'selected':'' ?>>Más nuevos</option>
+              <option value="oldest"    <?= $timeFilter==='oldest'?   'selected':'' ?>>Más antiguos</option>
+              <option value="last_hour" <?= $timeFilter==='last_hour'?'selected':'' ?>>Última hora</option>
+              <option value="last_day"  <?= $timeFilter==='last_day'? 'selected':'' ?>>Último día</option>
+              <option value="last_week" <?= $timeFilter==='last_week'?'selected':'' ?>>Última semana</option>
+              <option value="last_month"<?= $timeFilter==='last_month'?'selected':'' ?>>Último mes</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-block">Aplicar filtros</button>
         </form>
       </div>
 
-      <?php if ($selectedGame > 0): ?>
-      <!-- Información del juego seleccionado -->
-      <div class="selected-game-info">
-        <?php
-          $selectedName = "";
-          foreach($gamesList as $gm) {
-            if ($gm['id_juego'] == $selectedGame) {
-              $selectedName = $gm['nombre'];
-              break;
-            }
-          }
-        ?>
-        <h3>Ranking para: <?php echo htmlspecialchars($selectedName); ?></h3>
-        <?php if ($userRankPosition !== null): ?>
-          <p>Tu posición en el ranking general: <strong><?php echo $userRankPosition; ?></strong></p>
-        <?php else: ?>
-          <p>No tienes registro en este ranking.</p>
-        <?php endif; ?>
+      <!-- PANEL PUBLICAR -->
+      <div class="publish-panel">
+        <h3>Publicar Comentario</h3>
+        <form action="php/create_post.php" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="game_id" id="game_id">
+          <div class="form-group">
+            <label for="game_search">Juego o 'General':</label>
+            <input type="text" id="game_search" placeholder="Escribe para buscar…" autocomplete="off">
+            <ul class="suggestions" id="suggestions"></ul>
+          </div>
+          <div class="form-group">
+            <label for="contenido">Comentario:</label>
+            <textarea name="contenido" id="contenido" rows="4" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="imagen">Adjuntar imagen (opcional):</label>
+            <input type="file" name="imagen" id="imagen" accept="image/*">
+          </div>
+          <button type="submit" class="btn btn-block">Publicar</button>
+        </form>
       </div>
-
-      <!-- Ranking General (con ELO y partidas totales) -->
-      <div class="ranking-section">
-        <h3>Ranking General</h3>
-        <?php if (!empty($generalRanking)): ?>
-          <table class="ranking-table">
-            <thead>
-              <tr>
-                <th>Pos.</th>
-                <th>Usuario</th>
-                <th>ELO</th>
-                <th>Total Partidas</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php 
-              $pos = 1;
-              foreach ($generalRanking as $r) : ?>
-                <tr <?php if($r['usuario'] === $_SESSION['usuario']) echo 'class="highlight"'; ?>>
-                  <td><?php echo $pos; ?></td>
-                  <td><?php echo htmlspecialchars($r['usuario']); ?></td>
-                  <td><?php echo $r['elo']; ?></td>
-                  <td><?php echo $r['total_matches']; ?></td>
-                </tr>
-              <?php 
-                $pos++;
-              endforeach; ?>
-            </tbody>
-          </table>
-        <?php else: ?>
-          <p>No hay datos para este juego.</p>
-        <?php endif; ?>
-      </div>
-
-      <!-- Ranking: Menos de 50 partidas -->
-      <div class="ranking-section less50-ranking">
-        <h3>Ranking: Usuarios con Menos de 50 Partidas</h3>
-        <?php if (!empty($rankingLess50)): ?>
-          <table class="ranking-table">
-            <thead>
-              <tr>
-                <th>Pos.</th>
-                <th>Usuario</th>
-                <th>ELO</th>
-                <th>Total Partidas</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php 
-              $pos = 1;
-              foreach ($rankingLess50 as $rk) : ?>
-                <tr>
-                  <td><?php echo $pos; ?></td>
-                  <td><?php echo htmlspecialchars($rk['usuario']); ?></td>
-                  <td><?php echo $rk['elo']; ?></td>
-                  <td><?php echo $rk['total_matches']; ?></td>
-                </tr>
-              <?php 
-                $pos++;
-              endforeach; ?>
-            </tbody>
-          </table>
-        <?php else: ?>
-          <p>No hay usuarios con menos de 50 partidas para este juego.</p>
-        <?php endif; ?>
-      </div>
-      <?php endif; ?>
-    </section>
+    </aside>
   </main>
 
-  <!-- FOOTER igual que index -->
-  <footer class="footer">
-    <p>
-      © 2025 CodeCrafters. Todos los derechos reservados.  
-      Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.<br>
-      Todos los precios incluyen IVA (donde sea aplicable).
-    </p>
+  <!-- FOOTER -->
+  <footer>
     <nav>
-      <a href="Política de privacidad.html">Política de Privacidad</a> |
-      <a href="Información legal.html">Información legal</a> |
-      <a href="Cookies.html">Cookies</a> |
-      <a href="A cerca de.html">A cerca de CodeCrafters</a>
+      <a href="index.php">Inicio</a>
+      <a href="biblioteca.php">Biblioteca</a>
+      <a href="comunidad.php">Comunidad</a>
+      <a href="premios.php">Premios</a>
+      <a href="perfil.php">Perfil</a>
     </nav>
+    <p>&copy; 2025 GAMEDOM. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- Chat -->
-  <div id="chat-container" class="chat-container">
-    <h2>Chat en Vivo</h2>
-    <div id="chat-box" class="chat-box"></div>
-    <div id="chat-input-container">
-      <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autofocus>
-      <button>Enviar</button>
-    </div> 
-  </div>
-
-  <!-- Scripts -->
-  <script src="js/socket.io.js"></script>
   <script src="js/chat.js"></script>
-  <script src="js/main.js"></script>
+  <script>
+    const games = <?= json_encode($jsGames, JSON_UNESCAPED_UNICODE) ?>;
+
+    // Autocomplete filtros
+    document.getElementById('filter_game_search').addEventListener('input', e => {
+      const term = e.target.value.trim().toLowerCase();
+      const box  = document.getElementById('filter_suggestions');
+      box.innerHTML = '';
+      if (!term) return;
+      games.filter(g => g.nombre.toLowerCase().includes(term))
+           .forEach(g => {
+             const li = document.createElement('li');
+             li.textContent = g.nombre;
+             li.onclick = () => {
+               e.target.value = g.nombre;
+               document.getElementById('filter_game_id').value = g.id;
+               box.innerHTML = '';
+             };
+             box.appendChild(li);
+           });
+    });
+
+    // Autocomplete publicación
+    document.getElementById('game_search').addEventListener('input', e => {
+      const term = e.target.value.trim().toLowerCase();
+      const box  = document.getElementById('suggestions');
+      box.innerHTML = '';
+      if (!term) return;
+      games.filter(g => g.nombre.toLowerCase().includes(term))
+           .forEach(g => {
+             const li = document.createElement('li');
+             li.textContent = g.nombre;
+             li.onclick = () => {
+               e.target.value = g.nombre;
+               document.getElementById('game_id').value = g.id;
+               box.innerHTML = '';
+             };
+             box.appendChild(li);
+           });
+    });
+
+    // Validación antes de enviar
+    document.querySelector('.publish-panel form').addEventListener('submit', e => {
+      if (!document.getElementById('game_id').value) {
+        alert('Selecciona un juego de la lista o "General".');
+        e.preventDefault();
+      }
+    });
+  </script>
 </body>
 </html>
