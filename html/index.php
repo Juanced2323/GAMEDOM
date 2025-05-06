@@ -256,42 +256,34 @@ $conn->close();
     document.addEventListener('DOMContentLoaded', () => {
       const badge = document.getElementById('notificationBadge');
       const icon  = document.getElementById('notificationIcon');
-
-      // Sólo si hay sesión
       if (!icon) return;
 
-      // Obtener partidas pendientes
-      fetch('php/obtener_partidas.php')
-        .then(r => r.json())
-        .then(partidas => {
-          const countPartidas = partidas.length;
-          // Obtener solicitudes de amistad
-          fetch('php/obtener_solicitudes.php')
-            .then(r2 => r2.json())
-            .then(solicitudes => {
-              const countSolicitudes = Array.isArray(solicitudes)
-                                      ? solicitudes.length
-                                      : 0;
-              const total = countPartidas + countSolicitudes;
-              if (total > 0) {
-                badge.textContent = total;
-                badge.style.display = 'inline-block';
-                // Tooltip con detalle
-                icon.title =
-                  (countPartidas > 0 ? `${countPartidas} partida(s) pendiente(s)\n` : '') +
-                  (countSolicitudes > 0 ? `${countSolicitudes} solicitud(es) de amistad` : '');
-              }
-            })
-            .catch(()=>{/* opcional: manejar error solicitudes */});
-        })
-        .catch(()=>{/* opcional: manejar error partidas */});
+      Promise.all([
+        fetch('php/obtener_partidas.php').then(r => r.json()).catch(() => []),
+        fetch('php/obtener_solicitudes.php').then(r => r.json()).catch(() => [])
+      ]).then(([partidas, solicitudes]) => {
+        const countP = partidas.length;
+        const countS = Array.isArray(solicitudes) ? solicitudes.length : 0;
+        const total  = countP + countS;
 
-      // Si haces click en la campana, puedes abrir un dropdown o ir a otra página
+        if (total > 0) {
+          badge.textContent = total;
+          badge.style.display = 'inline-block';
+          // Tooltip
+          icon.title =
+            (countP > 0 ? `${countP} partida(s) pendiente(s)\n` : '') +
+            (countS > 0 ? `${countS} solicitud(es) de amistad` : '');
+          // ¡Aquí activamos las animaciones!
+          badge.classList.add('pulse');
+          icon.classList.add('pulse');
+        }
+      });
+
       icon.addEventListener('click', () => {
-        // Por ejemplo, redirigir a un panel de notificaciones
         window.location.href = 'notificaciones.php';
       });
     });
+
   </script>
 
 </body>
