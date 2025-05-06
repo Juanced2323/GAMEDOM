@@ -327,5 +327,13 @@ $conn->close();
       }
     });
   </script>
+
+  <script>
+    // Pasar el nombre de usuario desde PHP a JS
+    window.USUARIO_ID = "<?php echo htmlspecialchars($username); ?>";
+  </script>
+  <script src="js/partidas.js"></script>
+  <script src="js/amigosperfil.js"></script>
+
 </body>
 </html>

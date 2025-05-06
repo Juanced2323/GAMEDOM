@@ -184,6 +184,15 @@
         background-color: #0056b3;
       }
 
+      .button:disabled {
+        background-color: #ccc;
+        color: #666;
+        cursor: not-allowed;
+        opacity: 0.5;
+        transition: opacity 0.3s ease;
+      }
+
+
       /* Contenedor de Unity ajustado */
       #unity-container {
         width: 960px;
@@ -210,6 +219,8 @@
   </head>
   <body>
     <div style="display: flex; justify-content: center; align-items: flex-start; flex-direction: column; gap: 20px;">
+      
+
       <!-- Marcador y Historial (Interfaz Actualizada) -->
       <div id="marcador">
         <h3>Marcador</h3>
@@ -270,6 +281,9 @@
         <p class="turno">Turno: <span id="turno">Jugador 1</span></p>
         <p class="turno">Número de Turno: <span id="numero-turno">1</span></p>
         <p id="ganador" class="turno"></p>
+
+       <!-- Boton de finalizar turno -->
+       <button id="btn-finalizar-turno" class="button">Finalizar Turno</button>
       </div>
     
       <!-- Historial de Movimientos -->
@@ -277,7 +291,7 @@
         <h4>Historial de Movimientos</h4>
         <ul id="historial-lista"></ul>
       </div>
-    
+
       <!-- Juego Unity (único contenedor, de la nueva versión) -->
       <div id="unity-container" class="unity-desktop">
         <canvas id="unity-canvas" width="960" height="600"></canvas>
@@ -471,6 +485,19 @@
       }
     </script>
 
+    <!-- Script de finalizar turno -->
+    <script>
+      function obtenerParametroURL(nombre) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(nombre);
+      }
+      
+      window.PARTIDA_ID = obtenerParametroURL("partida_id");
+      window.USUARIO_ID = obtenerParametroURL("usuario_id");
+      </script>
+      
+      <script src="../../js/turno.js"></script>
+      
     <!-- Script del Chat -->
     <!-- <script src="http://localhost:8090/socket.io/socket.io.js"></script> -->
     <script src="../../js/chatjuegos.js"></script>

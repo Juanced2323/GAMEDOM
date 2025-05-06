@@ -61,7 +61,8 @@ if ($partida) {
 // Redirigir al juego
 echo json_encode([
     'status' => 'success',
-    'redirect' => $ruta_index . "?partida_id=" . $partida_id
+    'redirect' => $ruta_index . "?partida_id=$partida_id&usuario_id=" . urlencode($usuario_id)
 ]);
+
 
 ?>
