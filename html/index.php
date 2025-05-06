@@ -105,6 +105,7 @@ $conn->close();
   <!-- MENÚ SUPERIOR -->
   <header class="menu-superior">
     <div class="nav-left">
+    <a href="http://localhost:8080/" target="_blank">
       <img src="images/imagenes/Logo.png" alt="Logo Gamedom" class="logo">
     </div>
     <div class="nav-right">
@@ -119,12 +120,35 @@ $conn->close();
       <div class="dropdown">
         <span class="dropdown-toggle" data-text="idiomas">Idiomas ▼</span>
         <ul class="dropdown-menu">
-          <li><a href="#" onclick="changeLanguage('es')">
-            <img src="images/Banderas/España.png" alt="Español">Español
-          </a></li>
-          <li><a href="#" onclick="changeLanguage('en')">
-            <img src="images/Banderas/Inglés.png" alt="Inglés">English
-          </a></li>
+                <li><a href="#" onclick="changeLanguage('es')"><img src="images/Banderas/España.png" alt="Español">Español</a></li>
+                <li><a href="#" onclick="changeLanguage('en')"><img src="images/Banderas/Inglés.png" alt="Inglés">English</a></li>
+                <li><a href="#" onclick="changeLanguage('fr')"><img src="images/Banderas/Francia.png" alt="Francés">Français</a></li>
+                <li><a href="#" onclick="changeLanguage('de')"><img src="images/Banderas/Alemania.png" alt="Alemán">Deutsch</a></li>
+                <li><a href="#" onclick="changeLanguage('it')"><img src="images/Banderas/Italia.png" alt="Italiano">Italiano</a></li>
+                <li><a href="#" onclick="changeLanguage('pt')"><img src="images/Banderas/Portugal.png" alt="Portugués">Português</a></li>
+                <li><a href="#" onclick="changeLanguage('ru')"><img src="images/Banderas/Ruso.png" alt="Ruso">Русский </a></li>
+                <li><a href="#" onclick="changeLanguage('cn')"><img src="images/Banderas/China.png" alt="Chino">中文 </a></li>
+                <li><a href="#" onclick="changeLanguage('jp')"><img src="images/Banderas/Japón.png" alt="Japonés">日本語 </a></li>
+                <li><a href="#" onclick="changeLanguage('kr')"><img src="images/Banderas/Corea del sur.png" alt="Coreano">한국어 </a></li>
+                <li><a href="#" onclick="changeLanguage('sa')"><img src="images/Banderas/Arabia Saudí.png" alt="Árabe"> العربية</a></li>
+                <li><a href="#" onclick="changeLanguage('in')"><img src="images/Banderas/India.png" alt="Hindi">हिन्दी </a></li>
+                <li><a href="#" onclick="changeLanguage('tr')"><img src="images/Banderas/Turquía.png" alt="Turco">Türkçe</a></li>
+                <li><a href="#" onclick="changeLanguage('nl')"><img src="images/Banderas/Países Bajos.png" alt="Holandés">Nederlands</a></li>
+                <li><a href="#" onclick="changeLanguage('se')"><img src="images/Banderas/Suecia.png" alt="Sueco">Svenska</a></li>
+                <li><a href="#" onclick="changeLanguage('pl')"><img src="images/Banderas/Polaco.png" alt="Polaco">Polski</a></li>
+                <li><a href="#" onclick="changeLanguage('gr')"><img src="images/Banderas/Grecia.png" alt="Griego">Ελληνικά</a></li>
+                <li><a href="#" onclick="changeLanguage('il')"><img src="images/Banderas/Hebreo.png" alt="Hebreo">עברית </a></li>
+                <li><a href="#" onclick="changeLanguage('fi')"><img src="images/Banderas/Finlandés.png" alt="Finlandés">Suomi</a></li>
+                <li><a href="#" onclick="changeLanguage('dk')"><img src="images/Banderas/Danés.png" alt="Danés">Dansk</a></li>
+                <li><a href="#" onclick="changeLanguage('hu')"><img src="images/Banderas/hungría.png" alt="Húngaro">Magyar</a></li>
+                <li><a href="#" onclick="changeLanguage('cz')"><img src="images/Banderas/Checo.png" alt="Checo">Čeština</a></li>
+                <li><a href="#" onclick="changeLanguage('ro')"><img src="images/Banderas/Rumano.png" alt="Rumano">Română </a></li>
+                <li><a href="#" onclick="changeLanguage('bg')"><img src="images/Banderas/Bulgaro.png" alt="Búlgaro">Български </a></li>
+                <li><a href="#" onclick="changeLanguage('ua')"><img src="images/Banderas/Ucraniano.png" alt="Ucraniano">Українська </a></li>
+                <li><a href="#" onclick="changeLanguage('th')"><img src="images/Banderas/Tailandés.png" alt="Tailandés">ไทย </a></li>
+                <li><a href="#" onclick="changeLanguage('id')"><img src="images/Banderas/Indonesia.png" alt="Indonesia">Bahasa Indonesia</a></li>
+                <li><a href="#" onclick="changeLanguage('vn')"><img src="images/Banderas/Vietnamita.png" alt="Vietnamita">Tiếng Việt</a></li>
+                <li><a href="#" onclick="changeLanguage('ir')"><img src="images/Banderas/Persa.png" alt="Persa"> فارسی</a></li>
         </ul>
       </div>
     </div>
@@ -132,7 +156,7 @@ $conn->close();
 
   <!-- SECCIÓN: JUEGOS DESTACADOS (SLIDER) -->
   <section class="juegos-destacados">
-    <h2>Juegos Destacados</h2>
+    <h2 class="h2">Juegos Destacados</h2>
     <div class="container">
       <div class="slide">
         <!-- Ítem fijo 1: Hundir la flota -->
@@ -231,10 +255,49 @@ $conn->close();
     </div>
   </section>
 
+  <!--CARRUSEL 2 -->
+  <h2 class="h22">Recomendaciones semanales</h2>
+  <div class="container-carousel">
+        <div class="carruseles" id="slider">
+            <section class="slider-section">
+                <img src="img/1.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="img/2.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="img/3.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="img/4.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="img/5.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="img/6.avif">
+            </section>
+            <section class="slider-section">
+                <img src="img/7.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="img/8.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="img/9.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="img/10.jpg">
+            </section>
+        </div>
+        <div class="btn-left"><i class='bx bx-chevron-left'><</i></div>
+        <div class="btn-right"><i class='bx bx-chevron-right'>></i></div>
+    </div>
+
   <!-- FOOTER -->
   <footer class="footer">
     <p data-text="cc">
-      © 2025 CodeCrafters. Todos los derechos reservados. Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.
+      © 2025 CodeCrafters. Todos los derechos reservados. Todas las marcas registradas pertenecen a sus respectivos dueños en España y otros países.
       Todos los precios incluyen IVA (donde sea aplicable).
     </p>
     <nav>

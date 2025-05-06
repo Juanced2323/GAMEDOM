@@ -781,5 +781,53 @@ window.onload = function () {
     changeLanguage(savedLang);
 };
 
+//CARRUSEL 2
+const btnLeft2 = document.querySelector(".btn-left"),
+      btnRight2 = document.querySelector(".btn-right"),
+      slider2 = document.querySelector("#slider"),
+      sliderSection2 = document.querySelectorAll(".slider-section");
+
+
+btnLeft.addEventListener("click", e => moveToLeft())
+btnRight.addEventListener("click", e => moveToRight())
+
+setInterval(() => {
+    moveToRight()
+}, 3000);
+
+
+let operacion2 = 0,
+    counter2 = 0,
+    widthImg2 = 100 / sliderSection.length;
+
+function moveToRight() {
+    if (counter >= sliderSection.length-1) {
+        counter = 0;
+        operacion = 0;
+        slider.style.transform = `translate(-${operacion}%)`;
+        slider.style.transition = "none";
+        return;
+    } 
+    counter++;
+    operacion = operacion + widthImg;
+    slider.style.transform = `translate(-${operacion}%)`;
+    slider.style.transition = "all ease .6s"
+    
+}  
+
+function moveToLeft() {
+    counter--;
+    if (counter < 0 ) {
+        counter = sliderSection.length-1;
+        operacion = widthImg * (sliderSection.length-1)
+        slider.style.transform = `translate(-${operacion}%)`;
+        slider.style.transition = "none";
+        return;
+    } 
+    operacion = operacion - widthImg;
+    slider.style.transform = `translate(-${operacion}%)`;
+    slider.style.transition = "all ease .6s"
+}   
+
 
 

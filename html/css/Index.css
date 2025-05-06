@@ -9,7 +9,7 @@
 --------------------------------------------- */
 @font-face {
     font-family: 'enchanted';
-    src: url('/Fuentes/enchanted_land/Enchanted Land.otf') format('opentype');
+    src: url('/Fuentes/enchanted_land/Enchanted Land.otf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -34,6 +34,9 @@ body{
     /*position: absolute;*/
     
 }
+.h2{
+    margin-top: 43%;
+}
 
 .catalog-wrapper {
     display: flex;
@@ -46,11 +49,9 @@ body{
     /* Eliminamos posición absoluta y transform para que se centre como bloque */
     position: relative;
     margin: 20px auto;
-    width: 1000px;
+    width: 1060px;
     height: 600px;
     background: #f4f4f4;
-    box-shadow: 0 30px 50px #dbdbdb;
-    /* margin-bottom: auto; */
 }
 
 .destacados{
@@ -203,7 +204,7 @@ body{
    MENÚ SUPERIOR (SOLO MODIFICADO)
 ============================== */
 .menu-superior {
-    height: 70px;
+    height: 80px;
     display: flex; 
     justify-content: space-between; 
     align-items: center;
@@ -314,8 +315,9 @@ footer {
     color: #F9DFBC;
     text-align: center;
     padding: 15px;
+    padding-top: 30px;
     font-size: 14px;
-    margin-top: 6%;
+    margin-top: 20%;
 }
 
 footer nav {
@@ -429,7 +431,7 @@ main {
 
 /* Contenedor general de la sección de catálogo */
 .catalog-section {
-    padding: 40px;
+    margin-top: -100%;
     background: #F9DFBC;
 }
 
@@ -466,7 +468,7 @@ main {
 }
 
 .juegos-destacados h2 {
-    color: #7d110d;         /* Mismo color que en 'Catálogo de Juegos' */
+    color: #7d110d;       /* Mismo color que en 'Catálogo de Juegos' */
     font-size: 2rem;        /* Tamaño de fuente a tu gusto */
     text-align: center;     /* Centrado */
     margin-bottom: 30px;    /* Separación inferior */
@@ -475,3 +477,73 @@ main {
     /* Ajusta según el estilo del resto de tu web */
   }
   
+/*CARRUSEL 2*/
+.container-carousel {
+    position: relative;
+    width: 1065px;
+    height: 300px;
+    background-color: #e0e0e0;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-top: 2.9%;
+    margin-left: 20px;
+
+  
+}
+
+.carruseles {
+    width: 1000%;
+    height: 100%;
+    display: flex;
+
+}
+
+.slider-section {
+    width: calc(100% / 10);
+    height: 100%;
+}
+
+.slider-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.btn-left,
+.btn-right {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    font-size: 1.5rem;
+    background-color: transparent;
+    border-radius: 50%;
+    padding: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #ffffff81;
+    transform: translate(0,-50%);
+    transition: .5s ease;
+    user-select: none;
+}
+
+.btn-left:hover,
+.btn-right:hover {
+    background-color: #333333d4;
+    color: #fff;
+}
+
+.btn-left {
+    left: 10px;
+}
+
+.btn-right {
+    right: 10px;
+}
+
+.h22{
+    margin-top: 77%;
+    text-align: center;
+    color: #7d110d;
+    font-size: 2rem;
+}
