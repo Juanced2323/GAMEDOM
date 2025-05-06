@@ -50,7 +50,7 @@ body{
     height: 600px;
     background: #f4f4f4;
     box-shadow: 0 30px 50px #dbdbdb;
-    margin-bottom: auto;
+    /* margin-bottom: auto; */
 }
 
 .destacados{
@@ -355,11 +355,10 @@ main {
     padding: 20px;
 }
 
-
-/* Estilo para la barra de filtros (sección catálogo) */
+/* 4) Barra lateral de filtros */
 .filter-sidebar {
-    width: 2000px;
-    background: #7d110dab;
+    width: 250px;
+    background: #7d110d;  /* Fondo marrón característico */
     padding: 15px;
     border-radius: 8px;
     /* Eliminamos margin-top para que se coloque de forma natural */
