@@ -1,11 +1,28 @@
-/* ========================
-RESET Y ESTILOS GLOBALES
-======================== */
+/* ===========================
+   TODO TU CSS ORIGINAL
+   =========================== */
+
+   /* ---------------------------------------------
+   1) CARGA DE FUENTE PERSONALIZADA (si la usas)
+   Ajusta la ruta según tu estructura de carpetas.
+   Ejemplo: la fuente está en ../../Fuentes/MKX-Title/MKX Title.ttf
+--------------------------------------------- */
+@font-face {
+    font-family: 'enchanted';
+    src: url('/Fuentes/enchanted_land/Enchanted Land.otf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+/* Asegurar que se mantenga igual el resto */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'enchanted';
 }
+
   
 body {
     background: #F9DFBC;
@@ -17,7 +34,7 @@ body {
 HEADER / NAVBAR
 ======================== */
 header {
-    background-color: #7d110d;
+    background-color: rgb(125, 17, 13);
     padding: 15px 5%;
 }
   
@@ -32,7 +49,18 @@ header {
 .nav-right {
     display: flex;
     align-items: center;
+    height: 50px;
 }
+.logo {
+    height: 130px;
+    width: auto;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .logo:hover {
+    transform: scale(1.1);
+  }
   
 .nav-item {
     color: #F9DFBC;
@@ -178,14 +206,21 @@ PREMIOS Y BENEFICIOS
 /* ========================
 FOOTER
 ======================== */
-footer {
-    background-color: #7d110d;
+.footer {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: 70px;
+    background: rgb(125, 17, 13);
     color: #F9DFBC;
     text-align: center;
-    padding: 20px;
+    padding: 10px;
+    margin-bottom: 0%;
     font-size: 14px;
-    margin-top: 40px;
-}
+    z-index: 1000;
+    overflow: visible;
+  }
+
   
 footer a {
     color: #F9DFBC;

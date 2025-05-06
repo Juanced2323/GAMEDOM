@@ -47,6 +47,8 @@ $resultFinalizados = $conn->query($queryFinalizados);
   <header>
     <nav class="navbar">
       <div class="nav-left">
+      <a href="http://localhost:8080/" target="_blank">
+      <img src="images/imagenes/Logo.png" alt="Logo Gamedom" class="logo"></a>
         <a href="index.php" class="nav-item <?php echo ($activePage === 'index') ? 'active' : ''; ?>">Inicio</a>
         <a href="biblioteca.php" class="nav-item <?php echo ($activePage === 'biblioteca') ? 'active' : ''; ?>">Biblioteca</a>
         <a href="comunidad.php" class="nav-item <?php echo ($activePage === 'comunidad') ? 'active' : ''; ?>">Comunidad</a>
@@ -116,7 +118,7 @@ $resultFinalizados = $conn->query($queryFinalizados);
 
   <footer class="footer">
     <p data-text="footer">
-      © 2025 CodeCrafters. Todos los derechos reservados. Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.<br>
+      © 2025 CodeCrafters. Todos los derechos reservados. Todas las marcas registradas pertenecen a sus respectivos dueños en España y otros países.
       Todos los precios incluyen IVA (donde sea aplicable).
     </p>
     <nav>
