@@ -208,6 +208,8 @@ $conn->close();
           <button id="globalEditBtn" class="save-btn" onclick="togglePencilIcons()">Editar</button>
           <button id="saveChangesBtn" class="save-btn" style="display: none;"
                   onclick="saveProfileChanges()">Guardar Cambios</button>
+          <button id="logoutBtn" class="save-btn" onclick="logoutUser()">Cerrar Sesión</button>
+        
         </div>
       </div>
 
