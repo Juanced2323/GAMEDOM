@@ -9,7 +9,17 @@
     --card-bg: #2a475e;
     --card-radius: 8px;
     --gap: 16px;
-  }
+    --background-image:  url('../images/imagenes/comunidad.jpg');
+    }
+    
+    .footer {
+      background: #171a21;
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+    }
+    
+
   
   /* --- LAYOUT PRINCIPAL --- */
   .community-page {

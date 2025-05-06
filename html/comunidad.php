@@ -234,13 +234,14 @@ $jsGames = array_merge([['id'=>0,'nombre'=>'General']], $orderedGames);
   <!-- FOOTER -->
   <footer>
     <nav>
-      <a href="index.php">Inicio</a>
-      <a href="biblioteca.php">Biblioteca</a>
-      <a href="comunidad.php">Comunidad</a>
-      <a href="premios.php">Premios</a>
-      <a href="perfil.php">Perfil</a>
+    <p>&copy; 2025 CodeCrafters. Todos los derechos reservados. Todas las marcas registradas pertenecen a sus respectivos dueños en España y otros países.
+    Todos los precios incluyen IVA (donde sea aplicable).</p>
+    <a href="Política de privacidad.html" data-text="privacy">Política de Privacidad</a> |
+      <a href="Información legal.html" data-text="legal">Información legal</a> |
+      <a href="Cookies.html" data-text="cookies">Cookies</a> |
+      <a href="A cerca de.html" data-text="about">A cerca de CodeCrafters</a>
     </nav>
-    <p>&copy; 2025 GAMEDOM. Todos los derechos reservados.</p>
+
   </footer>
 
   <script src="js/chat.js"></script>
