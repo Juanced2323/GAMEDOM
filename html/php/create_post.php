@@ -4,14 +4,14 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: ../login.html");
     exit;
 }
-require_once __DIR__ . "/db_connect.php";
+require_once __DIR__ . '/db_connect.php';
 $username = $_SESSION['usuario'];
 
 // 1) Validación básica
 if (!isset($_POST['game_id'], $_POST['contenido'])) {
     die("Solicitud inválida: faltan parámetros.");
 }
-$gameId = intval($_POST['game_id']);
+$gameId   = intval($_POST['game_id']);
 $contenido = trim($_POST['contenido']);
 if ($contenido === '') {
     die("El comentario no puede estar vacío.");
@@ -29,7 +29,7 @@ if (
 
 // 3) Determinar o crear el hilo (topic) correcto
 if ($gameId > 0) {
-    // Hilo "General" para el juego concreto
+    // Hilo “General” para ese juego
     $sqlTopic = "
       SELECT id_topic
         FROM forum_topics
@@ -42,11 +42,12 @@ if ($gameId > 0) {
     $stmt->bind_param("i", $gameId);
     $stmt->execute();
     $res = $stmt->get_result();
+
     if ($row = $res->fetch_assoc()) {
+        // Ya existía
         $topicId = (int)$row['id_topic'];
     } else {
-        // Creamos el hilo si no existía
-        $stmt->close();
+        // No existía: lo creamos
         $sqlNewTopic = "
           INSERT INTO forum_topics (id_juego, usuario, titulo, contenido)
           VALUES (?, ?, 'General', '')
@@ -59,10 +60,12 @@ if ($gameId > 0) {
         $topicId = $stmt2->insert_id;
         $stmt2->close();
     }
+
+    // Cerrar el stmt original UNA vez
     $stmt->close();
 
 } else {
-    // Hilo "General" global (id_juego = NULL)
+    // Hilo “General” global (id_juego IS NULL)
     $sqlTopic = "
       SELECT id_topic
         FROM forum_topics
@@ -74,10 +77,10 @@ if ($gameId > 0) {
         or die("Error en prepare(topic select global): " . $conn->error);
     $stmt->execute();
     $res = $stmt->get_result();
+
     if ($row = $res->fetch_assoc()) {
         $topicId = (int)$row['id_topic'];
     } else {
-        $stmt->close();
         $sqlNewTopic = "
           INSERT INTO forum_topics (id_juego, usuario, titulo, contenido)
           VALUES (NULL, ?, 'General', '')
@@ -90,6 +93,8 @@ if ($gameId > 0) {
         $topicId = $stmt2->insert_id;
         $stmt2->close();
     }
+
+    // Cerrar UNA vez
     $stmt->close();
 }
 
@@ -101,10 +106,13 @@ if ($imagenData !== null) {
     ";
     $stmt3 = $conn->prepare($sqlPost)
         or die("Error en prepare(post con imagen): " . $conn->error);
-    // Usar send_long_data para BLOB grandes
+
+    // Necesitamos un placeholder para el BLOB
+    $null = null;
     $stmt3->bind_param("issb", $topicId, $username, $contenido, $null)
         or die("Error en bind_param(post con imagen): " . $stmt3->error);
     $stmt3->send_long_data(3, $imagenData);
+
 } else {
     $sqlPost = "
       INSERT INTO forum_posts (id_topic, usuario, contenido)
@@ -120,6 +128,6 @@ $stmt3->execute()
     or die("Error al insertar post: " . $stmt3->error);
 $stmt3->close();
 
-// 5) Redirigir a comunidad para que se recargue el feed
+// 5) Redirigir de vuelta a comunidad
 header("Location: ../comunidad.php");
 exit;
