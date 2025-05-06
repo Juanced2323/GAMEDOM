@@ -1,7 +1,14 @@
 const socket = io("http://localhost:8090");
 
+
 const chatBox = document.getElementById("chat-box");
 const chatInput = document.getElementById("chat-input");
+const sendButton = document.querySelector("#chat-input-container button");
+const toggleBtn = document.getElementById("chat-toggle-btn");
+const chatContainer = document.getElementById("chat-container");
+const userCorreo = document.body.dataset.userCorreo;
+const userNombre = document.body.dataset.userNombre;
+
 const sendButton = document.querySelector("#chat-input-container button");
 const toggleBtn = document.getElementById("chat-toggle-btn");
 const chatContainer = document.getElementById("chat-container");
@@ -14,8 +21,43 @@ let isChatFocused = false;
 socket.emit("registrar_usuario", {
   correo: userCorreo,
   nombre: userNombre,
+// Registrar identidad del usuario
+socket.emit("registrar_usuario", {
+  correo: userCorreo,
+  nombre: userNombre,
 });
 
+// Mostrar mensajes entrantes
+socket.on("message", function (data) {
+  if (!chatBox || !data.message) return;
+
+  const isOwn = data.correo === userCorreo;
+  const messageDiv = document.createElement("div");
+  messageDiv.classList.add("message", isOwn ? "user" : "other");
+
+  const span = document.createElement("span");
+  span.classList.add("username");
+  span.classList.add(isOwn ? "username-user" : "username-other");
+  span.textContent = `${data.nombre}: `;  // Solo el nombre
+
+  messageDiv.appendChild(span);
+  messageDiv.appendChild(document.createTextNode(data.message));
+
+  chatBox.appendChild(messageDiv);
+  chatBox.scrollTop = chatBox.scrollHeight;
+});
+
+// Enviar mensaje
+function sendMessage() {
+  const message = chatInput.value.trim();
+  if (!message) return;
+
+  socket.emit("message", { message });
+  chatInput.value = "";
+}
+
+sendButton?.addEventListener("click", sendMessage);
+chatInput?.addEventListener("keydown", function (e) {
 // Mostrar mensajes entrantes
 socket.on("message", function (data) {
   if (!chatBox || !data.message) return;
@@ -67,14 +109,13 @@ toggleBtn?.addEventListener("click", () => {
   chatContainer?.classList.toggle("hidden");
 });
 
-//Menu del chat
+// Menú del chat
 function toggleSidebar() {
   const sidebar = document.getElementById("sidebar");
   sidebar.classList.toggle("hidden");
 }
 
-//Añadir amigo
-
+// Añadir amigo
 function mostrarFormularioAmigo() {
   const form = document.getElementById("form-solicitud-amigo");
   form.classList.remove("hidden");

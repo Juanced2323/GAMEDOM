@@ -76,6 +76,9 @@ $torneosResult = $conn->query($torneosQuery);
           <label for="elo_minimo">Elo mínimo requerido:</label><br>
           <input type="number" id="elo_minimo" name="elo_minimo" min="0" value="0" required><br><br>
 
+          <label for="max_jugadores">Máximo de jugadores:</label><br>
+          <input type="number" id="max_jugadores" name="max_jugadores" min="2" max="6" value="6" required><br><br>
+
           <button type="submit" class="participar-btn">Crear Torneo</button>
         </form>
       </section>
@@ -96,6 +99,7 @@ $torneosResult = $conn->query($torneosQuery);
                 <th>Estado</th>
                 <th>Elo mín.</th>
                 <th>Acciones</th>
+                <th>Cupos</th>
               </tr>
             </thead>
             <tbody>
@@ -108,6 +112,7 @@ $torneosResult = $conn->query($torneosQuery);
                   <td><?php echo $torneo['fecha_fin']; ?></td>
                   <td><?php echo $torneo['estado']; ?></td>
                   <td><?php echo $torneo['elo_minimo']; ?></td>
+                  <td><?php echo $torneo['jugadores_actuales'] . "/" . $torneo['max_jugadores']; ?></td>
                   <td>
                     <button class="action-btn edit-btn" onclick="alert('Función de edición próximamente')">Editar</button>
                     <form action="php/delete_torneo.php" method="POST" style="display:inline;">

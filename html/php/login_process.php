@@ -21,8 +21,8 @@ if ($result && $result->num_rows > 0) {
     // Verifica la contraseña usando password_verify()
     if (password_verify($pass, $row['password'])) {
         // Login correcto: crea la sesión
-        $_SESSION['usuario'] = $row['usuario']; // nombre de usuario real desde la BD
-        $_SESSION['correo'] = $row['correo'];   // correo real desde la BD
+        $_SESSION['correo']  = $row['correo'];  // correo real
+        $_SESSION['usuario'] = $row['usuario']; // nombre de usuario real
         header("Location: ../index.php");
         exit();
     } else {

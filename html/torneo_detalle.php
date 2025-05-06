@@ -117,9 +117,12 @@ $url_juego = "games/$carpetaJuego/index.html";
         <p>Tu Elo actual: <strong><?php echo $elo_usuario; ?></strong></p>
 
         <?php if ($puede_participar): ?>
-        <a class="btn-confirmar" href="<?php echo $url_juego; ?>">Confirmar Participación</a>
+          <form method="POST" action="php/inscribirse_torneo.php">
+            <input type="hidden" name="id_torneo" value="<?php echo $torneo['id_torneo']; ?>">
+            <button type="submit" class="btn-confirmar">Confirmar Participación</button>
+          </form>
         <?php else: ?>
-        <button class="btn-confirmar btn-disabled" disabled>No cumples con el puntaje requerido</button>
+          <button class="btn-confirmar btn-disabled" disabled>No cumples con el puntaje requerido</button>
         <?php endif; ?>
     </div>
 

@@ -183,6 +183,7 @@ $conn->close();
   <link rel="stylesheet" href="css/community.css">
 </head>
 <body>
+
   <!-- MENÚ SUPERIOR -->
   <div class="menu-superior">
     <div class="nav-left">
@@ -350,6 +351,47 @@ $conn->close();
       <?php endif; ?>
     </section>
   </main>
+
+  <!-- Boton flotante del chat -->
+  <div id="chat-toggle-btn" class="chat-toggle-btn" title="Abrir chat">
+  💬
+  </div>
+
+  <div id="chat-container" class="chat-container hidden">
+    <!-- Cabecera del chat con botón del menú -->
+    <div class="chat-header">
+      <h2>Chat en Vivo</h2>
+      <button class="openbtn" onclick="toggleSidebar()">☰</button>
+    </div>
+
+    <!-- Sidebar de opciones dentro del chat -->
+    <div id="sidebar" class="chat-sidebar hidden">
+      <a href="#" onclick="mostrarFormularioAmigo()">➕ Añadir amigo</a>
+      <a href="#">📩 Chat privado</a>
+      <a href="#">🎮🔒 Partida privada</a>
+    </div>
+
+    <!-- Añadir amigos -->
+    <div id="form-solicitud-amigo" class="chat-popup hidden">
+      <h3>Enviar solicitud de amistad</h3>
+      <input type="email" id="correo-amigo" placeholder="Correo del usuario" required>
+      <button onclick="enviarSolicitudAmistad()">Añadir</button>
+      <button onclick="cerrarFormularioAmigo()">Cancelar</button>
+    </div>
+
+    <!-- Mensajes -->
+    <div id="chat-box" class="chat-box"></div>
+
+    <!-- Entrada de mensaje -->
+    <div id="chat-input-container">
+      <input type="text" id="chat-input" placeholder="Escribe un mensaje..." autofocus>
+      <button id="chat-send-btn">Enviar</button>
+    </div>
+  </div>
+
+  <!-- script del chat --> 
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="js/chat.js"></script>
 
   <!-- Boton flotante del chat -->
   <div id="chat-toggle-btn" class="chat-toggle-btn" title="Abrir chat">

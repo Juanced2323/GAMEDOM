@@ -14,6 +14,12 @@ CREATE TABLE `torneos` (
   `estado`        VARCHAR(20) DEFAULT 'activo',
   `descripcion`   TEXT DEFAULT NULL,
   `elo_minimo`    INT NOT NULL DEFAULT 0,
+  `max_jugadores` INT DEFAULT 6,
+  `jugadores_actuales` INT DEFAULT 0;
+  `premio_1` TEXT DEFAULT NULL, 
+  `premio_2` TEXT DEFAULT NULL,
+  `premio_3` TEXT DEFAULT NULL;
+
   PRIMARY KEY (`id_torneo`),
   FOREIGN KEY (`id_juego`) REFERENCES `juegos`(`id_juego`)
     ON DELETE CASCADE ON UPDATE CASCADE

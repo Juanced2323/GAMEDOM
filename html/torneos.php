@@ -72,6 +72,7 @@ $resultFinalizados = $conn->query($queryFinalizados);
           <div class="torneo-card">
             <h3><?php echo htmlspecialchars($torneo['nombre_torneo']); ?></h3>
             <p><strong>Fecha:</strong> Del <?php echo $torneo['fecha_inicio']; ?> al <?php echo $torneo['fecha_fin']; ?></p>
+            <p><strong>Participantes:</strong> <?php echo $torneo['jugadores_actuales']; ?>/<?php echo $torneo['max_jugadores']; ?></p>
             <p><strong>Juego:</strong> <?php echo htmlspecialchars($torneo['nombre_juego']); ?></p>
             <a class="participar-btn" href="torneo_detalle.php?id=<?php echo $torneo['id_torneo']; ?>">Participar</a>
           </div>
@@ -81,6 +82,24 @@ $resultFinalizados = $conn->query($queryFinalizados);
       <?php endif; ?>
     </section>
 
+    <?php if (isset($_GET['msg'])): ?>
+      <div class="alerta-torneo">
+        <?php
+          switch ($_GET['msg']) {
+            case 'ya_inscrito':
+              echo "Ya estás inscrito en este torneo.";
+              break;
+            case 'esperando_jugadores':
+              echo "Inscripción exitosa. Esperando a más jugadores...";
+              break;
+            case 'acceso_denegado':
+              echo "Acceso denegado. Intenta iniciar sesión nuevamente.";
+              break;
+          }
+        ?>
+      </div>
+    <?php endif; ?>
+
     <!-- Próximos Torneos -->
     <section class="torneos-section">
       <h2>Próximos Torneos</h2>
@@ -89,6 +108,7 @@ $resultFinalizados = $conn->query($queryFinalizados);
           <div class="torneo-card">
             <h3><?php echo htmlspecialchars($torneo['nombre_torneo']); ?></h3>
             <p><strong>Fecha:</strong> Del <?php echo $torneo['fecha_inicio']; ?> al <?php echo $torneo['fecha_fin']; ?></p>
+            <p><strong>Participantes:</strong> <?php echo $torneo['jugadores_actuales']; ?>/<?php echo $torneo['max_jugadores']; ?></p>
             <p><strong>Juego:</strong> <?php echo htmlspecialchars($torneo['nombre_juego']); ?></p>
             <button class="btn-disabled" disabled>Próximamente</button>
           </div>
