@@ -260,34 +260,34 @@ $conn->close();
   <div class="container-carousel">
         <div class="carruseles" id="slider">
             <section class="slider-section">
-                <img src="img/1.jpg">
+                <img src="images/Juegos/Ajedrez.jpg">
             </section>
             <section class="slider-section">
-                <img src="img/2.jpg">
+                <img src="images/Juegos/Age of empires.jpg">
             </section>
             <section class="slider-section">
-                <img src="img/3.jpg">
+                <img src="images/Juegos/among us.jpg">
             </section>
             <section class="slider-section">
-                <img src="img/4.jpg">
+                <img src="images/Juegos/Burden of command.jpg">
             </section>
             <section class="slider-section">
-                <img src="img/5.jpg">
+                <img src="images/Juegos/Crashlands.jpg">
             </section>
             <section class="slider-section">
-                <img src="img/6.avif">
+                <img src="images/Juegos/Cooking compannions.jpg">
             </section>
             <section class="slider-section">
-                <img src="img/7.jpg">
+                <img src="images/Juegos/iRacing.jpg">
             </section>
             <section class="slider-section">
-                <img src="img/8.jpg">
+                <img src="images/Juegos/Colonizadores del espacio.jpg">
             </section>
             <section class="slider-section">
-                <img src="img/9.jpg">
+                <img src="images/Juegos/Plants vs. zombies Vol 1.jpg">
             </section>
             <section class="slider-section">
-                <img src="img/10.jpg">
+                <img src="images/Juegos/Red dead redemption.jpg">
             </section>
         </div>
         <div class="btn-left"><i class='bx bx-chevron-left'><</i></div>
