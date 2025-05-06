@@ -9,6 +9,32 @@
     box-sizing: border-box;
 }
 
+/* --- Notificaciones --- */
+.nav-item { position: relative; }
+
+#notificationIcon {
+  cursor: pointer;
+  color: #4e73df;
+  font-size: 1.2em;
+}
+
+#notificationIcon:hover {
+  color: #2e59d9;
+}
+
+#notificationBadge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #e74a3b;
+  color: #fff;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.7em;
+  display: none;
+}
+
+
 body{
     background: #F9DFBC;
     /* overflow: hidden;*/

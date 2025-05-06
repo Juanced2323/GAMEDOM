@@ -112,9 +112,15 @@ $conn->close();
       <a href="torneos.php" class="nav-item">Torneos</a>
       <?php if (isset($_SESSION['usuario'])): ?>
         <a href="perfil.php" class="nav-item">Perfil</a>
+        <!-- Nueva notificación -->
+        <div id="notificationIcon" class="nav-item">
+          <i class="fa fa-bell"></i>
+          <span id="notificationBadge" class="badge"></span>
+        </div>
       <?php else: ?>
         <a href="login.html" class="nav-item">Iniciar Sesión</a>
       <?php endif; ?>
+
       <div class="dropdown">
         <span class="dropdown-toggle" data-text="idiomas">Idiomas ▼</span>
         <ul class="dropdown-menu">
@@ -246,5 +252,47 @@ $conn->close();
 
   <!-- Script para slider e idiomas -->
   <script src="js/Index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const badge = document.getElementById('notificationBadge');
+      const icon  = document.getElementById('notificationIcon');
+
+      // Sólo si hay sesión
+      if (!icon) return;
+
+      // Obtener partidas pendientes
+      fetch('php/obtener_partidas.php')
+        .then(r => r.json())
+        .then(partidas => {
+          const countPartidas = partidas.length;
+          // Obtener solicitudes de amistad
+          fetch('php/obtener_solicitudes.php')
+            .then(r2 => r2.json())
+            .then(solicitudes => {
+              const countSolicitudes = Array.isArray(solicitudes)
+                                      ? solicitudes.length
+                                      : 0;
+              const total = countPartidas + countSolicitudes;
+              if (total > 0) {
+                badge.textContent = total;
+                badge.style.display = 'inline-block';
+                // Tooltip con detalle
+                icon.title =
+                  (countPartidas > 0 ? `${countPartidas} partida(s) pendiente(s)\n` : '') +
+                  (countSolicitudes > 0 ? `${countSolicitudes} solicitud(es) de amistad` : '');
+              }
+            })
+            .catch(()=>{/* opcional: manejar error solicitudes */});
+        })
+        .catch(()=>{/* opcional: manejar error partidas */});
+
+      // Si haces click en la campana, puedes abrir un dropdown o ir a otra página
+      icon.addEventListener('click', () => {
+        // Por ejemplo, redirigir a un panel de notificaciones
+        window.location.href = 'notificaciones.php';
+      });
+    });
+  </script>
+
 </body>
 </html>
