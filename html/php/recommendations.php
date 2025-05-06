@@ -1,6 +1,14 @@
 <?php
+/**
+ * Obtiene recomendaciones basadas en el contenido que el usuario ha jugado.
+ *
+ * @param string $usuario El nombre del usuario.
+ * @param mysqli $conn    Conexión a la base de datos.
+ * @param int    $limit   Límite de recomendaciones a devolver.
+ * @return array          Lista de juegos recomendados.
+ */
 function getContentBasedRecommendations($usuario, $conn, $limit = 5) {
-    // 1. Obtener id_juego que el usuario ha jugado (historial_juegos)
+    // 1. Obtener los id_juego que el usuario ha jugado (historial_juegos)
     $sqlHistorial = "
         SELECT hj.id_juego
         FROM historial_juegos hj
@@ -18,12 +26,12 @@ function getContentBasedRecommendations($usuario, $conn, $limit = 5) {
     }
     $stmt->close();
 
-    // Si no ha jugado a nada, podrías devolver un array vacío o fallback
+    // Si no ha jugado a nada, se devuelve un array vacío
     if (count($juegosJugados) === 0) {
         return [];
     }
 
-    // 2. Obtener las categorías más frecuentes de esos juegos
+    // 2. Obtener las categorías más frecuentes de los juegos jugados
     $inPlaceholder = implode(',', array_fill(0, count($juegosJugados), '?'));
     $sqlCatFrecuentes = "
         SELECT jc.id_categoria, COUNT(*) as conteo
@@ -48,11 +56,10 @@ function getContentBasedRecommendations($usuario, $conn, $limit = 5) {
         return [];
     }
 
-    // 3. Buscar otros juegos con esas categorías, excluyendo los que ya jugó
+    // 3. Buscar otros juegos con esas categorías, excluyendo los juegos ya jugados
     $inCatPlaceholder = implode(',', array_fill(0, count($categoriasFrecuentes), '?'));
     $inJuegoPlaceholder = implode(',', array_fill(0, count($juegosJugados), '?'));
 
-    // Incluir también el campo icono y ruta_index si quieres mostrar la tarjeta
     $sqlRecomendacion = "
         SELECT DISTINCT j.id_juego, j.nombre, j.descripcion, j.icono, j.ruta_index
         FROM juegos_categorias jc
@@ -61,10 +68,9 @@ function getContentBasedRecommendations($usuario, $conn, $limit = 5) {
           AND j.id_juego NOT IN ($inJuegoPlaceholder)
         LIMIT ?
     ";
-    
-    // Bind param con: las categorías, los juegosJugados y el limit final
+
     $params = array_merge($categoriasFrecuentes, $juegosJugados);
-    $types = str_repeat('i', count($params)) . 'i'; // +1 para el limit
+    $types = str_repeat('i', count($params)) . 'i';
     $stmt = $conn->prepare($sqlRecomendacion);
     $params[] = $limit;
     $stmt->bind_param($types, ...$params);
@@ -79,3 +85,4 @@ function getContentBasedRecommendations($usuario, $conn, $limit = 5) {
 
     return $recomendados;
 }
+?>

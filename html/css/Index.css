@@ -35,14 +35,23 @@ body{
     
 }
 
+.catalog-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* Ajustes para el contenedor del slider */
 .container {
+    /* Eliminamos posición absoluta y transform para que se centre como bloque */
+    position: relative;
+    margin: 20px auto;
     width: 1000px;
     height: 600px;
     background: #f4f4f4;
     box-shadow: 0 30px 50px #dbdbdb;
-    margin: 40px auto;
-    position: relative; /* opcional */
-  }  
+    margin-bottom: auto;
+}
 
 .destacados{
     position: absolute;
@@ -51,7 +60,7 @@ body{
     width: 350px;
     padding: 10px 10px;
     text-align: justify;
-    color:#F9DFBC;
+    color: #F9DFBC;
     transform: translate(0, -50%);
     font-family: system-ui;
     background-color: #000000a4;
@@ -186,7 +195,7 @@ body{
 }
 
 .button button:hover{
-    background:#f1e4d4;
+    background: #f1e4d4;
     color: #010101;
 }
 
@@ -347,14 +356,13 @@ main {
 }
 
 
-/* 4) Barra lateral de filtros */
+/* Estilo para la barra de filtros (sección catálogo) */
 .filter-sidebar {
-    width: 100%;
-    max-width: 1000px; /* igual al ancho del slider */
-    background: #7d110dc4;
+    width: 2000px;
+    background: #7d110dab;
     padding: 15px;
-    margin-bottom: 20px; /* separación con el slider */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    /* Eliminamos margin-top para que se coloque de forma natural */
 }
 
 .filter-sidebar h3,
@@ -416,82 +424,55 @@ main {
     color: #fff;  
 }
 
-/*SLIDER AUTOMÁTICA*/
-.container-carousel {
-    position: relative;
-    width: 1000px;
-    height: 300px;
-    margin-top: 5%;
-    margin-left: 53px;
-    background-color: #e0e0e0;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.66);
-    border-radius: 15px;
-    overflow: hidden;
+/* ==============================
+   ESTILOS PARA LA SECCIÓN DEL CATÁLOGO
+============================== */
+
+/* Contenedor general de la sección de catálogo */
+.catalog-section {
+    padding: 40px;
+    background: #F9DFBC;
+}
+
+/* Título de la sección del catálogo */
+.catalog-title h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #7d110d;
+    font-size: 2rem;
+}
+
+/* Envoltorio que pone filtros a la izquierda y tarjetas a la derecha */
+.catalog-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Estilos para el catálogo de juegos (tarjetas) */
+.catalogo-juegos {
+    flex: 1;
+}
+
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.juegos-destacados h2 {
+    color: #7d110d;         /* Mismo color que en 'Catálogo de Juegos' */
+    font-size: 2rem;        /* Tamaño de fuente a tu gusto */
+    text-align: center;     /* Centrado */
+    margin-bottom: 30px;    /* Separación inferior */
+    font-weight: bold;      /* Negrita si lo prefieres */
+    text-transform: none;   /* Quita transformaciones si no quieres uppercase */
+    /* Ajusta según el estilo del resto de tu web */
+  }
   
-}
-
-.carruseles {
-    width: 1000%;
-    height: 100%;
-    display: flex;
-
-}
-
-.slider-section {
-    width: calc(100% / 10);
-    height: 100%;
-}
-
-.slider-section img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 15px;
-}
-.slider-section .img1 {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 15px;
-    object-fit: cover; /* Para que llene el panel sin deformarse */
-    object-position: center top; /* O ajusta a tu gusto: center center, center bottom... */
-}
-.slider-section .img2 {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 15px;
-    object-fit: cover; /* Para que llene el panel sin deformarse */
-    object-position: center bottom; /* O ajusta a tu gusto: center center, center bottom... */
-}
-
-.btn-left,
-.btn-right {
-    display: flex;
-    position: absolute;
-    top: 50%;
-    font-size: 1.5rem;
-    background-color: transparent;
-    border-radius: 50%;
-    padding: 5px;
-    font-weight: 600;
-    cursor: pointer;
-    color: #ffffff81;
-    transform: translate(0,-50%);
-    transition: .5s ease;
-    user-select: none;
-}
-
-.btn-left:hover,
-.btn-right:hover {
-    background-color: #333333d4;
-    color: #fff;
-}
-
-.btn-left {
-    left: 10px;
-}
-
-.btn-right {
-    right: 10px;
-}

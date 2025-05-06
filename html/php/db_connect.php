@@ -1,7 +1,7 @@
 <?php
 $servername = "db";  // No "localhost"
 $username   = "usuario";
-$password   = "usuariopassword";
+$password   = "usuario";
 $dbname     = "gamedom_users";
 $port       = 3306;
 

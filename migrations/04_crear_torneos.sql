@@ -2,13 +2,18 @@
 
 USE gamedom_users;
 
-CREATE TABLE IF NOT EXISTS `torneos` (
+-- (Opcional) Eliminar la tabla torneos si ya existe para recrearla
+DROP TABLE IF EXISTS `torneos`;
+
+CREATE TABLE `torneos` (
   `id_torneo`     INT AUTO_INCREMENT,
   `id_juego`      INT NOT NULL,
   `nombre_torneo` VARCHAR(100) NOT NULL,
   `fecha_inicio`  DATE DEFAULT NULL,
   `fecha_fin`     DATE DEFAULT NULL,
   `estado`        VARCHAR(20) DEFAULT 'activo',
+  `descripcion`   TEXT DEFAULT NULL,
+  `elo_minimo`    INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id_torneo`),
   FOREIGN KEY (`id_juego`) REFERENCES `juegos`(`id_juego`)
     ON DELETE CASCADE ON UPDATE CASCADE

@@ -1,0 +1,168 @@
+/* community.css */
+/* Variables de tema */
+:root {
+    --primary-bg: #1b2838;
+    --secondary-bg: #171a21;
+    --highlight: #66c0f4;
+    --text-light: #c6d4df;
+    --text-dark: #ffffff;
+    --card-bg: #2a475e;
+    --card-radius: 8px;
+    --gap: 16px;
+  }
+  
+  /* --- LAYOUT PRINCIPAL --- */
+  .community-page {
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+  }
+  
+  /* FEED a la izquierda */
+  .feed-section {
+    flex: 2;
+    background: #fff;
+    border-radius: var(--card-radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: var(--gap);
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+  }
+  
+  /* SIDEBAR a la derecha */
+  .sidebar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  /* PANELES de filtros y publicar */
+  .filter-panel,
+  .publish-panel {
+    background: #fff;
+    border-radius: var(--card-radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: var(--gap);
+  }
+  
+  .filter-panel h3,
+  .publish-panel h3 {
+    margin: 0 0 12px;
+    color: #7d110d;
+    font-size: 1.2rem;
+  }
+  
+  /* Formularios */
+  .filter-form .form-group,
+  .publish-panel .form-group {
+    margin-bottom: 12px;
+  }
+  
+  .filter-form label,
+  .publish-panel label {
+    font-weight: bold;
+    margin-bottom: 4px;
+    display: block;
+  }
+  
+  .filter-form input[type="text"],
+  .filter-form select,
+  .publish-panel input[type="text"],
+  .publish-panel textarea,
+  .publish-panel input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.95rem;
+  }
+  
+  /* Botones full-width */
+  .btn-block {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    background: #7d110d;
+    color: #F9DFBC;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-block:hover {
+    background: #a42620;
+  }
+  
+  /* Autocomplete suggestions */
+  .suggestions {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0;
+    border: 1px solid #ccc;
+    max-height: 120px;
+    overflow-y: auto;
+    border-radius: 4px;
+  }
+  .suggestions li {
+    padding: 8px;
+    cursor: pointer;
+  }
+  .suggestions li:hover {
+    background: #f0f0f0;
+  }
+  
+  /* LISTADO VERTICAL de publicaciones */
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* PUBLICACIONES estilo tweet-card */
+  .post-item {
+    background: var(--card-bg);
+    color: var(--text-light);
+    border-radius: var(--card-radius);
+    padding: var(--gap);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+  }
+  
+  .post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+  }
+  
+  .post-header em {
+    font-style: italic;
+  }
+  
+  .post-header .timestamp {
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+  
+  .post-body {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  
+  .post-body img.post-image {
+    margin-top: var(--gap);
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: var(--card-radius);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
