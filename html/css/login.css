@@ -1,28 +1,139 @@
 /* css/login.css */
+@font-face {
+  font-family: 'enchanted';
+  src: url('../../Fuentes/enchanted_land/Enchanted\ Land.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
 /* Fondo de la página con imagen de videojuegos */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'enchanted';
   margin: 0;
   padding: 0;
-  background: url('../images/videogame-background.webp') no-repeat center center fixed;
+  background: url('../images/imagenes/puertas.jpg') no-repeat center center fixed;
   background-size: cover;
+  overflow-y: hidden;
 }
+
+/* ----- MENÚ SUPERIOR (HEADER) ----- */
+.menu-superior {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 78px;  /* Ajusta la altura */
+  background: #7d110dc4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 1000;
+}
+
+.logo {
+  height: 130px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.logo:hover {
+  transform: scale(1.1);
+}
+
+/* Sección derecha: "Iniciar sesión" + dropdown */
+.menu-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-right: 10%;
+}
+.menu-right a {
+  color: #F9DFBC;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  transition: color 0.3s;
+}
+.menu-right a:hover {
+  color: #fff;
+}
+
+/* ------ DROPDOWN ------ */
+.dropdown {
+  position: relative;
+}
+.dropdown-toggle {
+  cursor: pointer;
+  color: #F9DFBC;
+  font-weight: bold;
+  font-size: 18px;
+}
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;   /* Se alinea a la derecha del toggle */
+  background: #7d110dc4;
+  border-radius: 5px;
+  width: 200px;
+  z-index: 9999;
+  padding: 5px 0; /* Espacio vertical interno */
+  max-height: 300px; /* Ajusta según lo alto que lo quieras */
+  overflow-y: auto;  /* Habilita el scroll vertical */
+  scrollbar-width: thin; /* (opcional) para navegadores que lo soportan */
+}
+
+.dropdown-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+.dropdown-menu li {
+  list-style: none;
+}
+.dropdown-menu li a {
+  color: #F9DFBC;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;   /* Espacio entre bandera y texto */
+  padding: 8px 15px; /* Espacio interno */
+}
+.dropdown-menu li a:hover {
+  background: rgba(249, 223, 188, 0.2);
+}
+.dropdown-menu li img {
+  width: 24px;
+  height: auto;
+  border-radius: 3px;
+}
+
 
 /* Contenedor de login destacado */
 .login-container {
   width: 320px;
-  padding: 30px;
-  background: rgba(255, 255, 255, 1); /* Fondo blanco con transparencia */
+  height: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  background: #7d110dc4; /* Fondo blanco con transparencia */
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  margin: 10% auto;
+  margin: 12% auto;
 }
 
 .login-container h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: #333;
+  color: #F9DFBC;
 }
 
 .form-group {
@@ -33,7 +144,7 @@ body {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  color: #333;
+  color: #F9DFBC;
 }
 
 .form-group input {
@@ -48,8 +159,8 @@ body {
 button[type="submit"] {
   width: 100%;
   padding: 10px;
-  background: #007BFF;
-  color: #fff;
+  background:  #4D9398;
+  color: #F9DFBC;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -57,7 +168,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background: #0056b3;
+  background:  #4D9398;
 }
 
 /* Hipervínculo para ir a registrarse */
@@ -65,10 +176,11 @@ button[type="submit"]:hover {
   text-align: center;
   margin-top: 15px;
   font-size: 14px;
+  color: #F9DFBC;
 }
 
 .register-link a {
-  color: #007BFF;
+  color:  #4D9398;
   text-decoration: none;
 }
 
@@ -78,8 +190,8 @@ button[type="submit"]:hover {
 
 /* Estilos para el mensaje de error */
 .error-message {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: #F9DFBC;
+  color: #4D9398;
   padding: 10px;
   margin-top: 10px;
   border-radius: 5px;
@@ -99,3 +211,31 @@ button[type="submit"]:hover {
   20%, 40%, 60%, 80% { transform: translateX(5px); }
   100% { transform: translateX(0); }
 }
+
+/* ----- FOOTER FIJO ABAJO ----- */
+.footer {
+  position: fixed;
+  bottom: 0; left: 0;
+  width: 100%;
+  background: #7d110db4;
+  color: #F9DFBC;
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 0%;
+  font-size: 14px;
+  z-index: 1000;
+}
+.footer nav {
+  margin-top: 5px;
+}
+.footer nav a {
+  color: #F9DFBC;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 8px;
+  transition: color 0.3s;
+}
+.footer nav a:hover {
+  color: #fff;
+}
+

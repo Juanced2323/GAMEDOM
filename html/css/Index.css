@@ -2,45 +2,47 @@
    TODO TU CSS ORIGINAL
    =========================== */
 
+   /* ---------------------------------------------
+   1) CARGA DE FUENTE PERSONALIZADA (si la usas)
+   Ajusta la ruta según tu estructura de carpetas.
+   Ejemplo: la fuente está en ../../Fuentes/MKX-Title/MKX Title.ttf
+--------------------------------------------- */
+@font-face {
+    font-family: 'enchanted';
+    src: url('/Fuentes/enchanted_land/Enchanted Land.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
 /* Asegurar que se mantenga igual el resto */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'enchanted';
 }
+
 
 body{
     background: #F9DFBC;
-    /* overflow: hidden;*/
+    /*overflow: hidden;*/
     overflow-x: hidden; 
     /*background-image: url('images/Imágenes/fondo\ desenfocado1.jpg');*/
     background-size: cover;
+    font-family: 'enchanted';
+    /*position: absolute;*/
+    
 }
 
-.contenedor-logo  {
-    position: absolute;
-    top: 50%;
-    left: 13.5%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-}
-
-.contenedor-logo img {
-    width: 300px; 
-    height: auto;
-}
-
-.container{
-    position: absolute;
-    top: 75%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.container {
     width: 1000px;
     height: 600px;
     background: #f4f4f4;
     box-shadow: 0 30px 50px #dbdbdb;
-    margin-bottom: auto;
-}
+    margin: 40px auto;
+    position: relative; /* opcional */
+  }  
 
 .destacados{
     position: absolute;
@@ -53,18 +55,19 @@ body{
     transform: translate(0, -50%);
     font-family: system-ui;
     background-color: #000000a4;
-    border-radius: 20%;
+    border-radius: 0%;
     z-index: 1000;
     font-size: 35px;
     text-transform: uppercase;
     font-weight: bold;
 }
 
-.container .slide .item{
+/*este es el del rectángulo foto*/
+.container .slide1 .item {
     width: 200px;
     height: 300px;
     position: absolute;
-    top: 50%;
+    top: 70%;
     transform: translate(0, -50%);
     border-radius: 20px;
     box-shadow: 0 30px 50px #505050;
@@ -74,8 +77,9 @@ body{
     transition: 0.5s;
 }
 
-.slide .item:nth-child(1),
-.slide .item:nth-child(2){
+
+.slide1 .item:nth-child(1),
+.slide1 .item:nth-child(2){
     top: 0;
     left: 0;
     transform: translate(0, 0);
@@ -84,25 +88,26 @@ body{
     height: 100%;
 }
 
-.slide .item:nth-child(3){
+.slide1 .item:nth-child(3){
     left: 50%;
 }
-.slide .item:nth-child(4){
+.slide1 .item:nth-child(4){
     left: calc(50% + 220px);
 }
-.slide .item:nth-child(5){
+.slide1 .item:nth-child(5){
     left: calc(50% + 440px);
 }
 
 /* here n = 0, 1, 2, 3,... */
-.slide .item:nth-child(n + 6){
+.slide1 .item:nth-child(n + 6){
     left: calc(50% + 660px);
     opacity: 0;
 }
 
+/*este es el del cuadrado de información*/
 .item .content{
     position: absolute;
-    top: 50%;
+    top:60% ;
     left: 40px;
     width: 350px;
     padding: 3.95% 20px;
@@ -115,7 +120,7 @@ body{
     border-radius: 12%;
 }
 
-.slide .item:nth-child(2) .content{
+.slide1 .item:nth-child(2) .content{
     display: block;
 }
 
@@ -189,33 +194,27 @@ body{
    MENÚ SUPERIOR (SOLO MODIFICADO)
 ============================== */
 .menu-superior {
-    height: 90px;
+    height: 70px;
     display: flex; 
-    /* en lugar de justify-content: flex-end,
-       usamos space-between para dejar logo a la izq 
-       y resto a la dcha */
     justify-content: space-between; 
     align-items: center;
     background: #7d110d; 
     padding-right: 7%;
-    padding-left: 20px; /* espacio a la izq para el logo */
-    padding-top: 10px;
+    padding-left: 18px; /* espacio a la izq para el logo */
+    padding-top: 0px;
     position: relative; /* Para que el menú de idiomas esté dentro */
     z-index: 1000;
 }
-
-/* Logo un poco más grande a la izquierda */
-.nav-left {
-  display: flex;
-  align-items: center;
-}
-
-/* Ajusta el tamaño del logo aquí */
-.nav-left .logo {
-  height: 60px; 
-  width: auto;
-  margin-right: 20px; 
-}
+.menu-superior .logo {
+    height: 130px;
+    width: auto;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .logo:hover {
+    transform: scale(1.1);
+  }
 
 /* Bloque derecho con los enlaces y dropdown */
 .nav-right {
@@ -342,16 +341,20 @@ footer a:hover {
 /* 3) Contenedor principal (distribución general) */
 main {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 20px;
 }
 
+
 /* 4) Barra lateral de filtros */
 .filter-sidebar {
-    width: 2000px;
-    background: #7d110dab;
+    width: 100%;
+    max-width: 1000px; /* igual al ancho del slider */
+    background: #7d110dc4;
     padding: 15px;
+    margin-bottom: 20px; /* separación con el slider */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-top: 70%;
 }
 
 .filter-sidebar h3,
@@ -411,4 +414,84 @@ main {
 .btn-acceso:hover {
     background-color: #e1a200; 
     color: #fff;  
+}
+
+/*SLIDER AUTOMÁTICA*/
+.container-carousel {
+    position: relative;
+    width: 1000px;
+    height: 300px;
+    margin-top: 5%;
+    margin-left: 53px;
+    background-color: #e0e0e0;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.66);
+    border-radius: 15px;
+    overflow: hidden;
+  
+}
+
+.carruseles {
+    width: 1000%;
+    height: 100%;
+    display: flex;
+
+}
+
+.slider-section {
+    width: calc(100% / 10);
+    height: 100%;
+}
+
+.slider-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+}
+.slider-section .img1 {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    object-fit: cover; /* Para que llene el panel sin deformarse */
+    object-position: center top; /* O ajusta a tu gusto: center center, center bottom... */
+}
+.slider-section .img2 {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    object-fit: cover; /* Para que llene el panel sin deformarse */
+    object-position: center bottom; /* O ajusta a tu gusto: center center, center bottom... */
+}
+
+.btn-left,
+.btn-right {
+    display: flex;
+    position: absolute;
+    top: 50%;
+    font-size: 1.5rem;
+    background-color: transparent;
+    border-radius: 50%;
+    padding: 5px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #ffffff81;
+    transform: translate(0,-50%);
+    transition: .5s ease;
+    user-select: none;
+}
+
+.btn-left:hover,
+.btn-right:hover {
+    background-color: #333333d4;
+    color: #fff;
+}
+
+.btn-left {
+    left: 10px;
+}
+
+.btn-right {
+    right: 10px;
 }

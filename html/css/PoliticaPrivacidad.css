@@ -1,0 +1,178 @@
+/* ===========================
+   TODO TU CSS ORIGINAL
+   =========================== */
+
+
+/* Asegurar que se mantenga igual el resto */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'enchanted';
+    height: auto;
+}
+
+
+body{
+    background: #F9DFBC;
+    /*overflow: hidden;*/
+    overflow-x: hidden; 
+}
+
+
+/* ==============================
+   MENÚ SUPERIOR (SOLO MODIFICADO)
+============================== */
+.menu-superior {
+    height: 70px;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    background: #7d110d; 
+    padding-right: 7%;
+    padding-left: 18px; /* espacio a la izq para el logo */
+    padding-top: 0px;
+    position: relative; /* Para que el menú de idiomas esté dentro */
+    z-index: 1000;
+}
+
+.menu-superior .logo {
+    height: 130px;
+    width: auto;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .logo:hover {
+    transform: scale(1.1);
+  }
+
+/* Bloque derecho con los enlaces y dropdown */
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Estilos de los enlaces del menú */
+.menu-superior a {
+    color: #F9DFBC;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.menu-superior a:hover {
+    text-decoration: underline;
+}
+
+/* La barra | entre algunos enlaces */
+.menu-superior a + span { 
+    font-weight: bold; 
+    color: #F9DFBC;
+    padding: 15px 10px;
+}
+
+/* Dropdown - Menú de idiomas */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+    color: #F9DFBC;
+    padding: 5px 10px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+/* Estilos del menú desplegable */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0; 
+    top: 100%; 
+    background-color: #7d110dbd;
+    border-radius: 5px;
+    max-height: 250px; 
+    overflow-y: auto; 
+    width: 200px; 
+    z-index: 1000;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-menu li {
+    list-style: none;
+    padding: 10px;
+}
+
+.dropdown-menu li a {
+    text-decoration: none;
+    color: #F9DFBC;
+    display: block;
+    transition: background 0.3s;
+}
+
+.dropdown-menu li a:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.menu-superior a img {
+    width: 20px; 
+    height: auto;
+    margin-right: 8px; 
+    vertical-align: middle; 
+}
+
+/* ==============================
+   FOOTER BIEN POSICIONADO
+============================== */
+footer {
+    width: 100%;
+    background: #7d110d;
+    color: #F9DFBC;
+    text-align: center;
+    padding: 15px;
+    font-size: 14px;
+    margin-top: 100%;
+}
+
+footer nav {
+    margin-top: 5px;
+}
+
+footer a {
+    color: #F9DFBC;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 8px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* ==============================
+   Resto de estilos que ya tenías
+============================== */
+.nav-item {
+    color: #F9DFBC;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 16px;
+}
+
+.nav-item:hover {
+    text-decoration: underline;
+}
+
+/* 3) Contenedor principal (distribución general) */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}

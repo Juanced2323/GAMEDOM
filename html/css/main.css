@@ -1,19 +1,37 @@
-/* main.css */
+/* ===========================
+   TODO TU CSS ORIGINAL
+   =========================== */
 
-/* 
-   1) BODY: combinamos la imagen de fondo con un degradado semitransparente.
-      - La capa del degradado se coloca primero, la imagen después.
-      - Ajusta la ruta ../images/videogame-background.webp según tu estructura.
-*/
-body {
+   /* ---------------------------------------------
+   1) CARGA DE FUENTE PERSONALIZADA (si la usas)
+   Ajusta la ruta según tu estructura de carpetas.
+   Ejemplo: la fuente está en ../../Fuentes/MKX-Title/MKX Title.ttf
+--------------------------------------------- */
+@font-face {
+  font-family: 'enchanted';
+  src: url('/Fuentes/enchanted_land/Enchanted Land.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Asegurar que se mantenga igual el resto */
+* {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
-  background:
-    linear-gradient(135deg, rgba(15,32,39,0.7), rgba(32,58,67,0.7), rgba(44,83,100,0.7)),
-    url('../images/videogame-background.webp') no-repeat center center fixed;
+  box-sizing: border-box;
+  font-family: 'enchanted';
+}
+
+
+body{
+  background: #F9DFBC;
+  /*overflow: hidden;*/
+  overflow-x: hidden; 
+  /*background-image: url('images/Imágenes/fondo\ desenfocado1.jpg');*/
   background-size: cover;
-  background-attachment: fixed;
+  font-family: 'enchanted';
+  /*position: absolute;*/
 }
 
 /* 2) Barra de navegación */

@@ -1,29 +1,137 @@
 /* css/registro.css */
-
+@font-face {
+  font-family: 'enchanted';
+  src: url('../../Fuentes/enchanted_land/Enchanted\ Land.otf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 /* Ajusta la ruta a la imagen si tu archivo se llama distinto (jpg, png, etc.) */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'enchanted';
   margin: 0;
   padding: 0;
-  /* Supongamos que la imagen está en /html/images/videogame-background.webp */
-  background: url('../images/register-background.webp') no-repeat center center fixed;
+  background: url('../images/imagenes/puertas.jpg') no-repeat center center;
   background-size: cover;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
+
+/* ----- MENÚ SUPERIOR (HEADER) ----- */
+.menu-superior {
+  top: 0; left: 0;
+  width: 100%;
+  height: 85px;  /* Ajusta la altura */
+  background: #7d110dc4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 1000;
+}
+
+.logo {
+  height: 130px;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+  padding-left: 0px;
+}
+
+.logo:hover {
+  transform: scale(1.1);
+}
+
+/* Sección derecha: "Iniciar sesión" + dropdown */
+.menu-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-right: 10%;
+}
+.menu-right a {
+  color: #F9DFBC;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  transition: color 0.3s;
+}
+.menu-right a:hover {
+  color: #fff;
+}
+
+/* ------ DROPDOWN ------ */
+.dropdown {
+  position: relative;
+}
+.dropdown-toggle {
+  cursor: pointer;
+  color: #F9DFBC;
+  font-weight: bold;
+  font-size: 18px;
+}
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;   /* Se alinea a la derecha del toggle */
+  background: #7d110dc4;
+  border-radius: 5px;
+  width: 200px;
+  z-index: 9999;
+  padding: 5px 0; /* Espacio vertical interno */
+  max-height: 300px; /* Ajusta según lo alto que lo quieras */
+  overflow-y: auto;  /* Habilita el scroll vertical */
+  scrollbar-width: thin; /* (opcional) para navegadores que lo soportan */
+}
+
+.dropdown-menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+.dropdown-menu li {
+  list-style: none;
+}
+.dropdown-menu li a {
+  color: #F9DFBC;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;   /* Espacio entre bandera y texto */
+  padding: 8px 15px; /* Espacio interno */
+}
+.dropdown-menu li a:hover {
+  background: rgba(249, 223, 188, 0.2);
+}
+.dropdown-menu li img {
+  width: 24px;
+  height: auto;
+  border-radius: 3px;
+}
+
 
 /* Contenedor con fondo blanco semitransparente */
 .register-container {
   width: 320px;
   padding: 30px;
-  background: rgba(255, 255, 255, 1); /* Fondo blanco con transparencia */
+  background: #7d110dc4; /* Fondo blanco con transparencia */
   border-radius: 10px;
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
-  margin: 10% auto;
+  margin-left: 35%;
+  margin-top: 5.5%;
+  margin-bottom: 5.5%;
 }
 
 .register-container h2 {
   text-align: center;
   margin-bottom: 20px;
-  color: #333;
+  color: #F9DFBC;
 }
 
 .form-group {
@@ -34,7 +142,7 @@ body {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
-  color: #333;
+  color: #F9DFBC;
 }
 
 .form-group input {
@@ -49,8 +157,8 @@ body {
 button[type="submit"] {
   width: 100%;
   padding: 10px;
-  background: #28a745; /* Verde */
-  color: #fff;
+  background: #4D9398; 
+  color: #F9DFBC;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -58,13 +166,13 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background: #218838;
+  background: #4D9398;
 }
 
 /* Mensaje de error */
 .error-message {
-  background-color: #f8d7da; /* Rojo claro */
-  color: #721c24;
+  background-color: #F9DFBC; /* Rojo claro */
+  color: #7D100D;
   padding: 10px;
   margin-bottom: 15px;
   border-radius: 4px;
@@ -75,3 +183,32 @@ button[type="submit"]:hover {
 .hidden {
   display: none;
 }
+
+/* ----- FOOTER FIJO ABAJO ----- */
+.footer {
+  bottom: 0; left: 0;
+  width: 110%;
+  background: #7d110dc4;
+  color: #F9DFBC;
+  text-align: center;
+  padding: 8px;
+  margin-bottom: 0%;
+  margin-right: 0%;
+  font-size: 14px;
+  z-index: 1000;
+}
+.footer nav {
+  margin-top: 5px;
+}
+.footer nav a {
+  color: #F9DFBC;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 8px;
+  transition: color 0.3s;
+}
+.footer nav a:hover {
+  color: #fff;
+}
+
+

@@ -89,20 +89,22 @@ $conn->close();
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GAMEDOM - Inicio</title>
   <!-- Enlaza tu CSS principal -->
   <link rel="stylesheet" href="css/Index.css">
   <!-- Font Awesome para íconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
 </head>
 <body>
   <!-- MENÚ SUPERIOR -->
   <div class="menu-superior">
-  <!-- Bloque Izquierdo: Logo -->
-    <div class="nav-left">
-      <img src="images/imagenes/Logo.png" alt="Logo Gamedom" class="logo">
-    </div>
+    <!-- Bloque Izquierdo: Logo -->
+    <a href="http://localhost:8080/">
+          <img src="images/imagenes/Logo.png" alt="Logo de Gamedom" class="logo">
+    </a>
 
     <!-- Bloque Derecho: Enlaces y dropdown -->
     <div class="nav-right">
@@ -158,7 +160,7 @@ $conn->close();
 
     <!-- Slider de juegos -->
     <div class="container">
-      <div class="slide">
+      <div class="slide1">
         <!-- Ítems fijos (puedes conservar o eliminar estos si lo deseas) -->
         <div class="item" style="background-image: url('images/Juegos/Hundir la flota.jpg');">
           <div class="content">
@@ -169,11 +171,11 @@ $conn->close();
             <button data-text="Jugar">Jugar</button>
           </div>
         </div>
-        <div class="item" style="background-image: url('images/Juegos/risk1.jpg');">
+        <div class="item" style="background-image: url('images/Juegos/risk.jpg');">
           <div class="content">
             <div class="name" data-text="Risk">Risk</div>
             <div class="des" data-text="txtRisk">
-              ¡Prepárate para una batalla legendaria!
+              ¡Prepárate para una batalla legendaria! 
             </div>
             <button data-text="Jugar">Jugar</button>
           </div>
@@ -217,11 +219,50 @@ $conn->close();
       </div>
     </div>
   </main>
+  
+<!--SLIDER AUTOMÁTICO-->
+<div class="container-carousel">
+        <div class="carruseles" id="slider">
+            <section class="slider-section">
+                <img class="img1" src="images/Juegos/Burden of command.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="images/Juegos/Jurassic world.jpg">
+            </section>
+            <section class="slider-section">
+                <img class= "img2" src="images/Juegos/iRacing.jpg">
+            </section>
+            <section class="slider-section">
+                <img class="img1" src="images/Juegos/Ajedrez.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="images/Juegos/Nexus prime guerra de campeones.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="images/Juegos/3en raya.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="images/Juegos/Red dead redemption.jpg">
+            </section>
+            <section class="slider-section">
+                <img class= "img2" src="images/Juegos/solitario.jpg">
+            </section>
+            <section class="slider-section">
+                <img class= "img2" src="images/Juegos/tetris.jpg">
+            </section>
+            <section class="slider-section">
+                <img src="images/Juegos/Drive beyons horizon.jpg">
+            </section>
+        </div>
+        <div class="btn-left"><i class='bx bx-chevron-left'><</i></div>
+        <div class="btn-right"><i class='bx bx-chevron-right'>></i></div>
+    </div>
+  
 
   <!-- FOOTER (único) -->
   <footer class="footer">
-    <p data-text="footer">
-      © 2025 CodeCrafters. Todos los derechos reservados. Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.<br>
+    <p data-text="cc">
+      © 2025 CodeCrafters. Todos los derechos reservados. Todas las marcas registradas pertenecen a sus respectivos dueños en EE. UU. y otros países.
       Todos los precios incluyen IVA (donde sea aplicable).
     </p>
     <nav>
@@ -234,5 +275,7 @@ $conn->close();
 
   <!-- Script para slider e idiomas -->
   <script src="js/Index.js"></script>
+
+
 </body>
 </html>
