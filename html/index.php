@@ -109,6 +109,7 @@ $conn->close();
     <div class="nav-right">
       <a href="biblioteca.php" class="nav-item">Biblioteca</a>
       <a href="comunidad.php" class="nav-item">Comunidad</a>
+      <a href="premios.php"    class="nav-item">Premios y Skins</a>
       <a href="torneos.php" class="nav-item">Torneos</a>
       <?php if (isset($_SESSION['usuario'])): ?>
         <a href="perfil.php" class="nav-item">Perfil</a>
