@@ -98,6 +98,14 @@
         padding-bottom: 4px;
       }
 
+      .button:disabled {
+        background-color: #ccc;
+        color: #666;
+        cursor: not-allowed;
+        opacity: 0.5;
+        transition: opacity 0.3s ease;
+      }
+
       @media (max-width: 768px) {
         #marcador {
           width: 200px;
@@ -132,6 +140,8 @@
       <ul id="listaHistorial"></ul>
     </div>
   </div>
+      <!-- Boton de finalizar turno -->
+      <button id="btn-finalizar-turno" class="button">Finalizar Turno</button>
 
   <!-- Contenedor del Juego Unity (Nueva Versión) -->
   <div id="unity-container" class="unity-desktop">
@@ -314,6 +324,19 @@
 
       document.body.appendChild(script);
     </script>
+
+    <!-- Script de finalizar turno -->
+    <script>
+      function obtenerParametroURL(nombre) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(nombre);
+      }
+          
+      window.PARTIDA_ID = obtenerParametroURL("partida_id");
+      window.USUARIO_ID = obtenerParametroURL("usuario_id");
+      </script>
+          
+    <script src="../../js/turno.js"></script>
 
     <!-- Script del Chat -->
     <!-- <script src="http://localhost:8090/socket.io/socket.io.js"></script> -->
